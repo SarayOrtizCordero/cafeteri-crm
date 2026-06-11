@@ -45,7 +45,7 @@
         <div class="sidebar-user-name" id="sidebar-user-name">Usuario</div>
         <div class="sidebar-user-role" id="sidebar-user-role">Rol</div>
       </div>
-      <button class="sidebar-collapse-btn" id="sidebar-collapse-btn"><i class="fas fa-chevron-left"></i></button>
+      <button type="button" class="sidebar-collapse-btn" id="sidebar-collapse-btn" title="Colapsar menú"><i class="fas fa-chevron-left"></i></button>
     </div>
   </div>
 </aside>
@@ -86,7 +86,7 @@
     </div>
 
     <!-- Stats rápidas -->
-    <div class="stat-grid mb-4" style="grid-template-columns:repeat(4,1fr)">
+    <div class="stat-grid columns-4 mb-4">
       <div class="stat-card">
         <div class="stat-icon primary"><i class="fas fa-users"></i></div>
         <div class="stat-body"><div class="stat-value" id="stat-total">—</div><div class="stat-label">Total clientes</div></div>
@@ -117,12 +117,12 @@
             <i class="fas fa-search search-icon"></i>
             <input type="text" id="search-input" class="form-control-crm" placeholder="Buscar por nombre, email, teléfono...">
           </div>
-          <select id="filter-vip" class="form-control-crm" style="width:auto">
+          <select id="filter-vip" class="form-control-crm" title="Filtro VIP" aria-label="Filtro VIP">
             <option value="">Todos</option>
             <option value="true">Solo VIP</option>
             <option value="false">No VIP</option>
           </select>
-          <select id="filter-level" class="form-control-crm" style="width:auto">
+          <select id="filter-level" class="form-control-crm" title="Filtro nivel" aria-label="Filtro nivel">
             <option value="">Todos los niveles</option>
             <option value="premium">Premium</option>
             <option value="oro">Oro</option>
@@ -163,7 +163,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="modal-customer-title">Nuevo Cliente</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
       <div class="modal-body">
         <form id="form-customer" novalidate>
@@ -171,32 +171,32 @@
           <div class="row g-3">
             <div class="col-md-6">
               <div class="form-group">
-                <label class="form-label">Nombre *</label>
-                <input type="text" name="name" class="form-control-crm" required>
+                <label for="customer-name" class="form-label">Nombre *</label>
+                <input id="customer-name" type="text" name="name" class="form-control-crm" required placeholder="Nombre" title="Nombre">
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <label class="form-label">Apellido</label>
-                <input type="text" name="surname" class="form-control-crm">
+                <label for="customer-surname" class="form-label">Apellido</label>
+                <input id="customer-surname" type="text" name="surname" class="form-control-crm" placeholder="Apellido" title="Apellido">
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <label class="form-label">Email</label>
-                <input type="email" name="email" class="form-control-crm">
+                <label for="customer-email" class="form-label">Email</label>
+                <input id="customer-email" type="email" name="email" class="form-control-crm" placeholder="example@dominio.com" title="Email del cliente">
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <label class="form-label">Teléfono</label>
-                <input type="tel" name="phone" class="form-control-crm">
+                <label for="customer-phone" class="form-label">Teléfono</label>
+                <input id="customer-phone" type="tel" name="phone" class="form-control-crm" placeholder="Teléfono" title="Teléfono del cliente">
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <label class="form-label">Fecha de nacimiento</label>
-                <input type="date" name="birth_date" class="form-control-crm">
+                <label for="customer-birth-date" class="form-label">Fecha de nacimiento</label>
+                <input id="customer-birth-date" type="date" name="birth_date" class="form-control-crm" placeholder="Fecha de nacimiento" title="Fecha de nacimiento">
               </div>
             </div>
             <div class="col-md-6">
@@ -213,8 +213,8 @@
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <label class="form-label">Frecuencia de visita</label>
-                <select name="visit_frequency" class="form-control-crm">
+                <label for="customer-visit-frequency" class="form-label">Frecuencia de visita</label>
+                <select id="customer-visit-frequency" name="visit_frequency" class="form-control-crm" title="Frecuencia de visita">
                   <option value="">No especificada</option>
                   <option value="semanal">Semanal</option>
                   <option value="quincenal">Quincenal</option>
@@ -268,7 +268,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Ficha del Cliente</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" title="Cerrar"></button>
       </div>
       <div class="modal-body" id="customer-detail-body">
         Cargando...
@@ -288,6 +288,8 @@
 <script src="js/utils.js"></script>
 <script src="js/auth.js"></script>
 <script>
+Auth.requireAuth();
+
 let allCustomers = [];
 let currentCustomerId = null;
 let currentPage = 1;

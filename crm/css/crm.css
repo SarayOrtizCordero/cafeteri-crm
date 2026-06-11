@@ -468,6 +468,11 @@ body {
 }
 
 /* ── 7. STAT CARDS ────────────────────────────────────────── */
+
+.stat-grid.columns-4 {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
 .stat-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -578,7 +583,6 @@ body {
 /* ── 9. TABLES ────────────────────────────────────────────── */
 .table-wrapper {
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
 }
 
 .crm-table {
@@ -600,7 +604,7 @@ body {
   white-space: nowrap;
 }
 
-.crm-table thead th.sortable { cursor: pointer; user-select: none; }
+.crm-table thead th.sortable { cursor: pointer; -webkit-user-select: none; user-select: none; }
 .crm-table thead th.sortable:hover { color: var(--text-primary); }
 
 .crm-table tbody tr {
@@ -880,6 +884,9 @@ textarea.form-control-crm {
   grid-template-columns: repeat(12, 60px);
   grid-template-rows: repeat(10, 60px);
   gap: 8px;
+  min-width: -webkit-fill-available;
+  min-width: -moz-fit-content;
+  min-width: -webkit-fit-content;
   min-width: fit-content;
 }
 
@@ -895,6 +902,7 @@ textarea.form-control-crm {
   font-size: 11px;
   font-weight: 700;
   gap: 2px;
+  -webkit-user-select: none;
   user-select: none;
 }
 
@@ -1266,3 +1274,23 @@ textarea.form-control-crm {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+
+.password-wrapper {
+      position: relative;
+    }
+
+    .password-wrapper input {
+      padding-right: 42px;
+    }
+
+    #toggle-pass {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+    }

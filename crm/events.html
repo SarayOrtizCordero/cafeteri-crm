@@ -52,14 +52,14 @@
         <div class="sidebar-user-name" id="sidebar-user-name">Usuario</div>
         <div class="sidebar-user-role" id="sidebar-user-role">Rol</div>
       </div>
-      <button class="sidebar-collapse-btn" id="sidebar-collapse-btn"><i class="fas fa-chevron-left"></i></button>
+      <button type="button" class="sidebar-collapse-btn" id="sidebar-collapse-btn" aria-label="Colapsar barra lateral"><i class="fas fa-chevron-left"></i></button>
     </div>
   </div>
 </aside>
 
 <div class="crm-main" id="crm-main">
   <header class="crm-topbar">
-    <button class="topbar-menu-btn" id="topbar-menu-btn"><i class="fas fa-bars"></i></button>
+    <button type="button" class="topbar-menu-btn" id="topbar-menu-btn" aria-label="Mostrar menú"><i class="fas fa-bars"></i></button>
     <nav class="topbar-breadcrumb">
       <span class="topbar-breadcrumb-item">CRM</span>
       <span class="topbar-breadcrumb-sep">/</span>
@@ -71,7 +71,7 @@
         <div class="topbar-avatar" id="topbar-avatar">AD</div>
         <span class="topbar-user-name" id="topbar-user-name">Admin</span>
       </div>
-      <button class="topbar-btn" id="btn-logout"><i class="fas fa-sign-out-alt"></i></button>
+      <button type="button" class="topbar-btn" id="btn-logout" aria-label="Cerrar sesión" title="Cerrar sesión"><i class="fas fa-sign-out-alt"></i></button>
     </div>
   </header>
 
@@ -91,7 +91,7 @@
     <!-- Stats -->
     <div class="stat-grid mb-4" style="grid-template-columns:repeat(3,1fr)">
       <div class="stat-card">
-        <div class="stat-icon primary"><i class="fas fa-calendar-star"></i></div>
+        <div class="stat-icon primary"><i class="fas fa-calendar-alt"></i></div>
         <div class="stat-body"><div class="stat-value" id="stat-activos">—</div><div class="stat-label">Eventos activos</div></div>
       </div>
       <div class="stat-card">
@@ -120,7 +120,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="modal-event-title">Nuevo Evento</h5>
-        <button class="btn-close" data-bs-dismiss="modal"></button>
+        <button class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
       <div class="modal-body">
         <form id="form-event" novalidate>
@@ -134,8 +134,8 @@
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <label class="form-label">Fecha y hora *</label>
-                <input type="datetime-local" name="event_date" class="form-control-crm" required>
+                <label class="form-label" for="event-date">Fecha y hora *</label>
+                <input type="datetime-local" id="event-date" name="event_date" class="form-control-crm" required>
               </div>
             </div>
             <div class="col-md-3">
@@ -152,8 +152,8 @@
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <label class="form-label">Estado</label>
-                <select name="status" class="form-control-crm">
+                <label class="form-label" for="event-status">Estado</label>
+                <select id="event-status" name="status" class="form-control-crm">
                   <option value="activo">Activo</option>
                   <option value="completo">Completo</option>
                   <option value="cancelado">Cancelado</option>
@@ -184,6 +184,8 @@
 <script src="js/utils.js"></script>
 <script src="js/auth.js"></script>
 <script>
+Auth.requireAuth();
+
 let allEvents = [];
 
 const EVENT_ICONS = {

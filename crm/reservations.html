@@ -44,14 +44,14 @@
         <div class="sidebar-user-name" id="sidebar-user-name">Usuario</div>
         <div class="sidebar-user-role" id="sidebar-user-role">Rol</div>
       </div>
-      <button class="sidebar-collapse-btn" id="sidebar-collapse-btn"><i class="fas fa-chevron-left"></i></button>
+      <button type="button" class="sidebar-collapse-btn" id="sidebar-collapse-btn" aria-label="Colapsar barra lateral" title="Colapsar barra lateral"><i class="fas fa-chevron-left" aria-hidden="true"></i></button>
     </div>
   </div>
 </aside>
 
 <div class="crm-main" id="crm-main">
   <header class="crm-topbar">
-    <button class="topbar-menu-btn" id="topbar-menu-btn"><i class="fas fa-bars"></i></button>
+    <button type="button" class="topbar-menu-btn" id="topbar-menu-btn" aria-label="Abrir menú" title="Abrir menú"><i class="fas fa-bars"></i></button>
     <nav class="topbar-breadcrumb">
       <span class="topbar-breadcrumb-item">CRM</span>
       <span class="topbar-breadcrumb-sep">/</span>
@@ -63,7 +63,7 @@
         <div class="topbar-avatar" id="topbar-avatar">AD</div>
         <span class="topbar-user-name" id="topbar-user-name">Admin</span>
       </div>
-      <button class="topbar-btn" id="btn-logout"><i class="fas fa-sign-out-alt"></i></button>
+      <button type="button" class="topbar-btn" id="btn-logout" aria-label="Cerrar sesión"><i class="fas fa-sign-out-alt" aria-hidden="true"></i></button>
     </div>
   </header>
 
@@ -93,13 +93,15 @@
       <div class="crm-card-body">
         <div class="d-flex align-items-center gap-3 flex-wrap">
           <div class="d-flex align-items-center gap-2">
-            <button class="btn-crm-icon" id="btn-prev-day"><i class="fas fa-chevron-left"></i></button>
-            <input type="date" id="date-picker" class="form-control-crm" style="width:180px">
-            <button class="btn-crm-icon" id="btn-next-day"><i class="fas fa-chevron-right"></i></button>
-            <button class="btn-crm btn-crm-secondary btn-crm-sm" id="btn-today">Hoy</button>
+            <button type="button" class="btn-crm-icon" id="btn-prev-day" aria-label="Día anterior" title="Día anterior"><i class="fas fa-chevron-left"></i></button>
+            <label for="date-picker" class="visually-hidden">Fecha de reserva</label>
+            <input type="date" id="date-picker" class="form-control-crm w-auto" title="Fecha de reserva" placeholder="Seleccionar fecha">
+            <button type="button" class="btn-crm-icon" id="btn-next-day" aria-label="Día siguiente" title="Día siguiente"><i class="fas fa-chevron-right"></i></button>
+            <button type="button" class="btn-crm btn-crm-secondary btn-crm-sm" id="btn-today">Hoy</button>
           </div>
           <div class="flex-1"></div>
-          <select id="filter-status" class="form-control-crm" style="width:auto">
+          <label for="filter-status" class="visually-hidden">Filtrar estado</label>
+          <select id="filter-status" class="form-control-crm w-auto" title="Filtrar estado">
             <option value="">Todos los estados</option>
             <option value="pendiente">Pendiente</option>
             <option value="confirmada">Confirmada</option>
@@ -108,9 +110,10 @@
             <option value="cancelada">Cancelada</option>
             <option value="no_presentado">No se presentó</option>
           </select>
-          <div class="search-input-wrapper" style="min-width:180px">
+          <div class="search-input-wrapper">
+            <label for="search-res" class="visually-hidden">Buscar cliente</label>
             <i class="fas fa-search search-icon"></i>
-            <input type="text" id="search-res" class="form-control-crm" placeholder="Buscar cliente...">
+            <input type="text" id="search-res" class="form-control-crm" placeholder="Buscar cliente..." title="Buscar cliente">
           </div>
         </div>
       </div>
@@ -152,7 +155,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="modal-res-title">Nueva Reserva</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" title="Cerrar"></button>
       </div>
       <div class="modal-body">
         <form id="form-res" novalidate>
@@ -160,7 +163,7 @@
           <div class="row g-3">
             <div class="col-md-6">
               <div class="form-group">
-                <label class="form-label">Cliente *</label>
+                <label class="form-label" for="sel-customer">Cliente *</label>
                 <select name="customer_id" id="sel-customer" class="form-control-crm" required>
                   <option value="">— Seleccionar cliente —</option>
                 </select>
@@ -168,7 +171,7 @@
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <label class="form-label">Mesa *</label>
+                <label class="form-label" for="sel-table">Mesa *</label>
                 <select name="table_id" id="sel-table" class="form-control-crm" required>
                   <option value="">— Seleccionar mesa —</option>
                 </select>
@@ -176,26 +179,26 @@
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <label class="form-label">Fecha y hora *</label>
+                <label class="form-label" for="inp-datetime">Fecha y hora *</label>
                 <input type="datetime-local" name="reservation_date" id="inp-datetime" class="form-control-crm" required>
               </div>
             </div>
             <div class="col-md-3">
               <div class="form-group">
-                <label class="form-label">Comensales *</label>
-                <input type="number" name="guests" class="form-control-crm" min="1" max="30" value="2" required>
+                <label class="form-label" for="guests">Comensales *</label>
+                <input type="number" id="guests" name="guests" class="form-control-crm" min="1" max="30" value="2" required>
               </div>
             </div>
             <div class="col-md-3">
               <div class="form-group">
-                <label class="form-label">Duración (min)</label>
-                <input type="number" name="duration_minutes" class="form-control-crm" value="90" min="30" step="15">
+                <label class="form-label" for="duration_minutes">Duración (min)</label>
+                <input type="number" id="duration_minutes" name="duration_minutes" class="form-control-crm" value="90" min="30" step="15">
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <label class="form-label">Estado</label>
-                <select name="status" class="form-control-crm">
+                <label class="form-label" for="status">Estado</label>
+                <select id="status" name="status" class="form-control-crm">
                   <option value="pendiente">Pendiente</option>
                   <option value="confirmada">Confirmada</option>
                   <option value="sentado">Sentado</option>
@@ -207,8 +210,8 @@
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <label class="form-label">Fuente</label>
-                <select name="source" class="form-control-crm">
+                <label class="form-label" for="source">Fuente</label>
+                <select id="source" name="source" class="form-control-crm">
                   <option value="manual">Manual</option>
                   <option value="web">Web</option>
                   <option value="teléfono">Teléfono</option>
@@ -241,6 +244,8 @@
 <script src="js/utils.js"></script>
 <script src="js/auth.js"></script>
 <script>
+Auth.requireAuth();
+
 let currentDate = todayISO();
 let allRes = [];
 

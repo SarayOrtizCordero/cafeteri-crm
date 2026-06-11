@@ -446,6 +446,16 @@ const DB = {
     return await supabase.from('email_campaigns').insert(camp).select().single();
   },
 
+  async updateCampaign(id, updates) {
+    if (DEMO_MODE) {
+      const idx = DEMO_CAMPAIGNS.findIndex(c => c.id === id);
+      if (idx === -1) return { error: 'No encontrado' };
+      DEMO_CAMPAIGNS[idx] = { ...DEMO_CAMPAIGNS[idx], ...updates };
+      return { data: DEMO_CAMPAIGNS[idx], error: null };
+    }
+    return await supabase.from('email_campaigns').update(updates).eq('id', id).select().single();
+  },
+
   // ── REVIEWS ──
   async getReviews() {
     if (DEMO_MODE) {

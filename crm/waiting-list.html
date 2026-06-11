@@ -44,14 +44,14 @@
         <div class="sidebar-user-name" id="sidebar-user-name">Usuario</div>
         <div class="sidebar-user-role" id="sidebar-user-role">Rol</div>
       </div>
-      <button class="sidebar-collapse-btn" id="sidebar-collapse-btn"><i class="fas fa-chevron-left"></i></button>
+      <button type="button" class="sidebar-collapse-btn" id="sidebar-collapse-btn" aria-label="Colapsar barra lateral"><i class="fas fa-chevron-left"></i></button>
     </div>
   </div>
 </aside>
 
 <div class="crm-main" id="crm-main">
   <header class="crm-topbar">
-    <button class="topbar-menu-btn" id="topbar-menu-btn"><i class="fas fa-bars"></i></button>
+    <button type="button" class="topbar-menu-btn" id="topbar-menu-btn" aria-label="Abrir menú"><i class="fas fa-bars"></i></button>
     <nav class="topbar-breadcrumb">
       <span class="topbar-breadcrumb-item">CRM</span>
       <span class="topbar-breadcrumb-sep">/</span>
@@ -63,12 +63,7 @@
         <div class="topbar-avatar" id="topbar-avatar">AD</div>
         <span class="topbar-user-name" id="topbar-user-name">Admin</span>
       </div>
-      <button class="topbar-btn" id="btn-logout"><i class="fas fa-sign-out-alt"></i></button>
-    </div>
-  </header>
-
-  <main class="crm-content">
-    <div class="page-header">
+      <button type="button" class="topbar-btn" id="btn-logout" aria-label="Cerrar sesión"><i class="fas fa-sign-out-alt"></i></button>
       <div>
         <h1 class="page-title">Lista de Espera</h1>
         <p class="page-subtitle">Gestión de clientes sin reserva en tiempo real</p>
@@ -132,23 +127,23 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Añadir a Lista de Espera</h5>
-        <button class="btn-close" data-bs-dismiss="modal"></button>
+        <button class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" title="Cerrar"></button>
       </div>
       <div class="modal-body">
         <form id="form-wait" novalidate>
           <div class="form-group">
-            <label class="form-label">Cliente</label>
+            <label class="form-label" for="sel-wait-customer">Cliente</label>
             <select name="customer_id" id="sel-wait-customer" class="form-control-crm">
               <option value="">— Sin registrar / Walk-in —</option>
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label">Cantidad de personas *</label>
-            <input type="number" name="party_size" class="form-control-crm" value="2" min="1" max="20" required>
+            <label class="form-label" for="input-party-size">Cantidad de personas *</label>
+            <input type="number" id="input-party-size" name="party_size" class="form-control-crm" value="2" min="1" max="20" required>
           </div>
           <div class="form-group">
-            <label class="form-label">Notas</label>
-            <input type="text" name="notes" class="form-control-crm" placeholder="Ej: prefieren terraza, celíacos...">
+            <label class="form-label" for="input-notes">Notas</label>
+            <input type="text" id="input-notes" name="notes" class="form-control-crm" placeholder="Ej: prefieren terraza, celíacos...">
           </div>
         </form>
       </div>
@@ -168,12 +163,12 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Asignar Mesa</h5>
-        <button class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
       <div class="modal-body">
         <p class="text-muted-sm mb-3">Asignando para: <strong id="assign-customer-name">—</strong> (<span id="assign-party">—</span> pax)</p>
         <div class="form-group">
-          <label class="form-label">Mesa disponible</label>
+          <label for="sel-assign-table" class="form-label">Mesa disponible</label>
           <select id="sel-assign-table" class="form-control-crm">
             <option value="">— Seleccionar mesa —</option>
           </select>
@@ -194,6 +189,8 @@
 <script src="js/utils.js"></script>
 <script src="js/auth.js"></script>
 <script>
+Auth.requireAuth();
+
 let allWaiting = [];
 let allTables  = [];
 let assigningId = null;

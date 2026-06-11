@@ -44,14 +44,14 @@
         <div class="sidebar-user-name" id="sidebar-user-name">Usuario</div>
         <div class="sidebar-user-role" id="sidebar-user-role">Rol</div>
       </div>
-      <button class="sidebar-collapse-btn" id="sidebar-collapse-btn"><i class="fas fa-chevron-left"></i></button>
+      <button type="button" class="sidebar-collapse-btn" id="sidebar-collapse-btn" aria-label="Colapsar barra lateral"><i class="fas fa-chevron-left"></i></button>
     </div>
   </div>
 </aside>
 
 <div class="crm-main" id="crm-main">
   <header class="crm-topbar">
-    <button class="topbar-menu-btn" id="topbar-menu-btn"><i class="fas fa-bars"></i></button>
+    <button class="topbar-menu-btn" id="topbar-menu-btn" title="Abrir menú" aria-label="Abrir menú"><i class="fas fa-bars"></i></button>
     <nav class="topbar-breadcrumb">
       <span class="topbar-breadcrumb-item">CRM</span>
       <span class="topbar-breadcrumb-sep">/</span>
@@ -66,7 +66,7 @@
         <div class="topbar-avatar" id="topbar-avatar">AD</div>
         <span class="topbar-user-name" id="topbar-user-name">Admin</span>
       </div>
-      <button class="topbar-btn" id="btn-logout"><i class="fas fa-sign-out-alt"></i></button>
+      <button type="button" class="topbar-btn" id="btn-logout" aria-label="Cerrar sesión" title="Cerrar sesión"><i class="fas fa-sign-out-alt"></i></button>
     </div>
   </header>
 
@@ -77,7 +77,7 @@
         <p class="page-subtitle">Métricas clave del negocio y tendencias del restaurante</p>
       </div>
       <div class="page-actions">
-        <select id="period-selector" class="form-control-crm" style="width:auto">
+        <select id="period-selector" class="form-control-crm" aria-label="Seleccionar período">
           <option value="7">Últimos 7 días</option>
           <option value="30" selected>Últimos 30 días</option>
           <option value="90">Últimos 90 días</option>
@@ -250,6 +250,8 @@
 <script src="js/utils.js"></script>
 <script src="js/auth.js"></script>
 <script>
+Auth.requireAuth();
+
 Chart.defaults.font.family = 'Lato';
 Chart.defaults.color = '#94A3B8';
 
@@ -404,7 +406,6 @@ async function loadAnalytics() {
   // Top clientes
   const tbody = document.getElementById('top-customers-tbody');
   tbody.innerHTML = topCustomers.map((c, i) => {
-    const cusObj = DEMO_CUSTOMERS.find(x=>x.name+' '+(x.surname||''===c.name));
     const lp = DEMO_LOYALTY.find(l => {
       const cus = DEMO_CUSTOMERS.find(x=>x.id===l.customer_id);
       return cus && c.name.startsWith(cus.name);

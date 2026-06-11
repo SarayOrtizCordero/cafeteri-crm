@@ -61,14 +61,14 @@
         <div class="sidebar-user-name" id="sidebar-user-name">Usuario</div>
         <div class="sidebar-user-role" id="sidebar-user-role">Rol</div>
       </div>
-      <button class="sidebar-collapse-btn" id="sidebar-collapse-btn"><i class="fas fa-chevron-left"></i></button>
+      <button type="button" class="sidebar-collapse-btn" id="sidebar-collapse-btn" aria-label="Colapsar barra lateral"><i class="fas fa-chevron-left"></i></button>
     </div>
   </div>
 </aside>
 
 <div class="crm-main" id="crm-main">
   <header class="crm-topbar">
-    <button class="topbar-menu-btn" id="topbar-menu-btn"><i class="fas fa-bars"></i></button>
+    <button type="button" class="topbar-menu-btn" id="topbar-menu-btn" title="Abrir menú" aria-label="Abrir menú"><i class="fas fa-bars"></i></button>
     <nav class="topbar-breadcrumb">
       <span class="topbar-breadcrumb-item">CRM</span>
       <span class="topbar-breadcrumb-sep">/</span>
@@ -80,7 +80,7 @@
         <div class="topbar-avatar" id="topbar-avatar">AD</div>
         <span class="topbar-user-name" id="topbar-user-name">Admin</span>
       </div>
-      <button class="topbar-btn" id="btn-logout"><i class="fas fa-sign-out-alt"></i></button>
+      <button class="topbar-btn" id="btn-logout" title="Cerrar sesión"><i class="fas fa-sign-out-alt"></i></button>
     </div>
   </header>
 
@@ -150,7 +150,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="modal-camp-title">Nueva Campaña</h5>
-        <button class="btn-close" data-bs-dismiss="modal"></button>
+        <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar" title="Cerrar"></button>
       </div>
       <div class="modal-body">
         <form id="form-camp" novalidate>
@@ -179,7 +179,7 @@
               </div>
 
               <div class="form-group">
-                <label class="form-label">Segmento de destinatarios</label>
+                <label class="form-label" for="sel-segment">Segmento de destinatarios</label>
                 <select id="sel-segment" class="form-control-crm">
                   <option value="all">Todos los clientes</option>
                   <option value="vip">Solo clientes VIP</option>
@@ -192,8 +192,8 @@
               </div>
 
               <div class="form-group">
-                <label class="form-label">Programar envío (opcional)</label>
-                <input type="datetime-local" name="scheduled_at" class="form-control-crm">
+                <label class="form-label" for="inp-scheduled_at">Programar envío (opcional)</label>
+                <input id="inp-scheduled_at" type="datetime-local" name="scheduled_at" class="form-control-crm" title="Fecha y hora de envío programado (opcional)" placeholder="Seleccionar fecha y hora">
                 <div class="text-muted-sm mt-1">Dejá en blanco para guardar como borrador.</div>
               </div>
             </div>
@@ -240,6 +240,8 @@
 <script src="js/utils.js"></script>
 <script src="js/auth.js"></script>
 <script>
+Auth.requireAuth();
+
 let allCamps = [];
 
 const TEMPLATES_CONTENT = {
@@ -321,8 +323,10 @@ function renderCampaigns() {
 
 async function sendCampaign(id) {
   confirmAction('¿Enviar esta campaña ahora? Esta acción no se puede deshacer.', async () => {
-    const seg = SEGMENT_COUNTS['all'];
-    await DB.createCampaign({ ...allCamps.find(c=>c.id===id), status:'enviada', sent_at:new Date().toISOString(), recipient_count:seg });
+    const camp = allCamps.find(c=>c.id===id);
+    if (!camp) return;
+    const seg = SEGMENT_COUNTS[camp.segment?.type || 'all'] || SEGMENT_COUNTS['all'];
+    await DB.updateCampaign(id, { status:'enviada', sent_at:new Date().toISOString(), recipient_count:seg });
     showToast('Enviada', `Campaña enviada a ${seg} clientes.`, 'success');
     loadCampaigns();
   });

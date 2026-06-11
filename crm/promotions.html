@@ -29,6 +29,8 @@
       font-weight: 700;
       line-height: 1;
     }
+    /* moved inline styles from markup for accessibility/lint */
+    .filter-active-select { width: auto; }
   </style>
 </head>
 <body>
@@ -65,14 +67,14 @@
         <div class="sidebar-user-name" id="sidebar-user-name">Usuario</div>
         <div class="sidebar-user-role" id="sidebar-user-role">Rol</div>
       </div>
-      <button class="sidebar-collapse-btn" id="sidebar-collapse-btn"><i class="fas fa-chevron-left"></i></button>
+      <button type="button" class="sidebar-collapse-btn" id="sidebar-collapse-btn" aria-label="Colapsar barra lateral" title="Colapsar barra lateral"><i class="fas fa-chevron-left"></i></button>
     </div>
   </div>
 </aside>
 
 <div class="crm-main" id="crm-main">
   <header class="crm-topbar">
-    <button class="topbar-menu-btn" id="topbar-menu-btn"><i class="fas fa-bars"></i></button>
+    <button class="topbar-menu-btn" id="topbar-menu-btn" aria-label="Abrir menú" title="Abrir menú"><i class="fas fa-bars"></i></button>
     <nav class="topbar-breadcrumb">
       <span class="topbar-breadcrumb-item">CRM</span>
       <span class="topbar-breadcrumb-sep">/</span>
@@ -84,7 +86,7 @@
         <div class="topbar-avatar" id="topbar-avatar">AD</div>
         <span class="topbar-user-name" id="topbar-user-name">Admin</span>
       </div>
-      <button class="topbar-btn" id="btn-logout"><i class="fas fa-sign-out-alt"></i></button>
+      <button type="button" class="topbar-btn" id="btn-logout" aria-label="Cerrar sesión"><i class="fas fa-sign-out-alt"></i></button>
     </div>
   </header>
 
@@ -126,7 +128,7 @@
       <div class="crm-card-header">
         <span class="crm-card-title"><i class="fas fa-tag text-brand"></i> Listado de Promociones</span>
         <div class="d-flex gap-2">
-          <select id="filter-active" class="form-control-crm" style="width:auto">
+          <select id="filter-active" class="form-control-crm filter-active-select" title="Filtrar promociones por estado" aria-label="Filtrar promociones por estado">
             <option value="">Todas</option>
             <option value="true">Solo activas</option>
             <option value="false">Inactivas</option>
@@ -160,7 +162,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="modal-promo-title">Nueva Promoción</h5>
-        <button class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" title="Cerrar"></button>
       </div>
       <div class="modal-body">
         <form id="form-promo" novalidate>
@@ -174,7 +176,7 @@
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <label class="form-label">Tipo de descuento</label>
+                <label class="form-label" for="discount-type">Tipo de descuento</label>
                 <select name="discount_type" id="discount-type" class="form-control-crm">
                   <option value="percentage">Porcentaje (%)</option>
                   <option value="fixed">Monto fijo ($)</option>
@@ -184,8 +186,8 @@
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <label class="form-label" id="discount-label">Valor del descuento</label>
-                <input type="number" name="discount_value" class="form-control-crm" min="0" step="1" value="10">
+                <label class="form-label" for="discount-value">Valor del descuento</label>
+                <input type="number" id="discount-value" name="discount_value" class="form-control-crm" min="0" step="1" value="10">
               </div>
             </div>
             <div class="col-md-6">
@@ -207,14 +209,14 @@
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <label class="form-label">Válido desde *</label>
-                <input type="date" name="start_date" class="form-control-crm" required>
+                <label class="form-label" for="inp-start-date">Válido desde *</label>
+                <input type="date" id="inp-start-date" name="start_date" class="form-control-crm" required>
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <label class="form-label">Válido hasta *</label>
-                <input type="date" name="end_date" class="form-control-crm" required>
+                <label class="form-label" for="inp-end-date">Válido hasta *</label>
+                <input type="date" id="inp-end-date" name="end_date" class="form-control-crm" required>
               </div>
             </div>
             <div class="col-12">
@@ -247,6 +249,8 @@
 <script src="js/utils.js"></script>
 <script src="js/auth.js"></script>
 <script>
+Auth.requireAuth();
+
 let allPromos = [];
 
 async function loadPromos() {

@@ -64,14 +64,14 @@
         <div class="sidebar-user-name" id="sidebar-user-name">Usuario</div>
         <div class="sidebar-user-role" id="sidebar-user-role">Rol</div>
       </div>
-      <button class="sidebar-collapse-btn" id="sidebar-collapse-btn"><i class="fas fa-chevron-left"></i></button>
+      <button type="button" class="sidebar-collapse-btn" id="sidebar-collapse-btn" aria-label="Colapsar barra lateral"><i class="fas fa-chevron-left"></i></button>
     </div>
   </div>
 </aside>
 
 <div class="crm-main" id="crm-main">
   <header class="crm-topbar">
-    <button class="topbar-menu-btn" id="topbar-menu-btn"><i class="fas fa-bars"></i></button>
+    <button type="button" class="topbar-menu-btn" id="topbar-menu-btn" aria-label="Abrir menú"><i class="fas fa-bars"></i></button>
     <nav class="topbar-breadcrumb">
       <span class="topbar-breadcrumb-item">CRM</span>
       <span class="topbar-breadcrumb-sep">/</span>
@@ -83,7 +83,7 @@
         <div class="topbar-avatar" id="topbar-avatar">AD</div>
         <span class="topbar-user-name" id="topbar-user-name">Admin</span>
       </div>
-      <button class="topbar-btn" id="btn-logout"><i class="fas fa-sign-out-alt"></i></button>
+      <button type="button" class="topbar-btn" id="btn-logout" aria-label="Cerrar sesión"><i class="fas fa-sign-out-alt"></i></button>
     </div>
   </header>
 
@@ -178,12 +178,12 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Gestionar Puntos</h5>
-        <button class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
       <div class="modal-body">
         <form id="form-points">
           <div class="form-group">
-            <label class="form-label">Cliente *</label>
+            <label for="sel-loyalty-customer" class="form-label">Cliente *</label>
             <select id="sel-loyalty-customer" class="form-control-crm" required>
               <option value="">— Seleccionar cliente —</option>
             </select>
@@ -231,6 +231,8 @@
 <script src="js/utils.js"></script>
 <script src="js/auth.js"></script>
 <script>
+Auth.requireAuth();
+
 let allLoyalty = [];
 
 const LEVELS = [
@@ -340,7 +342,6 @@ function updatePreview() {
 
 document.getElementById('sel-loyalty-customer').addEventListener('change', updatePreview);
 document.getElementById('inp-points').addEventListener('input', updatePreview);
-document.querySelectorAll?.('[name="op_type"]');
 document.addEventListener('change', e => { if (e.target.name === 'op_type') updatePreview(); });
 
 document.getElementById('btn-save-points').addEventListener('click', async () => {
