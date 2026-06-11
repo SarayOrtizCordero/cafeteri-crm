@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRM – Café de la Esquina</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link rel="stylesheet" href="css/crm.css">
+</head>
+<body class="login-page">
+
+<div class="login-card">
+  <div class="login-logo">
+    <div class="login-logo-icon"><i class="fas fa-utensils"></i></div>
+    <h1>CRM Restaurante</h1>
+    <p>Café de la Esquina · Panel de Gestión</p>
+  </div>
+
+  <!-- Accesos rápidos demo -->
+  <div class="mb-3">
+    <p style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px">
+      Acceso rápido (modo demo)
+    </p>
+    <div class="demo-logins" id="demo-logins">
+      <button class="demo-btn" data-email="admin@demo.com" data-pass="demo123">
+        <span>
+          <span class="demo-btn-role"><i class="fas fa-shield-alt me-1 text-brand"></i> Administrador</span>
+          <span class="demo-btn-email d-block">admin@demo.com</span>
+        </span>
+        <i class="fas fa-arrow-right text-muted"></i>
+      </button>
+      <button class="demo-btn" data-email="gerente@demo.com" data-pass="demo123">
+        <span>
+          <span class="demo-btn-role"><i class="fas fa-user-tie me-1 text-brand"></i> Gerente</span>
+          <span class="demo-btn-email d-block">gerente@demo.com</span>
+        </span>
+        <i class="fas fa-arrow-right text-muted"></i>
+      </button>
+      <button class="demo-btn" data-email="recepcion@demo.com" data-pass="demo123">
+        <span>
+          <span class="demo-btn-role"><i class="fas fa-concierge-bell me-1 text-brand"></i> Recepcionista</span>
+          <span class="demo-btn-email d-block">recepcion@demo.com</span>
+        </span>
+        <i class="fas fa-arrow-right text-muted"></i>
+      </button>
+    </div>
+  </div>
+
+  <hr class="login-divider">
+
+  <!-- Formulario -->
+  <form id="login-form" novalidate>
+    <div class="form-group">
+      <label class="form-label" for="email">Correo electrónico</label>
+      <input type="email" id="email" name="email" class="form-control-crm"
+             placeholder="usuario@restaurante.com" required autocomplete="email">
+    </div>
+    <div class="form-group mb-4">
+      <label class="form-label" for="password">Contraseña</label>
+      <div style="position:relative">
+        <input type="password" id="password" name="password" class="form-control-crm"
+               placeholder="••••••••" required autocomplete="current-password" style="padding-right:42px">
+        <button type="button" id="toggle-pass"
+                style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);cursor:pointer">
+          <i class="fas fa-eye" id="pass-icon"></i>
+        </button>
+      </div>
+    </div>
+
+    <div id="login-error" class="alert alert-danger d-none mb-3" style="border-radius:var(--radius);font-size:13px;padding:10px 14px"></div>
+
+    <button type="submit" class="btn-crm btn-crm-primary w-100 justify-content-center" id="login-btn">
+      <i class="fas fa-sign-in-alt"></i> Ingresar al CRM
+    </button>
+  </form>
+
+  <p style="text-align:center;margin-top:16px;font-size:12px;color:var(--text-muted)">
+    ¿Olvidaste tu contraseña?
+    <a href="#" style="color:var(--brand-primary);font-weight:700">Recuperar acceso</a>
+  </p>
+
+  <div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--border);text-align:center">
+    <a href="../index.html" style="font-size:12px;color:var(--text-muted);text-decoration:none">
+      <i class="fas fa-arrow-left me-1"></i> Volver al sitio web
+    </a>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="js/supabase-config.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  // Si ya hay sesión activa, redirigir al dashboard
+  const session = localStorage.getItem('crm_session');
+  if (session) {
+    try {
+      const s = JSON.parse(session);
+      if (s?.user && s.expires_at > Date.now()) {
+        window.location.href = 'dashboard.html';
+        return;
+      }
+    } catch {}
+  }
+
+  // Accesos rápidos demo
+  document.querySelectorAll('.demo-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById('email').value    = btn.dataset.email;
+      document.getElementById('password').value = btn.dataset.pass;
+      document.getElementById('login-form').dispatchEvent(new Event('submit'));
+    });
+  });
+
+  // Toggle password
+  document.getElementById('toggle-pass')?.addEventListener('click', () => {
+    const input = document.getElementById('password');
+    const icon  = document.getElementById('pass-icon');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+      input.type = 'password';
+      icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+  });
+
+  // Formulario login
+  document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email    = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const btn      = document.getElementById('login-btn');
+    const errorDiv = document.getElementById('login-error');
+
+    if (!email || !password) {
+      errorDiv.textContent = 'Por favor completá todos los campos.';
+      errorDiv.classList.remove('d-none');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner" style="width:16px;height:16px;border-width:2px"></span> Ingresando...';
+    errorDiv.classList.add('d-none');
+
+    const resetBtn = () => {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Ingresar al CRM';
+    };
+
+    let data, error;
+    try {
+      ({ data, error } = await DB.login(email, password));
+    } catch(ex) {
+      error = ex.message || 'Error inesperado. Intente de nuevo.';
+    }
+
+    if (error) {
+      errorDiv.textContent = typeof error === 'string' ? error : 'Credenciales incorrectas.';
+      errorDiv.classList.remove('d-none');
+      resetBtn();
+      return;
+    }
+
+    window.location.href = 'dashboard.html';
+  });
+});
+</script>
+</body>
+</html>

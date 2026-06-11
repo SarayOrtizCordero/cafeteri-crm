@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Incidencias – CRM Restaurante</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/crm.css">
+</head>
+<body>
+<div id="toast-container"></div>
+<div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+<div class="crm-wrapper">
+<aside class="crm-sidebar" id="crm-sidebar">
+  <a href="dashboard.html" class="sidebar-brand">
+    <div class="sidebar-brand-icon"><i class="fas fa-utensils"></i></div>
+    <div class="sidebar-brand-text">Café de la Esquina<small>CRM Restaurante</small></div>
+  </a>
+  <nav class="sidebar-nav">
+    <span class="sidebar-section-label">Principal</span>
+    <a href="dashboard.html"    class="sidebar-link"><i class="fas fa-tachometer-alt sidebar-link-icon"></i><span class="sidebar-link-text">Dashboard</span></a>
+    <a href="customers.html"    class="sidebar-link"><i class="fas fa-users sidebar-link-icon"></i><span class="sidebar-link-text">Clientes</span></a>
+    <a href="reservations.html" class="sidebar-link"><i class="fas fa-calendar-check sidebar-link-icon"></i><span class="sidebar-link-text">Reservas</span></a>
+    <a href="tables.html"       class="sidebar-link"><i class="fas fa-chair sidebar-link-icon"></i><span class="sidebar-link-text">Mesas</span></a>
+    <a href="waiting-list.html" class="sidebar-link"><i class="fas fa-clock sidebar-link-icon"></i><span class="sidebar-link-text">Lista de Espera</span></a>
+    <span class="sidebar-section-label">Gestión</span>
+    <a href="events.html"       class="sidebar-link"><i class="fas fa-star sidebar-link-icon"></i><span class="sidebar-link-text">Eventos</span></a>
+    <a href="loyalty.html"      class="sidebar-link"><i class="fas fa-medal sidebar-link-icon"></i><span class="sidebar-link-text">Fidelización</span></a>
+    <a href="promotions.html"   class="sidebar-link"><i class="fas fa-tag sidebar-link-icon"></i><span class="sidebar-link-text">Promociones</span></a>
+    <a href="campaigns.html"    class="sidebar-link"><i class="fas fa-envelope sidebar-link-icon"></i><span class="sidebar-link-text">Campañas Email</span></a>
+    <span class="sidebar-section-label">Operación</span>
+    <a href="reviews.html"      class="sidebar-link"><i class="fas fa-star-half-alt sidebar-link-icon"></i><span class="sidebar-link-text">Reseñas</span></a>
+    <a href="incidents.html"    class="sidebar-link"><i class="fas fa-exclamation-triangle sidebar-link-icon"></i><span class="sidebar-link-text">Incidencias</span></a>
+    <a href="analytics.html"    class="sidebar-link"><i class="fas fa-chart-bar sidebar-link-icon"></i><span class="sidebar-link-text">Analíticas</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="sidebar-avatar">AD</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="sidebar-user-name">Usuario</div>
+        <div class="sidebar-user-role" id="sidebar-user-role">Rol</div>
+      </div>
+      <button class="sidebar-collapse-btn" id="sidebar-collapse-btn"><i class="fas fa-chevron-left"></i></button>
+    </div>
+  </div>
+</aside>
+
+<div class="crm-main" id="crm-main">
+  <header class="crm-topbar">
+    <button class="topbar-menu-btn" id="topbar-menu-btn"><i class="fas fa-bars"></i></button>
+    <nav class="topbar-breadcrumb">
+      <span class="topbar-breadcrumb-item">CRM</span>
+      <span class="topbar-breadcrumb-sep">/</span>
+      <span class="topbar-breadcrumb-current">Incidencias</span>
+    </nav>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-actions">
+      <div class="topbar-user">
+        <div class="topbar-avatar" id="topbar-avatar">AD</div>
+        <span class="topbar-user-name" id="topbar-user-name">Admin</span>
+      </div>
+      <button class="topbar-btn" id="btn-logout"><i class="fas fa-sign-out-alt"></i></button>
+    </div>
+  </header>
+
+  <main class="crm-content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Incidencias</h1>
+        <p class="page-subtitle">Registro y seguimiento de incidencias operativas</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-crm btn-crm-primary" id="btn-new-inc">
+          <i class="fas fa-plus"></i> Reportar Incidencia
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-grid mb-4" style="grid-template-columns:repeat(4,1fr)">
+      <div class="stat-card">
+        <div class="stat-icon danger"><i class="fas fa-exclamation-circle"></i></div>
+        <div class="stat-body"><div class="stat-value" id="stat-abiertas">—</div><div class="stat-label">Abiertas</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon warning"><i class="fas fa-spinner"></i></div>
+        <div class="stat-body"><div class="stat-value" id="stat-en-proceso">—</div><div class="stat-label">En proceso</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon success"><i class="fas fa-check-circle"></i></div>
+        <div class="stat-body"><div class="stat-value" id="stat-resueltas">—</div><div class="stat-label">Resueltas</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon danger"><i class="fas fa-fire"></i></div>
+        <div class="stat-body"><div class="stat-value" id="stat-altas">—</div><div class="stat-label">Severidad alta</div></div>
+      </div>
+    </div>
+
+    <!-- Filtros + tabla -->
+    <div class="crm-card">
+      <div class="crm-card-header">
+        <span class="crm-card-title"><i class="fas fa-exclamation-triangle text-danger"></i> Log de Incidencias</span>
+        <div class="d-flex gap-2">
+          <select id="filter-status" class="form-control-crm" style="width:auto">
+            <option value="">Todos los estados</option>
+            <option value="abierta">Abierta</option>
+            <option value="en_proceso">En proceso</option>
+            <option value="resuelta">Resuelta</option>
+            <option value="cerrada">Cerrada</option>
+          </select>
+          <select id="filter-sev" class="form-control-crm" style="width:auto">
+            <option value="">Todas las severidades</option>
+            <option value="alta">Alta</option>
+            <option value="media">Media</option>
+            <option value="baja">Baja</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table class="crm-table">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Descripción</th>
+              <th>Severidad</th>
+              <th>Estado</th>
+              <th>Resolución</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="incidents-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+</div>
+
+<!-- Modal incidencia -->
+<div class="modal fade" id="modal-inc" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal-inc-title">Reportar Incidencia</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="form-inc" novalidate>
+          <input type="hidden" id="inc-id">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Severidad *</label>
+                <div class="d-flex gap-2">
+                  <label class="d-flex align-items-center gap-2 p-2 border rounded-3 flex-1 cursor-pointer" style="cursor:pointer">
+                    <input type="radio" name="severity" value="baja" checked>
+                    <span><div class="fw-700 text-success" style="font-size:13px">Baja</div></span>
+                  </label>
+                  <label class="d-flex align-items-center gap-2 p-2 border rounded-3 flex-1 cursor-pointer" style="cursor:pointer">
+                    <input type="radio" name="severity" value="media">
+                    <span><div class="fw-700 text-warning" style="font-size:13px">Media</div></span>
+                  </label>
+                  <label class="d-flex align-items-center gap-2 p-2 border rounded-3 flex-1 cursor-pointer" style="cursor:pointer">
+                    <input type="radio" name="severity" value="alta">
+                    <span><div class="fw-700 text-danger" style="font-size:13px">Alta</div></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Estado</label>
+                <select name="status" class="form-control-crm" id="inp-inc-status">
+                  <option value="abierta">Abierta</option>
+                  <option value="en_proceso">En proceso</option>
+                  <option value="resuelta">Resuelta</option>
+                  <option value="cerrada">Cerrada</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label class="form-label">Descripción *</label>
+                <textarea name="description" class="form-control-crm" rows="4" required
+                  placeholder="Describí qué ocurrió, cuándo, con qué cliente/mesa, y qué consecuencias tuvo..."></textarea>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label class="form-label">Resolución / Acciones tomadas</label>
+                <textarea name="resolution" class="form-control-crm" rows="3"
+                  placeholder="Cómo se resolvió la incidencia, qué se hizo para compensar al cliente..."></textarea>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-crm btn-crm-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn-crm btn-crm-primary" id="btn-save-inc">
+          <i class="fas fa-save"></i> Guardar Incidencia
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/auth.js"></script>
+<script>
+let allIncidents = [];
+
+async function loadIncidents() {
+  const { data } = await DB.getIncidents();
+  allIncidents = data || [];
+  renderIncidents();
+  updateStats();
+}
+
+function updateStats() {
+  const counts = { abierta:0, en_proceso:0, resuelta:0, cerrada:0 };
+  allIncidents.forEach(i => { counts[i.status] = (counts[i.status]||0)+1; });
+  document.getElementById('stat-abiertas').textContent  = counts.abierta;
+  document.getElementById('stat-en-proceso').textContent= counts.en_proceso;
+  document.getElementById('stat-resueltas').textContent = counts.resuelta + counts.cerrada;
+  document.getElementById('stat-altas').textContent     = allIncidents.filter(i=>i.severity==='alta').length;
+}
+
+function renderIncidents() {
+  const statusFilter = document.getElementById('filter-status').value;
+  const sevFilter    = document.getElementById('filter-sev').value;
+
+  let filtered = allIncidents;
+  if (statusFilter) filtered = filtered.filter(i=>i.status===statusFilter);
+  if (sevFilter)    filtered = filtered.filter(i=>i.severity===sevFilter);
+
+  const tbody = document.getElementById('incidents-tbody');
+  if (!filtered.length) { tableEmpty('incidents-tbody', 6, 'No hay incidencias con esos filtros.'); return; }
+
+  tbody.innerHTML = filtered.map(i => {
+    return `
+      <tr>
+        <td>
+          <div class="fw-700">${formatDate(i.created_at)}</div>
+          <div class="text-muted-sm">${formatDate(i.created_at,{relative:true})}</div>
+        </td>
+        <td style="max-width:280px">
+          <p style="font-size:13px;margin:0;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">${i.description}</p>
+        </td>
+        <td>${severityBadge(i.severity)}</td>
+        <td>
+          <div class="d-flex flex-column gap-1">
+            ${incidentStatusBadge(i.status)}
+            <select class="form-control-crm" style="padding:2px 6px;font-size:11px;width:auto" onchange="changeIncStatus('${i.id}',this.value)">
+              <option value="">Cambiar estado...</option>
+              <option value="abierta">→ Abierta</option>
+              <option value="en_proceso">→ En proceso</option>
+              <option value="resuelta">→ Resuelta</option>
+              <option value="cerrada">→ Cerrada</option>
+            </select>
+          </div>
+        </td>
+        <td style="max-width:200px">
+          <span style="font-size:12px;color:var(--text-muted)">${i.resolution || '<em>Sin resolución aún</em>'}</span>
+        </td>
+        <td>
+          <button class="btn-crm-icon" onclick="editIncident('${i.id}')" title="Editar / Agregar resolución">
+            <i class="fas fa-edit"></i>
+          </button>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+async function changeIncStatus(id, status) {
+  if (!status) return;
+  const updates = { status };
+  if (status === 'resuelta' || status === 'cerrada') updates.resolved_at = new Date().toISOString();
+  await DB.updateIncident(id, updates);
+  showToast('Actualizado', `Estado cambiado a: ${status}`, 'success');
+  loadIncidents();
+}
+
+function editIncident(id) {
+  const i = allIncidents.find(x=>x.id===id);
+  if (!i) return;
+  document.getElementById('modal-inc-title').textContent = 'Editar Incidencia';
+  document.getElementById('inc-id').value = i.id;
+  populateForm(document.getElementById('form-inc'), {
+    description: i.description, resolution: i.resolution||'',
+  });
+  document.querySelector(`[name="severity"][value="${i.severity}"]`).checked = true;
+  document.getElementById('inp-inc-status').value = i.status;
+  openModal('modal-inc');
+}
+
+document.getElementById('btn-new-inc').addEventListener('click', () => {
+  document.getElementById('modal-inc-title').textContent = 'Reportar Incidencia';
+  document.getElementById('inc-id').value = '';
+  document.getElementById('form-inc').reset();
+  openModal('modal-inc');
+});
+
+document.getElementById('btn-save-inc').addEventListener('click', async () => {
+  const form = document.getElementById('form-inc');
+  const id   = document.getElementById('inc-id').value;
+  const data = formToObject(form);
+
+  if (!data.description?.trim()) { showToast('Requerido', 'La descripción es obligatoria.', 'warning'); return; }
+
+  const severity = document.querySelector('[name="severity"]:checked')?.value || 'baja';
+  const payload = {
+    description: data.description.trim(),
+    severity,
+    status:      data.status || 'abierta',
+    resolution:  data.resolution?.trim() || null,
+  };
+
+  const result = id ? await DB.updateIncident(id, payload) : await DB.createIncident(payload);
+  if (result.error) { showToast('Error', 'No se pudo guardar la incidencia.', 'error'); return; }
+
+  showToast('Guardado', id ? 'Incidencia actualizada.' : 'Incidencia reportada.', 'success');
+  closeModal('modal-inc');
+  loadIncidents();
+});
+
+document.getElementById('filter-status').addEventListener('change', renderIncidents);
+document.getElementById('filter-sev').addEventListener('change', renderIncidents);
+
+if (new URLSearchParams(location.search).get('new') === '1') {
+  setTimeout(() => document.getElementById('btn-new-inc').click(), 500);
+}
+
+loadIncidents();
+</script>
+</body>
+</html>

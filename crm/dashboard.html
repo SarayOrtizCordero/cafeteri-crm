@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard – CRM Restaurante</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/crm.css">
+</head>
+<body>
+<div id="toast-container"></div>
+<div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+<div class="crm-wrapper">
+<!-- ═══ SIDEBAR ═══════════════════════════════════════════ -->
+<aside class="crm-sidebar" id="crm-sidebar">
+  <a href="dashboard.html" class="sidebar-brand">
+    <div class="sidebar-brand-icon"><i class="fas fa-utensils"></i></div>
+    <div class="sidebar-brand-text">Café de la Esquina<small>CRM Restaurante</small></div>
+  </a>
+
+  <nav class="sidebar-nav">
+    <span class="sidebar-section-label">Principal</span>
+    <a href="dashboard.html"     class="sidebar-link"><i class="fas fa-tachometer-alt sidebar-link-icon"></i><span class="sidebar-link-text">Dashboard</span></a>
+    <a href="customers.html"     class="sidebar-link"><i class="fas fa-users sidebar-link-icon"></i><span class="sidebar-link-text">Clientes</span></a>
+    <a href="reservations.html"  class="sidebar-link"><i class="fas fa-calendar-check sidebar-link-icon"></i><span class="sidebar-link-text">Reservas</span></a>
+    <a href="tables.html"        class="sidebar-link"><i class="fas fa-chair sidebar-link-icon"></i><span class="sidebar-link-text">Mesas</span></a>
+    <a href="waiting-list.html"  class="sidebar-link"><i class="fas fa-clock sidebar-link-icon"></i><span class="sidebar-link-text">Lista de Espera</span><span class="sidebar-badge" id="waiting-count">0</span></a>
+
+    <span class="sidebar-section-label">Gestión</span>
+    <a href="events.html"        class="sidebar-link"><i class="fas fa-star sidebar-link-icon"></i><span class="sidebar-link-text">Eventos</span></a>
+    <a href="loyalty.html"       class="sidebar-link"><i class="fas fa-medal sidebar-link-icon"></i><span class="sidebar-link-text">Fidelización</span></a>
+    <a href="promotions.html"    class="sidebar-link"><i class="fas fa-tag sidebar-link-icon"></i><span class="sidebar-link-text">Promociones</span></a>
+    <a href="campaigns.html"     class="sidebar-link"><i class="fas fa-envelope sidebar-link-icon"></i><span class="sidebar-link-text">Campañas Email</span></a>
+
+    <span class="sidebar-section-label">Operación</span>
+    <a href="reviews.html"       class="sidebar-link"><i class="fas fa-star-half-alt sidebar-link-icon"></i><span class="sidebar-link-text">Reseñas</span></a>
+    <a href="incidents.html"     class="sidebar-link"><i class="fas fa-exclamation-triangle sidebar-link-icon"></i><span class="sidebar-link-text">Incidencias</span></a>
+    <a href="analytics.html"     class="sidebar-link"><i class="fas fa-chart-bar sidebar-link-icon"></i><span class="sidebar-link-text">Analíticas</span></a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="sidebar-avatar">AD</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="sidebar-user-name">Usuario</div>
+        <div class="sidebar-user-role" id="sidebar-user-role">Rol</div>
+      </div>
+      <button class="sidebar-collapse-btn" id="sidebar-collapse-btn" title="Colapsar menú">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══ MAIN ══════════════════════════════════════════════ -->
+<div class="crm-main" id="crm-main">
+
+  <!-- TOPBAR -->
+  <header class="crm-topbar">
+    <button class="topbar-menu-btn" id="topbar-menu-btn"><i class="fas fa-bars"></i></button>
+    <nav class="topbar-breadcrumb">
+      <span class="topbar-breadcrumb-item">CRM</span>
+      <span class="topbar-breadcrumb-sep">/</span>
+      <span class="topbar-breadcrumb-current">Dashboard</span>
+    </nav>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-actions">
+      <a href="reservations.html?new=1" class="btn-crm btn-crm-primary btn-crm-sm">
+        <i class="fas fa-plus"></i> Nueva Reserva
+      </a>
+      <button class="topbar-btn" title="Notificaciones" onclick="showToast('Sin notificaciones', 'Todo al día.', 'info')">
+        <i class="fas fa-bell"></i>
+      </button>
+      <div class="topbar-user" id="topbar-user">
+        <div class="topbar-avatar" id="topbar-avatar">AD</div>
+        <span class="topbar-user-name" id="topbar-user-name">Admin</span>
+      </div>
+      <button class="topbar-btn" id="btn-logout" title="Cerrar sesión">
+        <i class="fas fa-sign-out-alt"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="crm-content">
+
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Dashboard</h1>
+        <p class="page-subtitle" id="today-label">Cargando...</p>
+      </div>
+      <div class="page-actions">
+        <a href="../index.html" target="_blank" class="btn-crm btn-crm-secondary btn-crm-sm">
+          <i class="fas fa-external-link-alt"></i> Ver sitio web
+        </a>
+      </div>
+    </div>
+
+    <!-- ── STATS HOY ───────────────────────────────────────── -->
+    <p class="section-title"><i class="fas fa-sun text-warning me-2"></i>Hoy</p>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-icon primary"><i class="fas fa-calendar-check"></i></div>
+        <div class="stat-body">
+          <div class="stat-value" id="stat-today-res">—</div>
+          <div class="stat-label">Reservas hoy</div>
+          <span class="stat-change up" id="stat-today-pct"><i class="fas fa-arrow-up"></i> —</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon info"><i class="fas fa-users"></i></div>
+        <div class="stat-body">
+          <div class="stat-value" id="stat-today-guests">—</div>
+          <div class="stat-label">Comensales esperados</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon success"><i class="fas fa-chair"></i></div>
+        <div class="stat-body">
+          <div class="stat-value" id="stat-free-tables">—</div>
+          <div class="stat-label">Mesas libres</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon warning"><i class="fas fa-clock"></i></div>
+        <div class="stat-body">
+          <div class="stat-value" id="stat-waiting">—</div>
+          <div class="stat-label">En lista de espera</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── STATS SEMANA ────────────────────────────────────── -->
+    <p class="section-title mt-4"><i class="fas fa-calendar-week text-info me-2"></i>Esta semana</p>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-icon primary"><i class="fas fa-user-plus"></i></div>
+        <div class="stat-body">
+          <div class="stat-value" id="stat-new-customers">—</div>
+          <div class="stat-label">Nuevos clientes</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon success"><i class="fas fa-calendar-alt"></i></div>
+        <div class="stat-body">
+          <div class="stat-value" id="stat-week-res">—</div>
+          <div class="stat-label">Reservas realizadas</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon danger"><i class="fas fa-times-circle"></i></div>
+        <div class="stat-body">
+          <div class="stat-value" id="stat-cancels">—</div>
+          <div class="stat-label">Cancelaciones</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon purple"><i class="fas fa-star"></i></div>
+        <div class="stat-body">
+          <div class="stat-value" id="stat-avg-rating">—</div>
+          <div class="stat-label">Valoración media</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── GRID PRINCIPAL ──────────────────────────────────── -->
+    <div class="row g-3 mt-1">
+
+      <!-- Reservas del día -->
+      <div class="col-lg-8">
+        <div class="crm-card h-100">
+          <div class="crm-card-header">
+            <span class="crm-card-title"><i class="fas fa-calendar-check text-brand"></i> Reservas de hoy</span>
+            <a href="reservations.html" class="btn-crm btn-crm-secondary btn-crm-sm">Ver todas</a>
+          </div>
+          <div class="table-wrapper">
+            <table class="crm-table">
+              <thead>
+                <tr>
+                  <th>Hora</th>
+                  <th>Cliente</th>
+                  <th>Mesa</th>
+                  <th>Pax</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="today-reservations-body">
+                <tr><td colspan="6" class="text-center py-4">
+                  <div class="spinner mx-auto" style="width:24px;height:24px"></div>
+                </td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Estado de mesas + accesos rápidos -->
+      <div class="col-lg-4">
+
+        <!-- Estado mesas -->
+        <div class="crm-card mb-3">
+          <div class="crm-card-header">
+            <span class="crm-card-title"><i class="fas fa-chair text-brand"></i> Estado de mesas</span>
+            <a href="tables.html" class="btn-crm btn-crm-secondary btn-crm-sm">Ver plano</a>
+          </div>
+          <div class="crm-card-body">
+            <div id="table-status-overview" class="row g-2 text-center">
+              <div class="col-6">
+                <div class="p-3 rounded-3" style="background:rgba(16,185,129,.08)">
+                  <div class="fw-700 ff-heading" style="font-size:24px;color:#10B981" id="tables-libres">—</div>
+                  <div style="font-size:11px;color:#6B7280">Libres</div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="p-3 rounded-3" style="background:rgba(160,106,63,.08)">
+                  <div class="fw-700 ff-heading" style="font-size:24px;color:#A06A3F" id="tables-ocupadas">—</div>
+                  <div style="font-size:11px;color:#6B7280">Ocupadas</div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="p-3 rounded-3" style="background:rgba(59,130,246,.08)">
+                  <div class="fw-700 ff-heading" style="font-size:24px;color:#3B82F6" id="tables-reservadas">—</div>
+                  <div style="font-size:11px;color:#6B7280">Reservadas</div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="p-3 rounded-3" style="background:rgba(239,68,68,.08)">
+                  <div class="fw-700 ff-heading" style="font-size:24px;color:#EF4444" id="tables-fuera">—</div>
+                  <div style="font-size:11px;color:#6B7280">Fuera servicio</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Ring ocupación -->
+            <div class="d-flex justify-content-center mt-3" id="occupancy-ring-wrapper"></div>
+          </div>
+        </div>
+
+        <!-- Accesos rápidos -->
+        <div class="crm-card">
+          <div class="crm-card-header">
+            <span class="crm-card-title"><i class="fas fa-bolt text-warning"></i> Acciones rápidas</span>
+          </div>
+          <div class="crm-card-body d-grid gap-2">
+            <a href="reservations.html?new=1" class="btn-crm btn-crm-primary justify-content-center">
+              <i class="fas fa-plus-circle"></i> Nueva Reserva
+            </a>
+            <a href="customers.html?new=1" class="btn-crm btn-crm-secondary justify-content-center">
+              <i class="fas fa-user-plus"></i> Nuevo Cliente
+            </a>
+            <a href="waiting-list.html?new=1" class="btn-crm btn-crm-secondary justify-content-center">
+              <i class="fas fa-user-clock"></i> Añadir a Espera
+            </a>
+            <a href="incidents.html?new=1" class="btn-crm btn-crm-danger justify-content-center">
+              <i class="fas fa-exclamation-circle"></i> Reportar Incidencia
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ACTIVIDAD RECIENTE + VIP ────────────────────────── -->
+    <div class="row g-3 mt-1">
+      <div class="col-lg-6">
+        <div class="crm-card h-100">
+          <div class="crm-card-header">
+            <span class="crm-card-title"><i class="fas fa-history text-brand"></i> Actividad reciente</span>
+          </div>
+          <div class="crm-card-body">
+            <ul class="timeline" id="activity-timeline">
+              <li class="timeline-item">
+                <div class="timeline-dot" style="background:rgba(16,185,129,.12);color:#10B981">
+                  <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="timeline-content">
+                  <div class="timeline-text">Sistema iniciado correctamente.</div>
+                  <div class="timeline-time">Ahora</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clientes VIP del día -->
+      <div class="col-lg-6">
+        <div class="crm-card h-100">
+          <div class="crm-card-header">
+            <span class="crm-card-title"><i class="fas fa-crown" style="color:#EAB308"></i> Clientes VIP hoy</span>
+            <a href="customers.html" class="btn-crm btn-crm-secondary btn-crm-sm">Ver clientes</a>
+          </div>
+          <div class="crm-card-body">
+            <div id="vip-today-list">
+              <div class="text-center text-muted-sm py-3">Cargando...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div><!-- /crm-main -->
+</div><!-- /crm-wrapper -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/auth.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+
+  // Proteger ruta
+  const user = Auth.requireAuth();
+  if (!user) return;
+
+  // Fecha actual
+  document.getElementById('today-label').textContent =
+    new Date().toLocaleDateString('es-AR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+
+  // ── Cargar datos ──
+  const [resData, tableData, waitData, reviewData] = await Promise.all([
+    DB.getReservations({ date: todayISO() }),
+    DB.getTables(),
+    DB.getWaitingList(),
+    DB.getReviews(),
+  ]);
+
+  const reservations = resData.data || [];
+  const tables       = tableData.data || [];
+  const waiting      = waitData.data || [];
+  const reviews      = reviewData.data || [];
+
+  // ── Stats hoy ──
+  const active = reservations.filter(r => !['cancelada','no_presentado'].includes(r.status));
+  document.getElementById('stat-today-res').textContent    = active.length;
+  document.getElementById('stat-today-guests').textContent = active.reduce((s,r) => s+r.guests, 0);
+  document.getElementById('stat-today-pct').innerHTML      = `<i class="fas fa-arrow-up"></i> vs ayer`;
+  document.getElementById('stat-free-tables').textContent  = tables.filter(t => t.status === 'libre').length;
+  document.getElementById('stat-waiting').textContent      = waiting.filter(w => w.status === 'esperando').length;
+
+  // Badge sidebar waiting
+  const wCount = waiting.filter(w => w.status === 'esperando').length;
+  document.getElementById('waiting-count').textContent = wCount;
+  if (!wCount) document.getElementById('waiting-count').style.display = 'none';
+
+  // ── Stats semana ──
+  document.getElementById('stat-new-customers').textContent = '3';
+  document.getElementById('stat-week-res').textContent      = reservations.length;
+  document.getElementById('stat-cancels').textContent       = reservations.filter(r=>r.status==='cancelada').length;
+  const avgR = reviews.length ? (reviews.reduce((s,r)=>s+r.rating,0)/reviews.length).toFixed(1) : '—';
+  document.getElementById('stat-avg-rating').textContent    = avgR + (avgR !== '—' ? ' ★' : '');
+
+  // ── Estado mesas ──
+  const byStatus = { libre:0, reservada:0, ocupada:0, fuera_de_servicio:0 };
+  tables.forEach(t => { byStatus[t.status] = (byStatus[t.status]||0)+1; });
+  document.getElementById('tables-libres').textContent    = byStatus.libre;
+  document.getElementById('tables-ocupadas').textContent  = byStatus.ocupada;
+  document.getElementById('tables-reservadas').textContent= byStatus.reservada;
+  document.getElementById('tables-fuera').textContent     = byStatus.fuera_de_servicio;
+
+  const pct = tables.length ? Math.round(((byStatus.ocupada + byStatus.reservada) / tables.length) * 100) : 0;
+  document.getElementById('occupancy-ring-wrapper').innerHTML = occupancyRing(pct, 'ocupación');
+
+  // ── Reservas del día ──
+  const tbody = document.getElementById('today-reservations-body');
+  if (!active.length) {
+    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5">
+      <div class="empty-state-icon" style="font-size:2rem">📅</div>
+      <div style="font-size:13px;color:var(--text-muted)">Sin reservas para hoy.</div>
+    </td></tr>`;
+  } else {
+    tbody.innerHTML = active.map(r => {
+      const customer = r.customer || DEMO_CUSTOMERS.find(c=>c.id===r.customer_id);
+      const table    = r.table    || DEMO_TABLES.find(t=>t.id===r.table_id);
+      const fullName = customer ? `${customer.name} ${customer.surname||''}`.trim() : 'Sin cliente';
+      return `
+        <tr>
+          <td><strong>${formatTime(r.reservation_date)}</strong></td>
+          <td>${customerCell(customer)}</td>
+          <td>${table ? `<span class="fw-700">${table.table_number}</span><br><span class="text-muted-sm">${table.location}</span>` : '—'}</td>
+          <td>${r.guests} <i class="fas fa-user text-muted" style="font-size:11px"></i></td>
+          <td>${reservationBadge(r.status)}</td>
+          <td>
+            <a href="reservations.html" class="btn-crm-icon btn-crm-sm" title="Ver reserva">
+              <i class="fas fa-eye"></i>
+            </a>
+          </td>
+        </tr>`;
+    }).join('');
+  }
+
+  // ── Clientes VIP con reserva hoy ──
+  const vipEl = document.getElementById('vip-today-list');
+  const vipToday = active
+    .map(r => r.customer || DEMO_CUSTOMERS.find(c=>c.id===r.customer_id))
+    .filter(c => c?.vip_status);
+
+  if (!vipToday.length) {
+    vipEl.innerHTML = `<p class="text-muted-sm text-center py-3">No hay clientes VIP con reserva hoy.</p>`;
+  } else {
+    vipEl.innerHTML = vipToday.map(c => {
+      const lp = DEMO_LOYALTY.find(l=>l.customer_id===c.id);
+      return `
+        <div class="d-flex align-items-center gap-3 py-2 border-bottom">
+          ${customerAvatar(c.name+' '+(c.surname||''))}
+          <div class="flex-1">
+            <div class="fw-700">${c.name} ${c.surname||''} <span class="badge-vip ms-1">VIP</span></div>
+            <div class="text-muted-sm">${c.total_visits} visitas · ticket medio ${formatCurrency(c.average_ticket)}</div>
+          </div>
+          ${lp ? loyaltyBadge(lp.level) : ''}
+        </div>`;
+    }).join('');
+  }
+
+  // ── Timeline actividad ──
+  const timelineEl = document.getElementById('activity-timeline');
+  const activities = [
+    ...active.slice(0,3).map(r => {
+      const c = r.customer || DEMO_CUSTOMERS.find(x=>x.id===r.customer_id);
+      return {
+        icon:'fa-calendar-check', color:'#10B981', bg:'rgba(16,185,129,.12)',
+        text:`Reserva ${r.status}: ${c?c.name+' '+(c.surname||''):''} – ${formatTime(r.reservation_date)}`,
+        time: formatDate(r.reservation_date, {relative:true})
+      };
+    }),
+    ...waiting.filter(w=>w.status==='esperando').slice(0,2).map(w => {
+      const c = w.customer || DEMO_CUSTOMERS.find(x=>x.id===w.customer_id);
+      return {
+        icon:'fa-clock', color:'#F59E0B', bg:'rgba(245,158,11,.12)',
+        text:`Espera: ${c?c.name+' '+(c.surname||''):'Cliente'} – ${w.party_size} pax`,
+        time: waitingTime(w.arrival_time)
+      };
+    }),
+  ];
+
+  if (activities.length) {
+    timelineEl.innerHTML = activities.map(a => `
+      <li class="timeline-item">
+        <div class="timeline-dot" style="background:${a.bg};color:${a.color}">
+          <i class="fas ${a.icon}"></i>
+        </div>
+        <div class="timeline-content">
+          <div class="timeline-text">${a.text}</div>
+          <div class="timeline-time">${a.time}</div>
+        </div>
+      </li>`).join('');
+  }
+});
+</script>
+</body>
+</html>

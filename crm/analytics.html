@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analíticas – CRM Restaurante</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/crm.css">
+</head>
+<body>
+<div id="toast-container"></div>
+<div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+<div class="crm-wrapper">
+<aside class="crm-sidebar" id="crm-sidebar">
+  <a href="dashboard.html" class="sidebar-brand">
+    <div class="sidebar-brand-icon"><i class="fas fa-utensils"></i></div>
+    <div class="sidebar-brand-text">Café de la Esquina<small>CRM Restaurante</small></div>
+  </a>
+  <nav class="sidebar-nav">
+    <span class="sidebar-section-label">Principal</span>
+    <a href="dashboard.html"    class="sidebar-link"><i class="fas fa-tachometer-alt sidebar-link-icon"></i><span class="sidebar-link-text">Dashboard</span></a>
+    <a href="customers.html"    class="sidebar-link"><i class="fas fa-users sidebar-link-icon"></i><span class="sidebar-link-text">Clientes</span></a>
+    <a href="reservations.html" class="sidebar-link"><i class="fas fa-calendar-check sidebar-link-icon"></i><span class="sidebar-link-text">Reservas</span></a>
+    <a href="tables.html"       class="sidebar-link"><i class="fas fa-chair sidebar-link-icon"></i><span class="sidebar-link-text">Mesas</span></a>
+    <a href="waiting-list.html" class="sidebar-link"><i class="fas fa-clock sidebar-link-icon"></i><span class="sidebar-link-text">Lista de Espera</span></a>
+    <span class="sidebar-section-label">Gestión</span>
+    <a href="events.html"       class="sidebar-link"><i class="fas fa-star sidebar-link-icon"></i><span class="sidebar-link-text">Eventos</span></a>
+    <a href="loyalty.html"      class="sidebar-link"><i class="fas fa-medal sidebar-link-icon"></i><span class="sidebar-link-text">Fidelización</span></a>
+    <a href="promotions.html"   class="sidebar-link"><i class="fas fa-tag sidebar-link-icon"></i><span class="sidebar-link-text">Promociones</span></a>
+    <a href="campaigns.html"    class="sidebar-link"><i class="fas fa-envelope sidebar-link-icon"></i><span class="sidebar-link-text">Campañas Email</span></a>
+    <span class="sidebar-section-label">Operación</span>
+    <a href="reviews.html"      class="sidebar-link"><i class="fas fa-star-half-alt sidebar-link-icon"></i><span class="sidebar-link-text">Reseñas</span></a>
+    <a href="incidents.html"    class="sidebar-link"><i class="fas fa-exclamation-triangle sidebar-link-icon"></i><span class="sidebar-link-text">Incidencias</span></a>
+    <a href="analytics.html"    class="sidebar-link"><i class="fas fa-chart-bar sidebar-link-icon"></i><span class="sidebar-link-text">Analíticas</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="sidebar-avatar">AD</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="sidebar-user-name">Usuario</div>
+        <div class="sidebar-user-role" id="sidebar-user-role">Rol</div>
+      </div>
+      <button class="sidebar-collapse-btn" id="sidebar-collapse-btn"><i class="fas fa-chevron-left"></i></button>
+    </div>
+  </div>
+</aside>
+
+<div class="crm-main" id="crm-main">
+  <header class="crm-topbar">
+    <button class="topbar-menu-btn" id="topbar-menu-btn"><i class="fas fa-bars"></i></button>
+    <nav class="topbar-breadcrumb">
+      <span class="topbar-breadcrumb-item">CRM</span>
+      <span class="topbar-breadcrumb-sep">/</span>
+      <span class="topbar-breadcrumb-current">Analíticas y KPIs</span>
+    </nav>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-actions">
+      <button class="btn-crm btn-crm-secondary btn-crm-sm" id="btn-export-report">
+        <i class="fas fa-download"></i> Exportar informe
+      </button>
+      <div class="topbar-user">
+        <div class="topbar-avatar" id="topbar-avatar">AD</div>
+        <span class="topbar-user-name" id="topbar-user-name">Admin</span>
+      </div>
+      <button class="topbar-btn" id="btn-logout"><i class="fas fa-sign-out-alt"></i></button>
+    </div>
+  </header>
+
+  <main class="crm-content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Analíticas y KPIs</h1>
+        <p class="page-subtitle">Métricas clave del negocio y tendencias del restaurante</p>
+      </div>
+      <div class="page-actions">
+        <select id="period-selector" class="form-control-crm" style="width:auto">
+          <option value="7">Últimos 7 días</option>
+          <option value="30" selected>Últimos 30 días</option>
+          <option value="90">Últimos 90 días</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- KPIs principales -->
+    <div class="stat-grid mb-4">
+      <div class="stat-card">
+        <div class="stat-icon primary"><i class="fas fa-calendar-check"></i></div>
+        <div class="stat-body">
+          <div class="stat-value" id="kpi-res">—</div>
+          <div class="stat-label">Reservas totales</div>
+          <span class="stat-change up" id="kpi-res-change"><i class="fas fa-arrow-up"></i> +12%</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon success"><i class="fas fa-user-plus"></i></div>
+        <div class="stat-body">
+          <div class="stat-value" id="kpi-new">—</div>
+          <div class="stat-label">Nuevos clientes</div>
+          <span class="stat-change up"><i class="fas fa-arrow-up"></i> +8%</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon warning"><i class="fas fa-times-circle"></i></div>
+        <div class="stat-body">
+          <div class="stat-value" id="kpi-cancel">—</div>
+          <div class="stat-label">Cancelaciones</div>
+          <span class="stat-change down"><i class="fas fa-arrow-down"></i> -3%</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon purple"><i class="fas fa-star"></i></div>
+        <div class="stat-body">
+          <div class="stat-value" id="kpi-rating">—</div>
+          <div class="stat-label">Valoración media</div>
+          <span class="stat-change up"><i class="fas fa-arrow-up"></i> +0.2</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon info"><i class="fas fa-crown"></i></div>
+        <div class="stat-body">
+          <div class="stat-value" id="kpi-vip">—</div>
+          <div class="stat-label">Clientes VIP</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon primary"><i class="fas fa-receipt"></i></div>
+        <div class="stat-body">
+          <div class="stat-value" id="kpi-ticket">—</div>
+          <div class="stat-label">Ticket medio</div>
+          <span class="stat-change up"><i class="fas fa-arrow-up"></i> +5%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gráficos principales -->
+    <div class="row g-3 mb-3">
+      <!-- Reservas por día -->
+      <div class="col-lg-8">
+        <div class="crm-card h-100">
+          <div class="crm-card-header">
+            <span class="crm-card-title"><i class="fas fa-chart-line text-brand"></i> Reservas por día</span>
+          </div>
+          <div class="crm-card-body">
+            <div class="chart-wrapper">
+              <canvas id="chart-by-day"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reservas por hora (heatmap bar) -->
+      <div class="col-lg-4">
+        <div class="crm-card h-100">
+          <div class="crm-card-header">
+            <span class="crm-card-title"><i class="fas fa-clock text-brand"></i> Horas punta</span>
+          </div>
+          <div class="crm-card-body">
+            <div class="chart-wrapper">
+              <canvas id="chart-by-hour"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-3 mb-3">
+      <!-- Distribución por estado -->
+      <div class="col-lg-4">
+        <div class="crm-card h-100">
+          <div class="crm-card-header">
+            <span class="crm-card-title"><i class="fas fa-chart-pie text-brand"></i> Por estado</span>
+          </div>
+          <div class="crm-card-body">
+            <div class="chart-wrapper" style="height:220px">
+              <canvas id="chart-status"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ocupación por zona -->
+      <div class="col-lg-4">
+        <div class="crm-card h-100">
+          <div class="crm-card-header">
+            <span class="crm-card-title"><i class="fas fa-map-marker-alt text-brand"></i> Ocupación por zona</span>
+          </div>
+          <div class="crm-card-body">
+            <div id="zone-stats" class="d-flex flex-column gap-2">
+              <!-- Generado por JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Distribución niveles fidelización -->
+      <div class="col-lg-4">
+        <div class="crm-card h-100">
+          <div class="crm-card-header">
+            <span class="crm-card-title"><i class="fas fa-medal text-brand"></i> Niveles fidelización</span>
+          </div>
+          <div class="crm-card-body">
+            <div class="chart-wrapper" style="height:220px">
+              <canvas id="chart-loyalty"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top clientes + ocupación -->
+    <div class="row g-3">
+      <div class="col-lg-8">
+        <div class="crm-card">
+          <div class="crm-card-header">
+            <span class="crm-card-title"><i class="fas fa-trophy text-warning"></i> Top 5 Clientes</span>
+          </div>
+          <div class="table-wrapper">
+            <table class="crm-table">
+              <thead>
+                <tr><th>#</th><th>Cliente</th><th>Visitas</th><th>Ticket medio</th><th>Nivel</th></tr>
+              </thead>
+              <tbody id="top-customers-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="crm-card">
+          <div class="crm-card-header">
+            <span class="crm-card-title"><i class="fas fa-building text-brand"></i> Ocupación actual</span>
+          </div>
+          <div class="crm-card-body text-center" id="occupancy-overview">
+            <!-- Generado por JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/auth.js"></script>
+<script>
+Chart.defaults.font.family = 'Lato';
+Chart.defaults.color = '#94A3B8';
+
+const BRAND = '#A06A3F';
+const CHART_COLORS = ['#A06A3F','#3B82F6','#10B981','#F59E0B','#9333EA','#EF4444'];
+
+let charts = {};
+
+function destroyChart(id) {
+  if (charts[id]) { charts[id].destroy(); delete charts[id]; }
+}
+
+async function loadAnalytics() {
+  const { data } = await DB.getAnalyticsData();
+  if (!data) return;
+
+  const { totalReservations, cancelaciones, newCustomers, avgRating, vipCustomers, avgTicket, occupancyRate, resByDay, byHour, topCustomers } = data;
+
+  // KPIs
+  document.getElementById('kpi-res').textContent    = totalReservations;
+  document.getElementById('kpi-new').textContent    = newCustomers;
+  document.getElementById('kpi-cancel').textContent = cancelaciones;
+  document.getElementById('kpi-rating').textContent = avgRating.toFixed(1) + ' ★';
+  document.getElementById('kpi-vip').textContent    = vipCustomers;
+  document.getElementById('kpi-ticket').textContent = formatCurrency(avgTicket);
+
+  // Chart: Reservas por día
+  destroyChart('day');
+  charts['day'] = new Chart(document.getElementById('chart-by-day'), {
+    type: 'line',
+    data: {
+      labels: resByDay.map(d=>d.label),
+      datasets: [{
+        label: 'Reservas',
+        data: resByDay.map(d=>d.count),
+        borderColor: BRAND,
+        backgroundColor: 'rgba(160,106,63,.12)',
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: BRAND,
+        pointRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: '#E2E8F0' } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+
+  // Chart: Horas punta
+  destroyChart('hour');
+  const maxHour = Math.max(...byHour.map(h=>h.count));
+  charts['hour'] = new Chart(document.getElementById('chart-by-hour'), {
+    type: 'bar',
+    data: {
+      labels: byHour.map(h=>h.hour),
+      datasets: [{
+        label: 'Reservas',
+        data: byHour.map(h=>h.count),
+        backgroundColor: byHour.map(h => {
+          const alpha = 0.2 + (h.count / maxHour) * 0.8;
+          return `rgba(160,106,63,${alpha})`;
+        }),
+        borderColor: BRAND,
+        borderWidth: 1,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: '#E2E8F0' } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+
+  // Chart: Por estado
+  const statusCounts = {};
+  DEMO_RESERVATIONS.forEach(r => { statusCounts[r.status] = (statusCounts[r.status]||0)+1; });
+  const statusLabels = Object.keys(statusCounts);
+  destroyChart('status');
+  charts['status'] = new Chart(document.getElementById('chart-status'), {
+    type: 'doughnut',
+    data: {
+      labels: statusLabels.map(s=>s.charAt(0).toUpperCase()+s.slice(1)),
+      datasets: [{
+        data: statusLabels.map(s=>statusCounts[s]),
+        backgroundColor: ['#F59E0B','#3B82F6','#10B981','#6B7280','#EF4444','#F97316'],
+        borderWidth: 2,
+        borderColor: '#fff',
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 8 } }
+      }
+    }
+  });
+
+  // Chart: Fidelización
+  const loyalCounts = { bronce:0, plata:0, oro:0, premium:0 };
+  DEMO_LOYALTY.forEach(l => { loyalCounts[l.level]++; });
+  destroyChart('loyalty');
+  charts['loyalty'] = new Chart(document.getElementById('chart-loyalty'), {
+    type: 'doughnut',
+    data: {
+      labels: ['🥉 Bronce','🥈 Plata','🥇 Oro','💜 Premium'],
+      datasets: [{
+        data: [loyalCounts.bronce, loyalCounts.plata, loyalCounts.oro, loyalCounts.premium],
+        backgroundColor: ['#CD7F32','#94A3B8','#EAB308','#9333EA'],
+        borderWidth: 2,
+        borderColor: '#fff',
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 8 } }
+      }
+    }
+  });
+
+  // Ocupación por zona
+  const zones = ['interior','terraza','barra','privado'];
+  const zoneLabels = { interior:'Interior', terraza:'Terraza', barra:'Barra', privado:'Privado' };
+  const zoneEl = document.getElementById('zone-stats');
+  zoneEl.innerHTML = zones.map(z => {
+    const tables = DEMO_TABLES.filter(t=>t.location===z);
+    const occ    = tables.filter(t=>t.status==='ocupada').length;
+    const total  = tables.length;
+    const pct    = total ? Math.round((occ/total)*100) : 0;
+    const color  = pct>=80?'#EF4444':pct>=60?'#F59E0B':'#10B981';
+    return `
+      <div>
+        <div class="d-flex justify-content-between" style="font-size:13px">
+          <span class="fw-700">${zoneLabels[z]}</span>
+          <span style="color:${color};font-weight:700">${occ}/${total} mesas · ${pct}%</span>
+        </div>
+        <div style="height:6px;background:var(--border);border-radius:3px;margin-top:4px">
+          <div style="width:${pct}%;height:100%;background:${color};border-radius:3px;transition:width .5s ease"></div>
+        </div>
+      </div>`;
+  }).join('');
+
+  // Top clientes
+  const tbody = document.getElementById('top-customers-tbody');
+  tbody.innerHTML = topCustomers.map((c, i) => {
+    const cusObj = DEMO_CUSTOMERS.find(x=>x.name+' '+(x.surname||''===c.name));
+    const lp = DEMO_LOYALTY.find(l => {
+      const cus = DEMO_CUSTOMERS.find(x=>x.id===l.customer_id);
+      return cus && c.name.startsWith(cus.name);
+    });
+    return `
+      <tr>
+        <td><strong style="font-family:var(--font-heading);font-size:18px;color:${i<3?'#EAB308':'var(--text-muted)'}">${i+1}</strong></td>
+        <td>${customerCell({ name: c.name.split(' ')[0], surname: c.name.split(' ').slice(1).join(' '), email: c.visits+' visitas' })}</td>
+        <td><strong>${c.visits}</strong></td>
+        <td>${formatCurrency(c.ticket)}</td>
+        <td>${lp ? loyaltyBadge(lp.level) : '—'}</td>
+      </tr>`;
+  }).join('');
+
+  // Ocupación global
+  const occ = DEMO_TABLES.filter(t=>t.status==='ocupada').length;
+  const tot = DEMO_TABLES.length;
+  const pct = Math.round((occ/tot)*100);
+  document.getElementById('occupancy-overview').innerHTML = `
+    ${occupancyRing(pct, 'ocupación')}
+    <div class="mt-3">
+      <div class="row g-2 text-center">
+        <div class="col-6"><div class="p-2 rounded-3" style="background:rgba(16,185,129,.08)"><div class="fw-700 ff-heading" style="font-size:24px;color:#10B981">${DEMO_TABLES.filter(t=>t.status==='libre').length}</div><div class="text-muted-sm">Libres</div></div></div>
+        <div class="col-6"><div class="p-2 rounded-3" style="background:rgba(160,106,63,.08)"><div class="fw-700 ff-heading" style="font-size:24px;color:#A06A3F">${occ}</div><div class="text-muted-sm">Ocupadas</div></div></div>
+      </div>
+    </div>`;
+}
+
+document.getElementById('period-selector').addEventListener('change', loadAnalytics);
+
+document.getElementById('btn-export-report').addEventListener('click', () => {
+  const kpis = [
+    ['Métrica', 'Valor'],
+    ['Total reservas', document.getElementById('kpi-res').textContent],
+    ['Nuevos clientes', document.getElementById('kpi-new').textContent],
+    ['Cancelaciones', document.getElementById('kpi-cancel').textContent],
+    ['Valoración media', document.getElementById('kpi-rating').textContent],
+    ['Clientes VIP', document.getElementById('kpi-vip').textContent],
+    ['Ticket medio', document.getElementById('kpi-ticket').textContent],
+  ];
+  exportCSV(['Métrica','Valor'], kpis.slice(1), `analytics-${todayISO()}.csv`);
+  showToast('Exportado', 'Informe de KPIs exportado correctamente.', 'success');
+});
+
+loadAnalytics();
+</script>
+</body>
+</html>

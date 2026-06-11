@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promociones – CRM Restaurante</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/crm.css">
+  <style>
+    .promo-code {
+      font-family: monospace;
+      background: var(--bg-body);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-sm);
+      padding: 4px 10px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      cursor: pointer;
+      transition: all .2s ease;
+    }
+    .promo-code:hover { border-color: var(--brand-primary); color: var(--brand-primary); }
+    .discount-badge {
+      font-family: var(--font-heading);
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body>
+<div id="toast-container"></div>
+<div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+<div class="crm-wrapper">
+<aside class="crm-sidebar" id="crm-sidebar">
+  <a href="dashboard.html" class="sidebar-brand">
+    <div class="sidebar-brand-icon"><i class="fas fa-utensils"></i></div>
+    <div class="sidebar-brand-text">Café de la Esquina<small>CRM Restaurante</small></div>
+  </a>
+  <nav class="sidebar-nav">
+    <span class="sidebar-section-label">Principal</span>
+    <a href="dashboard.html"    class="sidebar-link"><i class="fas fa-tachometer-alt sidebar-link-icon"></i><span class="sidebar-link-text">Dashboard</span></a>
+    <a href="customers.html"    class="sidebar-link"><i class="fas fa-users sidebar-link-icon"></i><span class="sidebar-link-text">Clientes</span></a>
+    <a href="reservations.html" class="sidebar-link"><i class="fas fa-calendar-check sidebar-link-icon"></i><span class="sidebar-link-text">Reservas</span></a>
+    <a href="tables.html"       class="sidebar-link"><i class="fas fa-chair sidebar-link-icon"></i><span class="sidebar-link-text">Mesas</span></a>
+    <a href="waiting-list.html" class="sidebar-link"><i class="fas fa-clock sidebar-link-icon"></i><span class="sidebar-link-text">Lista de Espera</span></a>
+    <span class="sidebar-section-label">Gestión</span>
+    <a href="events.html"       class="sidebar-link"><i class="fas fa-star sidebar-link-icon"></i><span class="sidebar-link-text">Eventos</span></a>
+    <a href="loyalty.html"      class="sidebar-link"><i class="fas fa-medal sidebar-link-icon"></i><span class="sidebar-link-text">Fidelización</span></a>
+    <a href="promotions.html"   class="sidebar-link"><i class="fas fa-tag sidebar-link-icon"></i><span class="sidebar-link-text">Promociones</span></a>
+    <a href="campaigns.html"    class="sidebar-link"><i class="fas fa-envelope sidebar-link-icon"></i><span class="sidebar-link-text">Campañas Email</span></a>
+    <span class="sidebar-section-label">Operación</span>
+    <a href="reviews.html"      class="sidebar-link"><i class="fas fa-star-half-alt sidebar-link-icon"></i><span class="sidebar-link-text">Reseñas</span></a>
+    <a href="incidents.html"    class="sidebar-link"><i class="fas fa-exclamation-triangle sidebar-link-icon"></i><span class="sidebar-link-text">Incidencias</span></a>
+    <a href="analytics.html"    class="sidebar-link"><i class="fas fa-chart-bar sidebar-link-icon"></i><span class="sidebar-link-text">Analíticas</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="sidebar-avatar">AD</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="sidebar-user-name">Usuario</div>
+        <div class="sidebar-user-role" id="sidebar-user-role">Rol</div>
+      </div>
+      <button class="sidebar-collapse-btn" id="sidebar-collapse-btn"><i class="fas fa-chevron-left"></i></button>
+    </div>
+  </div>
+</aside>
+
+<div class="crm-main" id="crm-main">
+  <header class="crm-topbar">
+    <button class="topbar-menu-btn" id="topbar-menu-btn"><i class="fas fa-bars"></i></button>
+    <nav class="topbar-breadcrumb">
+      <span class="topbar-breadcrumb-item">CRM</span>
+      <span class="topbar-breadcrumb-sep">/</span>
+      <span class="topbar-breadcrumb-current">Promociones y Cupones</span>
+    </nav>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-actions">
+      <div class="topbar-user">
+        <div class="topbar-avatar" id="topbar-avatar">AD</div>
+        <span class="topbar-user-name" id="topbar-user-name">Admin</span>
+      </div>
+      <button class="topbar-btn" id="btn-logout"><i class="fas fa-sign-out-alt"></i></button>
+    </div>
+  </header>
+
+  <main class="crm-content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Promociones y Cupones</h1>
+        <p class="page-subtitle">Descuentos, ofertas especiales y códigos promocionales</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-crm btn-crm-primary" id="btn-new-promo">
+          <i class="fas fa-plus"></i> Nueva Promoción
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-grid mb-4" style="grid-template-columns:repeat(4,1fr)">
+      <div class="stat-card">
+        <div class="stat-icon success"><i class="fas fa-tag"></i></div>
+        <div class="stat-body"><div class="stat-value" id="stat-activas">—</div><div class="stat-label">Activas</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon info"><i class="fas fa-fire"></i></div>
+        <div class="stat-body"><div class="stat-value" id="stat-uses">—</div><div class="stat-label">Usos totales</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon warning"><i class="fas fa-calendar-times"></i></div>
+        <div class="stat-body"><div class="stat-value" id="stat-expiran">—</div><div class="stat-label">Vencen este mes</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon primary"><i class="fas fa-percent"></i></div>
+        <div class="stat-body"><div class="stat-value" id="stat-types">—</div><div class="stat-label">Tipos activos</div></div>
+      </div>
+    </div>
+
+    <!-- Tabla de promociones -->
+    <div class="crm-card">
+      <div class="crm-card-header">
+        <span class="crm-card-title"><i class="fas fa-tag text-brand"></i> Listado de Promociones</span>
+        <div class="d-flex gap-2">
+          <select id="filter-active" class="form-control-crm" style="width:auto">
+            <option value="">Todas</option>
+            <option value="true">Solo activas</option>
+            <option value="false">Inactivas</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table class="crm-table">
+          <thead>
+            <tr>
+              <th>Promoción</th>
+              <th>Descuento</th>
+              <th>Código</th>
+              <th>Vigencia</th>
+              <th>Usos</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="promos-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+</div>
+
+<!-- Modal promo -->
+<div class="modal fade" id="modal-promo" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal-promo-title">Nueva Promoción</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="form-promo" novalidate>
+          <input type="hidden" id="promo-id">
+          <div class="row g-3">
+            <div class="col-12">
+              <div class="form-group">
+                <label class="form-label">Nombre *</label>
+                <input type="text" name="title" class="form-control-crm" required placeholder="Ej: Descuento Cumpleaños">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Tipo de descuento</label>
+                <select name="discount_type" id="discount-type" class="form-control-crm">
+                  <option value="percentage">Porcentaje (%)</option>
+                  <option value="fixed">Monto fijo ($)</option>
+                  <option value="free_item">Ítem gratis</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label" id="discount-label">Valor del descuento</label>
+                <input type="number" name="discount_value" class="form-control-crm" min="0" step="1" value="10">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Código promocional</label>
+                <div class="d-flex gap-2">
+                  <input type="text" name="code" id="inp-code" class="form-control-crm" placeholder="Ej: PROMO15" style="text-transform:uppercase">
+                  <button type="button" class="btn-crm btn-crm-secondary btn-crm-sm" id="btn-gen-code" title="Generar código">
+                    <i class="fas fa-magic"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Límite de usos</label>
+                <input type="number" name="usage_limit" class="form-control-crm" min="1" placeholder="Sin límite">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Válido desde *</label>
+                <input type="date" name="start_date" class="form-control-crm" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Válido hasta *</label>
+                <input type="date" name="end_date" class="form-control-crm" required>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label class="form-label">Descripción</label>
+                <textarea name="description" class="form-control-crm" rows="2" placeholder="Condiciones y detalles de la promoción..."></textarea>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="is_active" id="chk-active" checked>
+                <label class="form-check-label fw-700" for="chk-active">Promoción activa</label>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-crm btn-crm-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn-crm btn-crm-primary" id="btn-save-promo">
+          <i class="fas fa-save"></i> Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/auth.js"></script>
+<script>
+let allPromos = [];
+
+async function loadPromos() {
+  const { data } = await DB.getPromotions();
+  allPromos = data || [];
+  const filter = document.getElementById('filter-active').value;
+  let filtered = allPromos;
+  if (filter === 'true')  filtered = allPromos.filter(p=>p.is_active);
+  if (filter === 'false') filtered = allPromos.filter(p=>!p.is_active);
+  renderPromos(filtered);
+  updateStats();
+}
+
+function updateStats() {
+  const now = new Date();
+  const endOfMonth = new Date(now.getFullYear(), now.getMonth()+1, 0);
+  document.getElementById('stat-activas').textContent = allPromos.filter(p=>p.is_active).length;
+  document.getElementById('stat-uses').textContent    = allPromos.reduce((s,p)=>s+p.usage_count,0);
+  document.getElementById('stat-expiran').textContent = allPromos.filter(p=>p.is_active && new Date(p.end_date)<=endOfMonth).length;
+  document.getElementById('stat-types').textContent   = new Set(allPromos.filter(p=>p.is_active).map(p=>p.discount_type)).size;
+}
+
+function discountLabel(p) {
+  if (p.discount_type === 'percentage') return `<span class="discount-badge text-brand">${p.discount_value}%</span> <span class="text-muted-sm">descuento</span>`;
+  if (p.discount_type === 'fixed')      return `<span class="discount-badge text-brand">${formatCurrency(p.discount_value)}</span> <span class="text-muted-sm">desc. fijo</span>`;
+  return '<span class="badge-status badge-sentado"><i class="fas fa-gift me-1"></i>Ítem gratis</span>';
+}
+
+function renderPromos(promos) {
+  const tbody = document.getElementById('promos-tbody');
+  if (!promos.length) { tableEmpty('promos-tbody', 7, 'No hay promociones con esos filtros.'); return; }
+
+  tbody.innerHTML = promos.map(p => {
+    const isExpired = new Date(p.end_date) < new Date();
+    const usagePct  = p.usage_limit ? Math.round((p.usage_count/p.usage_limit)*100) : null;
+    return `
+      <tr ${p.is_active?'':'style="opacity:.6"'}>
+        <td>
+          <div class="fw-700">${p.title}</div>
+          ${p.description?`<div class="text-muted-sm">${p.description.slice(0,60)}...</div>`:''}
+        </td>
+        <td>${discountLabel(p)}</td>
+        <td>
+          ${p.code ? `
+            <span class="promo-code" onclick="copyCode('${p.code}')" title="Click para copiar">
+              ${p.code} <i class="fas fa-copy ms-1" style="font-size:11px"></i>
+            </span>` : '<span class="text-muted-sm">Sin código</span>'}
+        </td>
+        <td>
+          <div style="font-size:12px">
+            <i class="fas fa-calendar-alt me-1 text-muted"></i>
+            ${formatDate(p.start_date)} → ${formatDate(p.end_date)}
+          </div>
+          ${isExpired ? '<span class="badge-status badge-cancelada" style="font-size:10px">Vencida</span>' : ''}
+        </td>
+        <td>
+          <strong>${p.usage_count}</strong>${p.usage_limit?` / ${p.usage_limit}`:''}
+          ${usagePct !== null ? `<div style="font-size:10px;color:var(--text-muted)">${usagePct}% usado</div>` : ''}
+        </td>
+        <td>
+          <label class="d-flex align-items-center gap-2" style="cursor:pointer">
+            <input type="checkbox" ${p.is_active?'checked':''} onchange="togglePromo('${p.id}',this.checked)" style="width:16px;height:16px">
+            <span style="font-size:12px">${p.is_active?'Activa':'Inactiva'}</span>
+          </label>
+        </td>
+        <td>
+          <div class="d-flex gap-1">
+            <button class="btn-crm-icon" onclick="editPromo('${p.id}')" title="Editar"><i class="fas fa-edit"></i></button>
+            <button class="btn-crm-icon" onclick="duplicatePromo('${p.id}')" title="Duplicar"><i class="fas fa-copy"></i></button>
+          </div>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+function copyCode(code) {
+  navigator.clipboard.writeText(code).then(() => showToast('Copiado', `Código "${code}" copiado al portapapeles.`, 'success'));
+}
+
+async function togglePromo(id, active) {
+  await DB.updatePromotion(id, { is_active: active });
+  showToast('Actualizado', `Promoción ${active?'activada':'desactivada'}.`, 'success');
+  loadPromos();
+}
+
+function editPromo(id) {
+  const p = allPromos.find(x=>x.id===id);
+  if (!p) return;
+  document.getElementById('modal-promo-title').textContent = 'Editar Promoción';
+  document.getElementById('promo-id').value = p.id;
+  populateForm(document.getElementById('form-promo'), {
+    title: p.title, discount_type: p.discount_type, discount_value: p.discount_value,
+    code: p.code||'', usage_limit: p.usage_limit||'',
+    start_date: p.start_date, end_date: p.end_date, description: p.description||'',
+  });
+  document.getElementById('chk-active').checked = p.is_active;
+  openModal('modal-promo');
+}
+
+function duplicatePromo(id) {
+  const p = allPromos.find(x=>x.id===id);
+  if (!p) return;
+  document.getElementById('modal-promo-title').textContent = 'Duplicar Promoción';
+  document.getElementById('promo-id').value = '';
+  populateForm(document.getElementById('form-promo'), {
+    title: p.title + ' (copia)', discount_type: p.discount_type,
+    discount_value: p.discount_value, code: generatePromoCode(),
+    usage_limit: p.usage_limit||'',
+    start_date: todayISO(), end_date: p.end_date, description: p.description||'',
+  });
+  document.getElementById('chk-active').checked = true;
+  openModal('modal-promo');
+}
+
+document.getElementById('btn-new-promo').addEventListener('click', () => {
+  document.getElementById('modal-promo-title').textContent = 'Nueva Promoción';
+  document.getElementById('promo-id').value = '';
+  document.getElementById('form-promo').reset();
+  document.getElementById('inp-code').value = generatePromoCode();
+  document.getElementById('chk-active').checked = true;
+  openModal('modal-promo');
+});
+
+document.getElementById('btn-gen-code').addEventListener('click', () => {
+  document.getElementById('inp-code').value = generatePromoCode();
+});
+
+document.getElementById('discount-type').addEventListener('change', function() {
+  const label = document.getElementById('discount-label');
+  if (this.value === 'percentage') label.textContent = 'Valor del descuento (%)';
+  else if (this.value === 'fixed') label.textContent = 'Monto fijo ($)';
+  else { label.textContent = 'N/A'; document.querySelector('[name="discount_value"]').value = 0; }
+});
+
+document.getElementById('btn-save-promo').addEventListener('click', async () => {
+  const form = document.getElementById('form-promo');
+  const id   = document.getElementById('promo-id').value;
+  const data = formToObject(form);
+
+  if (!data.title?.trim()) { showToast('Requerido', 'El nombre es obligatorio.', 'warning'); return; }
+  if (!data.start_date || !data.end_date) { showToast('Requerido', 'Las fechas son obligatorias.', 'warning'); return; }
+
+  const payload = {
+    title:          data.title.trim(),
+    description:    data.description?.trim() || null,
+    discount_type:  data.discount_type || 'percentage',
+    discount_value: parseFloat(data.discount_value)||0,
+    code:           data.code?.toUpperCase()?.trim() || null,
+    usage_limit:    data.usage_limit ? parseInt(data.usage_limit) : null,
+    start_date:     data.start_date,
+    end_date:       data.end_date,
+    is_active:      document.getElementById('chk-active').checked,
+  };
+
+  const result = id ? await DB.updatePromotion(id, payload) : await DB.createPromotion(payload);
+  if (result.error) { showToast('Error', 'No se pudo guardar.', 'error'); return; }
+
+  showToast('Guardado', id ? 'Promoción actualizada.' : 'Promoción creada.', 'success');
+  closeModal('modal-promo');
+  loadPromos();
+});
+
+document.getElementById('filter-active').addEventListener('change', loadPromos);
+
+loadPromos();
+</script>
+</body>
+</html>

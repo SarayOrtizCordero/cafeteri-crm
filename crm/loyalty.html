@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fidelización – CRM Restaurante</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/crm.css">
+  <style>
+    .level-card {
+      border-radius: var(--radius-lg); border: 1px solid var(--border);
+      padding: 20px; text-align: center; position: relative; overflow: hidden;
+    }
+    .level-card::before {
+      content: ''; position: absolute; top: -20px; right: -20px;
+      width: 80px; height: 80px; border-radius: 50%; opacity: .08;
+    }
+    .level-card.bronce::before  { background: #CD7F32; }
+    .level-card.plata::before   { background: #94A3B8; }
+    .level-card.oro::before     { background: #EAB308; }
+    .level-card.premium::before { background: #9333EA; }
+    .level-icon { font-size: 32px; margin-bottom: 8px; }
+    .level-name { font-family: var(--font-heading); font-size: 20px; font-weight: 700; }
+    .level-range { font-size: 12px; color: var(--text-muted); margin: 4px 0; }
+    .level-count { font-size: 28px; font-weight: 800; font-family: var(--font-heading); }
+    .points-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; margin: 6px 0; }
+    .points-fill { height: 100%; border-radius: 4px; }
+  </style>
+</head>
+<body>
+<div id="toast-container"></div>
+<div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+<div class="crm-wrapper">
+<aside class="crm-sidebar" id="crm-sidebar">
+  <a href="dashboard.html" class="sidebar-brand">
+    <div class="sidebar-brand-icon"><i class="fas fa-utensils"></i></div>
+    <div class="sidebar-brand-text">Café de la Esquina<small>CRM Restaurante</small></div>
+  </a>
+  <nav class="sidebar-nav">
+    <span class="sidebar-section-label">Principal</span>
+    <a href="dashboard.html"    class="sidebar-link"><i class="fas fa-tachometer-alt sidebar-link-icon"></i><span class="sidebar-link-text">Dashboard</span></a>
+    <a href="customers.html"    class="sidebar-link"><i class="fas fa-users sidebar-link-icon"></i><span class="sidebar-link-text">Clientes</span></a>
+    <a href="reservations.html" class="sidebar-link"><i class="fas fa-calendar-check sidebar-link-icon"></i><span class="sidebar-link-text">Reservas</span></a>
+    <a href="tables.html"       class="sidebar-link"><i class="fas fa-chair sidebar-link-icon"></i><span class="sidebar-link-text">Mesas</span></a>
+    <a href="waiting-list.html" class="sidebar-link"><i class="fas fa-clock sidebar-link-icon"></i><span class="sidebar-link-text">Lista de Espera</span></a>
+    <span class="sidebar-section-label">Gestión</span>
+    <a href="events.html"       class="sidebar-link"><i class="fas fa-star sidebar-link-icon"></i><span class="sidebar-link-text">Eventos</span></a>
+    <a href="loyalty.html"      class="sidebar-link"><i class="fas fa-medal sidebar-link-icon"></i><span class="sidebar-link-text">Fidelización</span></a>
+    <a href="promotions.html"   class="sidebar-link"><i class="fas fa-tag sidebar-link-icon"></i><span class="sidebar-link-text">Promociones</span></a>
+    <a href="campaigns.html"    class="sidebar-link"><i class="fas fa-envelope sidebar-link-icon"></i><span class="sidebar-link-text">Campañas Email</span></a>
+    <span class="sidebar-section-label">Operación</span>
+    <a href="reviews.html"      class="sidebar-link"><i class="fas fa-star-half-alt sidebar-link-icon"></i><span class="sidebar-link-text">Reseñas</span></a>
+    <a href="incidents.html"    class="sidebar-link"><i class="fas fa-exclamation-triangle sidebar-link-icon"></i><span class="sidebar-link-text">Incidencias</span></a>
+    <a href="analytics.html"    class="sidebar-link"><i class="fas fa-chart-bar sidebar-link-icon"></i><span class="sidebar-link-text">Analíticas</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="sidebar-avatar">AD</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="sidebar-user-name">Usuario</div>
+        <div class="sidebar-user-role" id="sidebar-user-role">Rol</div>
+      </div>
+      <button class="sidebar-collapse-btn" id="sidebar-collapse-btn"><i class="fas fa-chevron-left"></i></button>
+    </div>
+  </div>
+</aside>
+
+<div class="crm-main" id="crm-main">
+  <header class="crm-topbar">
+    <button class="topbar-menu-btn" id="topbar-menu-btn"><i class="fas fa-bars"></i></button>
+    <nav class="topbar-breadcrumb">
+      <span class="topbar-breadcrumb-item">CRM</span>
+      <span class="topbar-breadcrumb-sep">/</span>
+      <span class="topbar-breadcrumb-current">Programa de Fidelización</span>
+    </nav>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-actions">
+      <div class="topbar-user">
+        <div class="topbar-avatar" id="topbar-avatar">AD</div>
+        <span class="topbar-user-name" id="topbar-user-name">Admin</span>
+      </div>
+      <button class="topbar-btn" id="btn-logout"><i class="fas fa-sign-out-alt"></i></button>
+    </div>
+  </header>
+
+  <main class="crm-content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Programa de Fidelización</h1>
+        <p class="page-subtitle">Puntos, niveles y recompensas para clientes frecuentes</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-crm btn-crm-primary" id="btn-add-points">
+          <i class="fas fa-plus-circle"></i> Asignar Puntos
+        </button>
+      </div>
+    </div>
+
+    <!-- Niveles -->
+    <p class="section-title">Niveles del Programa</p>
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-3">
+        <div class="level-card bronce">
+          <div class="level-icon">🥉</div>
+          <div class="level-name" style="color:#CD7F32">Bronce</div>
+          <div class="level-range">0 – 199 puntos</div>
+          <div class="level-count" id="count-bronce">—</div>
+          <div class="text-muted-sm">clientes</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="level-card plata">
+          <div class="level-icon">🥈</div>
+          <div class="level-name" style="color:#64748B">Plata</div>
+          <div class="level-range">200 – 499 puntos</div>
+          <div class="level-count" id="count-plata">—</div>
+          <div class="text-muted-sm">clientes</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="level-card oro">
+          <div class="level-icon">🥇</div>
+          <div class="level-name" style="color:#B45309">Oro</div>
+          <div class="level-range">500 – 999 puntos</div>
+          <div class="level-count" id="count-oro">—</div>
+          <div class="text-muted-sm">clientes</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="level-card premium">
+          <div class="level-icon">💜</div>
+          <div class="level-name" style="color:#6B21A8">Premium</div>
+          <div class="level-range">1000+ puntos</div>
+          <div class="level-count" id="count-premium">—</div>
+          <div class="text-muted-sm">clientes</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ranking de clientes -->
+    <div class="crm-card">
+      <div class="crm-card-header">
+        <span class="crm-card-title"><i class="fas fa-trophy text-warning"></i> Ranking de clientes</span>
+        <div class="search-input-wrapper" style="min-width:200px">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" id="search-loyalty" class="form-control-crm" placeholder="Buscar cliente...">
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table class="crm-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Cliente</th>
+              <th>Nivel</th>
+              <th>Puntos actuales</th>
+              <th>Progreso</th>
+              <th>Total ganados</th>
+              <th>Total canjeados</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="loyalty-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+</div>
+
+<!-- Modal asignar puntos -->
+<div class="modal fade" id="modal-points" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Gestionar Puntos</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="form-points">
+          <div class="form-group">
+            <label class="form-label">Cliente *</label>
+            <select id="sel-loyalty-customer" class="form-control-crm" required>
+              <option value="">— Seleccionar cliente —</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tipo de operación</label>
+            <div class="d-flex gap-2">
+              <label class="d-flex align-items-center gap-2 p-3 border rounded-3 flex-1 cursor-pointer" style="cursor:pointer">
+                <input type="radio" name="op_type" value="earn" checked>
+                <span><div class="fw-700 text-success">Sumar puntos</div><div class="text-muted-sm">+Puntos por visita, consumo</div></span>
+              </label>
+              <label class="d-flex align-items-center gap-2 p-3 border rounded-3 flex-1 cursor-pointer" style="cursor:pointer">
+                <input type="radio" name="op_type" value="redeem">
+                <span><div class="fw-700 text-danger">Canjear puntos</div><div class="text-muted-sm">−Puntos por beneficio</div></span>
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cantidad de puntos *</label>
+            <input type="number" id="inp-points" class="form-control-crm" min="1" max="9999" placeholder="Ej: 50">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Motivo / Descripción</label>
+            <input type="text" id="inp-points-desc" class="form-control-crm" placeholder="Ej: Cena 3 personas, canje copa de vino...">
+          </div>
+          <!-- Preview nivel -->
+          <div id="level-preview" class="crm-card p-3" style="display:none">
+            <div class="text-muted-sm fw-700 mb-2">VISTA PREVIA DESPUÉS DE LA OPERACIÓN</div>
+            <div id="level-preview-content"></div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-crm btn-crm-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn-crm btn-crm-primary" id="btn-save-points">
+          <i class="fas fa-coins"></i> Aplicar Puntos
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/auth.js"></script>
+<script>
+let allLoyalty = [];
+
+const LEVELS = [
+  { key:'bronce',  min:0,    max:199,  next:200,  color:'#CD7F32', icon:'🥉' },
+  { key:'plata',   min:200,  max:499,  next:500,  color:'#94A3B8', icon:'🥈' },
+  { key:'oro',     min:500,  max:999,  next:1000, color:'#EAB308', icon:'🥇' },
+  { key:'premium', min:1000, max:Infinity, next:null, color:'#9333EA', icon:'💜' },
+];
+
+function getLevelInfo(points) {
+  return LEVELS.find(l => points >= l.min && points <= l.max) || LEVELS[0];
+}
+
+function progressPct(points) {
+  const l = getLevelInfo(points);
+  if (!l.next) return 100;
+  return Math.min(100, Math.round(((points - l.min) / (l.next - l.min)) * 100));
+}
+
+async function loadLoyalty(search = '') {
+  const { data } = await DB.getLoyaltyPoints({ search });
+  allLoyalty = data || [];
+  renderLoyalty();
+  updateLevelCounts();
+}
+
+function updateLevelCounts() {
+  const counts = { bronce:0, plata:0, oro:0, premium:0 };
+  allLoyalty.forEach(l => { counts[l.level] = (counts[l.level]||0)+1; });
+  document.getElementById('count-bronce').textContent  = counts.bronce;
+  document.getElementById('count-plata').textContent   = counts.plata;
+  document.getElementById('count-oro').textContent     = counts.oro;
+  document.getElementById('count-premium').textContent = counts.premium;
+}
+
+function renderLoyalty() {
+  const tbody = document.getElementById('loyalty-tbody');
+  if (!allLoyalty.length) { tableEmpty('loyalty-tbody', 8, 'No hay datos de fidelización.'); return; }
+
+  const sorted = [...allLoyalty].sort((a,b) => b.points - a.points);
+
+  tbody.innerHTML = sorted.map((l, i) => {
+    const c   = l.customer || DEMO_CUSTOMERS.find(x=>x.id===l.customer_id);
+    const pct = progressPct(l.points);
+    const lvl = getLevelInfo(l.points);
+    const nextPts = lvl.next ? lvl.next - l.points : 0;
+    return `
+      <tr>
+        <td><strong style="font-family:var(--font-heading);font-size:18px">${i+1}</strong></td>
+        <td>${customerCell(c)}</td>
+        <td>${loyaltyBadge(l.level)}</td>
+        <td>
+          <span class="fw-700 ff-heading" style="font-size:18px">${formatNumber(l.points)}</span>
+          <span class="text-muted-sm"> pts</span>
+        </td>
+        <td style="min-width:120px">
+          <div class="points-bar">
+            <div class="points-fill" style="width:${pct}%;background:${lvl.color}"></div>
+          </div>
+          <div style="font-size:10px;color:var(--text-muted)">${lvl.next ? `${nextPts} pts para ${LEVELS[LEVELS.indexOf(lvl)+1]?.key||''}` : '¡Nivel máximo!'}</div>
+        </td>
+        <td><span class="text-success fw-700">+${formatNumber(l.total_earned)}</span></td>
+        <td><span class="text-danger fw-700">-${formatNumber(l.total_redeemed)}</span></td>
+        <td>
+          <button class="btn-crm btn-crm-primary btn-crm-sm" onclick="openPointsModal('${l.customer_id}')">
+            <i class="fas fa-coins"></i> Puntos
+          </button>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+function openPointsModal(customerId) {
+  document.getElementById('sel-loyalty-customer').value = customerId;
+  document.getElementById('inp-points').value = '';
+  document.getElementById('inp-points-desc').value = '';
+  document.getElementById('level-preview').style.display = 'none';
+  openModal('modal-points');
+}
+
+// Preview en tiempo real
+function updatePreview() {
+  const customerId = document.getElementById('sel-loyalty-customer').value;
+  const pts        = parseInt(document.getElementById('inp-points').value) || 0;
+  const isRedeem   = document.querySelector('[name="op_type"]:checked')?.value === 'redeem';
+  const preview    = document.getElementById('level-preview');
+  const content    = document.getElementById('level-preview-content');
+
+  if (!customerId || !pts) { preview.style.display = 'none'; return; }
+
+  const current = allLoyalty.find(l=>l.customer_id===customerId);
+  const currentPts = current?.points || 0;
+  const newPts = isRedeem ? Math.max(0, currentPts - pts) : currentPts + pts;
+  const oldLvl = getLevelInfo(currentPts);
+  const newLvl = getLevelInfo(newPts);
+  const upgraded = oldLvl.key !== newLvl.key;
+
+  preview.style.display = '';
+  content.innerHTML = `
+    <div class="d-flex align-items-center gap-2">
+      <span>${oldLvl.icon} ${formatNumber(currentPts)} pts</span>
+      <i class="fas fa-arrow-right text-muted"></i>
+      <span class="fw-700" style="color:${newLvl.color}">${newLvl.icon} ${formatNumber(newPts)} pts</span>
+      ${upgraded ? `<span class="badge-status badge-sentado ms-2">⬆️ ¡Sube a ${newLvl.key}!</span>` : ''}
+    </div>`;
+}
+
+document.getElementById('sel-loyalty-customer').addEventListener('change', updatePreview);
+document.getElementById('inp-points').addEventListener('input', updatePreview);
+document.querySelectorAll?.('[name="op_type"]');
+document.addEventListener('change', e => { if (e.target.name === 'op_type') updatePreview(); });
+
+document.getElementById('btn-save-points').addEventListener('click', async () => {
+  const customerId = document.getElementById('sel-loyalty-customer').value;
+  const ptsRaw     = parseInt(document.getElementById('inp-points').value);
+  const isRedeem   = document.querySelector('[name="op_type"]:checked')?.value === 'redeem';
+
+  if (!customerId) { showToast('Requerido', 'Seleccioná un cliente.', 'warning'); return; }
+  if (!ptsRaw || ptsRaw < 1) { showToast('Requerido', 'Ingresá una cantidad de puntos válida.', 'warning'); return; }
+
+  const points = isRedeem ? -ptsRaw : ptsRaw;
+  const { error } = await DB.updateLoyaltyPoints(customerId, points);
+  if (error) { showToast('Error', 'No se pudieron actualizar los puntos.', 'error'); return; }
+
+  showToast('Actualizado', `${Math.abs(ptsRaw)} puntos ${isRedeem?'canjeados':'sumados'} correctamente.`, 'success');
+  closeModal('modal-points');
+  loadLoyalty();
+});
+
+// Poblar selector de clientes
+async function populateCustomerSelect() {
+  const { data } = await DB.getCustomers();
+  const sel = document.getElementById('sel-loyalty-customer');
+  sel.innerHTML = '<option value="">— Seleccionar cliente —</option>' +
+    (data||[]).map(c=>`<option value="${c.id}">${c.name} ${c.surname||''}</option>`).join('');
+}
+
+document.getElementById('search-loyalty').addEventListener('input',
+  debounce(e => loadLoyalty(e.target.value), 300));
+
+document.getElementById('btn-add-points').addEventListener('click', () => {
+  document.getElementById('form-points').reset();
+  document.getElementById('level-preview').style.display = 'none';
+  openModal('modal-points');
+});
+
+populateCustomerSelect();
+loadLoyalty();
+</script>
+</body>
+</html>

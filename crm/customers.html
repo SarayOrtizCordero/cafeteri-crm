@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clientes – CRM Restaurante</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/crm.css">
+</head>
+<body>
+<div id="toast-container"></div>
+<div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+<div class="crm-wrapper">
+<!-- SIDEBAR -->
+<aside class="crm-sidebar" id="crm-sidebar">
+  <a href="dashboard.html" class="sidebar-brand">
+    <div class="sidebar-brand-icon"><i class="fas fa-utensils"></i></div>
+    <div class="sidebar-brand-text">Café de la Esquina<small>CRM Restaurante</small></div>
+  </a>
+  <nav class="sidebar-nav">
+    <span class="sidebar-section-label">Principal</span>
+    <a href="dashboard.html"    class="sidebar-link"><i class="fas fa-tachometer-alt sidebar-link-icon"></i><span class="sidebar-link-text">Dashboard</span></a>
+    <a href="customers.html"    class="sidebar-link"><i class="fas fa-users sidebar-link-icon"></i><span class="sidebar-link-text">Clientes</span></a>
+    <a href="reservations.html" class="sidebar-link"><i class="fas fa-calendar-check sidebar-link-icon"></i><span class="sidebar-link-text">Reservas</span></a>
+    <a href="tables.html"       class="sidebar-link"><i class="fas fa-chair sidebar-link-icon"></i><span class="sidebar-link-text">Mesas</span></a>
+    <a href="waiting-list.html" class="sidebar-link"><i class="fas fa-clock sidebar-link-icon"></i><span class="sidebar-link-text">Lista de Espera</span></a>
+    <span class="sidebar-section-label">Gestión</span>
+    <a href="events.html"       class="sidebar-link"><i class="fas fa-star sidebar-link-icon"></i><span class="sidebar-link-text">Eventos</span></a>
+    <a href="loyalty.html"      class="sidebar-link"><i class="fas fa-medal sidebar-link-icon"></i><span class="sidebar-link-text">Fidelización</span></a>
+    <a href="promotions.html"   class="sidebar-link"><i class="fas fa-tag sidebar-link-icon"></i><span class="sidebar-link-text">Promociones</span></a>
+    <a href="campaigns.html"    class="sidebar-link"><i class="fas fa-envelope sidebar-link-icon"></i><span class="sidebar-link-text">Campañas Email</span></a>
+    <span class="sidebar-section-label">Operación</span>
+    <a href="reviews.html"      class="sidebar-link"><i class="fas fa-star-half-alt sidebar-link-icon"></i><span class="sidebar-link-text">Reseñas</span></a>
+    <a href="incidents.html"    class="sidebar-link"><i class="fas fa-exclamation-triangle sidebar-link-icon"></i><span class="sidebar-link-text">Incidencias</span></a>
+    <a href="analytics.html"    class="sidebar-link"><i class="fas fa-chart-bar sidebar-link-icon"></i><span class="sidebar-link-text">Analíticas</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="sidebar-avatar">AD</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="sidebar-user-name">Usuario</div>
+        <div class="sidebar-user-role" id="sidebar-user-role">Rol</div>
+      </div>
+      <button class="sidebar-collapse-btn" id="sidebar-collapse-btn"><i class="fas fa-chevron-left"></i></button>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="crm-main" id="crm-main">
+  <header class="crm-topbar">
+    <button class="topbar-menu-btn" id="topbar-menu-btn"><i class="fas fa-bars"></i></button>
+    <nav class="topbar-breadcrumb">
+      <span class="topbar-breadcrumb-item">CRM</span>
+      <span class="topbar-breadcrumb-sep">/</span>
+      <span class="topbar-breadcrumb-current">Clientes</span>
+    </nav>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-actions">
+      <div class="topbar-user">
+        <div class="topbar-avatar" id="topbar-avatar">AD</div>
+        <span class="topbar-user-name" id="topbar-user-name">Admin</span>
+      </div>
+      <button class="topbar-btn" id="btn-logout" title="Cerrar sesión"><i class="fas fa-sign-out-alt"></i></button>
+    </div>
+  </header>
+
+  <main class="crm-content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Clientes</h1>
+        <p class="page-subtitle">Gestión completa de la cartera de clientes</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-crm btn-crm-secondary btn-crm-sm" id="btn-export">
+          <i class="fas fa-download"></i> Exportar CSV
+        </button>
+        <button class="btn-crm btn-crm-primary" id="btn-new-customer">
+          <i class="fas fa-plus"></i> Nuevo Cliente
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats rápidas -->
+    <div class="stat-grid mb-4" style="grid-template-columns:repeat(4,1fr)">
+      <div class="stat-card">
+        <div class="stat-icon primary"><i class="fas fa-users"></i></div>
+        <div class="stat-body"><div class="stat-value" id="stat-total">—</div><div class="stat-label">Total clientes</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon warning"><i class="fas fa-crown"></i></div>
+        <div class="stat-body"><div class="stat-value" id="stat-vip">—</div><div class="stat-label">Clientes VIP</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon success"><i class="fas fa-redo"></i></div>
+        <div class="stat-body"><div class="stat-value" id="stat-recurring">—</div><div class="stat-label">Recurrentes (+5 visitas)</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon danger"><i class="fas fa-moon"></i></div>
+        <div class="stat-body"><div class="stat-value" id="stat-dormant">—</div><div class="stat-label">Inactivos +90 días</div></div>
+      </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="crm-card">
+      <div class="crm-card-header">
+        <span class="crm-card-title"><i class="fas fa-users text-brand"></i> Listado de Clientes</span>
+        <span class="text-muted-sm" id="count-label">Cargando...</span>
+      </div>
+      <div class="crm-card-body pb-0">
+        <div class="filter-bar">
+          <div class="search-input-wrapper">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="search-input" class="form-control-crm" placeholder="Buscar por nombre, email, teléfono...">
+          </div>
+          <select id="filter-vip" class="form-control-crm" style="width:auto">
+            <option value="">Todos</option>
+            <option value="true">Solo VIP</option>
+            <option value="false">No VIP</option>
+          </select>
+          <select id="filter-level" class="form-control-crm" style="width:auto">
+            <option value="">Todos los niveles</option>
+            <option value="premium">Premium</option>
+            <option value="oro">Oro</option>
+            <option value="plata">Plata</option>
+            <option value="bronce">Bronce</option>
+          </select>
+          <button class="btn-crm btn-crm-secondary btn-crm-sm" id="btn-clear-filters">
+            <i class="fas fa-times"></i> Limpiar
+          </button>
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table class="crm-table">
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>Teléfono</th>
+              <th>Visitas</th>
+              <th>Ticket medio</th>
+              <th>Última visita</th>
+              <th>Fidelización</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="customers-tbody"></tbody>
+        </table>
+      </div>
+      <div class="crm-card-footer" id="pagination-bar"></div>
+    </div>
+  </main>
+</div>
+</div>
+
+<!-- ═══ MODAL: Crear/Editar Cliente ════════════════════════ -->
+<div class="modal fade" id="modal-customer" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal-customer-title">Nuevo Cliente</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="form-customer" novalidate>
+          <input type="hidden" id="customer-id">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Nombre *</label>
+                <input type="text" name="name" class="form-control-crm" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Apellido</label>
+                <input type="text" name="surname" class="form-control-crm">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" name="email" class="form-control-crm">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Teléfono</label>
+                <input type="tel" name="phone" class="form-control-crm">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Fecha de nacimiento</label>
+                <input type="date" name="birth_date" class="form-control-crm">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Mesa favorita</label>
+                <input type="text" name="favorite_table" class="form-control-crm" placeholder="Ej: T05, terraza">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Vino favorito</label>
+                <input type="text" name="favorite_wine" class="form-control-crm" placeholder="Ej: Malbec Achaval Ferrer">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Frecuencia de visita</label>
+                <select name="visit_frequency" class="form-control-crm">
+                  <option value="">No especificada</option>
+                  <option value="semanal">Semanal</option>
+                  <option value="quincenal">Quincenal</option>
+                  <option value="mensual">Mensual</option>
+                  <option value="ocasional">Ocasional</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label class="form-label">Alergias</label>
+                <input type="text" name="allergies_text" class="form-control-crm" placeholder="Ej: gluten, lactosa, mariscos (separadas por coma)">
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label class="form-label">Preferencias alimentarias</label>
+                <input type="text" name="dietary_text" class="form-control-crm" placeholder="Ej: vegetariano, vegano, sin TACC">
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label class="form-label">Notas internas</label>
+                <textarea name="notes" class="form-control-crm" rows="3" placeholder="Observaciones, preferencias especiales, historial..."></textarea>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="vip_status" id="chk-vip" value="true">
+                <label class="form-check-label fw-700" for="chk-vip">
+                  <span class="badge-vip">VIP</span> Marcar como cliente VIP
+                </label>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-crm btn-crm-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn-crm btn-crm-primary" id="btn-save-customer">
+          <i class="fas fa-save"></i> Guardar Cliente
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL: Detalle Cliente ══════════════════════════════ -->
+<div class="modal fade" id="modal-customer-detail" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Ficha del Cliente</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="customer-detail-body">
+        Cargando...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-crm btn-crm-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn-crm btn-crm-primary" id="btn-edit-from-detail">
+          <i class="fas fa-edit"></i> Editar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/auth.js"></script>
+<script>
+let allCustomers = [];
+let currentCustomerId = null;
+let currentPage = 1;
+const PAGE_SIZE = 15;
+
+async function loadCustomers() {
+  const search = document.getElementById('search-input').value.trim();
+  const vipVal = document.getElementById('filter-vip').value;
+  const vip    = vipVal === '' ? null : vipVal === 'true';
+
+  tableLoading('customers-tbody', 8);
+  const { data, error } = await DB.getCustomers({ search, vip });
+
+  if (error) { showToast('Error', 'No se pudieron cargar los clientes.', 'error'); return; }
+
+  const levelFilter = document.getElementById('filter-level').value;
+  let filtered = data || [];
+
+  if (levelFilter) {
+    const lIds = new Set(DEMO_LOYALTY.filter(l=>l.level===levelFilter).map(l=>l.customer_id));
+    filtered = filtered.filter(c => lIds.has(c.id));
+  }
+
+  allCustomers = filtered;
+  renderCustomers();
+  updateStats(data || []);
+}
+
+function renderCustomers() {
+  const tbody = document.getElementById('customers-tbody');
+  const total = allCustomers.length;
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const page  = allCustomers.slice(start, start + PAGE_SIZE);
+
+  document.getElementById('count-label').textContent = `${total} cliente${total !== 1 ? 's' : ''}`;
+
+  if (!page.length) {
+    tableEmpty('customers-tbody', 8, 'No se encontraron clientes con esos criterios.');
+    document.getElementById('pagination-bar').innerHTML = '';
+    return;
+  }
+
+  tbody.innerHTML = page.map(c => {
+    const fullName = `${c.name} ${c.surname||''}`.trim();
+    const lp = DEMO_LOYALTY.find(l=>l.customer_id===c.id);
+    const dormant = c.last_visit && (Date.now() - new Date(c.last_visit)) > 90*86400000;
+    return `
+      <tr>
+        <td>${customerCell(c)}</td>
+        <td>${c.phone || '<span class="text-muted-sm">—</span>'}</td>
+        <td><strong>${c.total_visits}</strong></td>
+        <td>${formatCurrency(c.average_ticket)}</td>
+        <td>
+          ${c.last_visit ? formatDate(c.last_visit) : '<span class="text-muted-sm">—</span>'}
+          ${dormant ? '<br><span class="badge-status badge-cancelada" style="font-size:10px">Inactivo</span>' : ''}
+        </td>
+        <td>${lp ? loyaltyBadge(lp.level) : '<span class="text-muted-sm">—</span>'}</td>
+        <td>
+          ${c.allergies?.length ? `<span class="badge-status badge-cancelada" title="${c.allergies.join(', ')}"><i class="fas fa-exclamation-triangle"></i> Alergias</span>` : '<span class="text-muted-sm">Sin restricciones</span>'}
+        </td>
+        <td>
+          <div class="d-flex gap-1">
+            <button class="btn-crm-icon" onclick="viewCustomer('${c.id}')" title="Ver ficha"><i class="fas fa-eye"></i></button>
+            <button class="btn-crm-icon" onclick="editCustomer('${c.id}')" title="Editar"><i class="fas fa-edit"></i></button>
+            <button class="btn-crm-icon" onclick="deleteCustomer('${c.id}','${fullName}')" title="Eliminar" style="color:var(--clr-danger)"><i class="fas fa-trash"></i></button>
+          </div>
+        </td>
+      </tr>`;
+  }).join('');
+
+  // Paginación
+  const totalPages = Math.ceil(total / PAGE_SIZE);
+  if (totalPages > 1) {
+    let pages = '';
+    for (let i = 1; i <= totalPages; i++) {
+      pages += `<button onclick="goPage(${i})" class="btn-crm btn-crm-sm ${i===currentPage?'btn-crm-primary':'btn-crm-secondary'}" style="min-width:32px">${i}</button>`;
+    }
+    document.getElementById('pagination-bar').innerHTML =
+      `<div class="d-flex align-items-center gap-2">Pág. ${currentPage} de ${totalPages} &nbsp; ${pages}</div>`;
+  } else {
+    document.getElementById('pagination-bar').innerHTML = '';
+  }
+}
+
+function goPage(p) { currentPage = p; renderCustomers(); }
+
+function updateStats(customers) {
+  document.getElementById('stat-total').textContent     = customers.length;
+  document.getElementById('stat-vip').textContent       = customers.filter(c=>c.vip_status).length;
+  document.getElementById('stat-recurring').textContent = customers.filter(c=>c.total_visits>=5).length;
+  document.getElementById('stat-dormant').textContent   = customers.filter(c => c.last_visit && (Date.now()-new Date(c.last_visit))>90*86400000).length;
+}
+
+function viewCustomer(id) {
+  const c = allCustomers.find(x=>x.id===id) || DEMO_CUSTOMERS.find(x=>x.id===id);
+  if (!c) return;
+  currentCustomerId = id;
+  const lp = DEMO_LOYALTY.find(l=>l.customer_id===id);
+  const reservations = DEMO_RESERVATIONS.filter(r=>r.customer_id===id);
+  const fullName = `${c.name} ${c.surname||''}`.trim();
+
+  document.getElementById('customer-detail-body').innerHTML = `
+    <div class="d-flex align-items-center gap-3 mb-4">
+      ${customerAvatar(fullName, 56)}
+      <div>
+        <h4 class="mb-1 ff-heading">${fullName} ${c.vip_status?'<span class="badge-vip">VIP</span>':''}</h4>
+        ${lp ? loyaltyBadge(lp.level) : ''}
+      </div>
+    </div>
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="crm-card p-3">
+          <div class="text-muted-sm mb-2 fw-700"><i class="fas fa-address-card me-1"></i> DATOS DE CONTACTO</div>
+          <p class="mb-1"><i class="fas fa-envelope me-2 text-muted"></i>${c.email||'—'}</p>
+          <p class="mb-1"><i class="fas fa-phone me-2 text-muted"></i>${c.phone||'—'}</p>
+          <p class="mb-0"><i class="fas fa-birthday-cake me-2 text-muted"></i>${c.birth_date ? formatDate(c.birth_date) : '—'}</p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="crm-card p-3">
+          <div class="text-muted-sm mb-2 fw-700"><i class="fas fa-chart-line me-1"></i> HISTORIAL</div>
+          <p class="mb-1"><strong>${c.total_visits}</strong> visitas registradas</p>
+          <p class="mb-1">Ticket medio: <strong>${formatCurrency(c.average_ticket)}</strong></p>
+          <p class="mb-0">Última visita: <strong>${c.last_visit ? formatDate(c.last_visit) : '—'}</strong></p>
+        </div>
+      </div>
+      ${c.allergies?.length ? `
+      <div class="col-12">
+        <div class="crm-card p-3" style="border-left:3px solid var(--clr-danger)">
+          <div class="text-muted-sm mb-2 fw-700"><i class="fas fa-exclamation-triangle me-1 text-danger"></i> ALERGIAS E INTOLERANCIAS</div>
+          <div>${c.allergies.map(a=>`<span class="badge-status badge-cancelada me-1">${a}</span>`).join('')}</div>
+        </div>
+      </div>` : ''}
+      ${c.dietary_preferences?.length ? `
+      <div class="col-12">
+        <div class="crm-card p-3">
+          <div class="text-muted-sm mb-2 fw-700"><i class="fas fa-leaf me-1 text-success"></i> PREFERENCIAS ALIMENTARIAS</div>
+          <div>${c.dietary_preferences.map(d=>`<span class="badge-status badge-sentado me-1">${d}</span>`).join('')}</div>
+        </div>
+      </div>` : ''}
+      ${c.notes ? `
+      <div class="col-12">
+        <div class="crm-card p-3">
+          <div class="text-muted-sm mb-2 fw-700"><i class="fas fa-sticky-note me-1"></i> NOTAS INTERNAS</div>
+          <p class="mb-0" style="font-size:14px">${c.notes}</p>
+        </div>
+      </div>` : ''}
+      <div class="col-12">
+        <div class="text-muted-sm fw-700 mb-2"><i class="fas fa-history me-1"></i> ÚLTIMAS RESERVAS</div>
+        ${reservations.length ? `
+        <table class="crm-table">
+          <thead><tr><th>Fecha</th><th>Pax</th><th>Estado</th></tr></thead>
+          <tbody>
+            ${reservations.slice(0,5).map(r=>`
+              <tr>
+                <td>${formatDate(r.reservation_date,{time:true})}</td>
+                <td>${r.guests}</td>
+                <td>${reservationBadge(r.status)}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>` : '<p class="text-muted-sm">Sin reservas registradas.</p>'}
+      </div>
+    </div>`;
+
+  openModal('modal-customer-detail');
+}
+
+function editCustomer(id) {
+  const c = allCustomers.find(x=>x.id===id) || DEMO_CUSTOMERS.find(x=>x.id===id);
+  if (!c) return;
+  closeModal('modal-customer-detail');
+  document.getElementById('modal-customer-title').textContent = 'Editar Cliente';
+  document.getElementById('customer-id').value = c.id;
+  const form = document.getElementById('form-customer');
+  populateForm(form, {
+    name: c.name, surname: c.surname||'', email: c.email||'',
+    phone: c.phone||'', birth_date: dateForInput(c.birth_date)||'',
+    favorite_table: c.favorite_table||'', favorite_wine: c.favorite_wine||'',
+    visit_frequency: c.visit_frequency||'', notes: c.notes||'',
+    allergies_text: (c.allergies||[]).join(', '),
+    dietary_text: (c.dietary_preferences||[]).join(', '),
+  });
+  document.getElementById('chk-vip').checked = !!c.vip_status;
+  openModal('modal-customer');
+}
+
+async function deleteCustomer(id, name) {
+  confirmAction(`¿Eliminar a "${name}"? Esta acción no se puede deshacer.`, async () => {
+    const { error } = await DB.deleteCustomer(id);
+    if (error) { showToast('Error', 'No se pudo eliminar el cliente.', 'error'); return; }
+    showToast('Eliminado', `${name} fue eliminado correctamente.`, 'success');
+    loadCustomers();
+  });
+}
+
+document.getElementById('btn-new-customer').addEventListener('click', () => {
+  document.getElementById('modal-customer-title').textContent = 'Nuevo Cliente';
+  document.getElementById('customer-id').value = '';
+  document.getElementById('form-customer').reset();
+  openModal('modal-customer');
+});
+
+document.getElementById('btn-edit-from-detail').addEventListener('click', () => {
+  if (currentCustomerId) editCustomer(currentCustomerId);
+});
+
+document.getElementById('btn-save-customer').addEventListener('click', async () => {
+  const form = document.getElementById('form-customer');
+  const id   = document.getElementById('customer-id').value;
+  const data = formToObject(form);
+
+  if (!data.name?.trim()) { showToast('Requerido', 'El nombre es obligatorio.', 'warning'); return; }
+
+  const payload = {
+    name:                data.name.trim(),
+    surname:             data.surname?.trim() || null,
+    email:               data.email?.trim() || null,
+    phone:               data.phone?.trim() || null,
+    birth_date:          data.birth_date || null,
+    favorite_table:      data.favorite_table?.trim() || null,
+    favorite_wine:       data.favorite_wine?.trim() || null,
+    visit_frequency:     data.visit_frequency || null,
+    notes:               data.notes?.trim() || null,
+    vip_status:          document.getElementById('chk-vip').checked,
+    allergies:           data.allergies_text ? data.allergies_text.split(',').map(s=>s.trim()).filter(Boolean) : [],
+    dietary_preferences: data.dietary_text   ? data.dietary_text.split(',').map(s=>s.trim()).filter(Boolean)   : [],
+  };
+
+  const btn = document.getElementById('btn-save-customer');
+  btn.disabled = true;
+
+  const result = id ? await DB.updateCustomer(id, payload) : await DB.createCustomer(payload);
+
+  if (result.error) {
+    showToast('Error', 'No se pudo guardar el cliente.', 'error');
+    btn.disabled = false;
+    return;
+  }
+
+  showToast('Guardado', id ? 'Cliente actualizado correctamente.' : 'Cliente creado correctamente.', 'success');
+  closeModal('modal-customer');
+  btn.disabled = false;
+  loadCustomers();
+});
+
+// Filtros con debounce
+const debouncedLoad = debounce(loadCustomers, 300);
+document.getElementById('search-input').addEventListener('input', debouncedLoad);
+document.getElementById('filter-vip').addEventListener('change', loadCustomers);
+document.getElementById('filter-level').addEventListener('change', loadCustomers);
+document.getElementById('btn-clear-filters').addEventListener('click', () => {
+  document.getElementById('search-input').value   = '';
+  document.getElementById('filter-vip').value     = '';
+  document.getElementById('filter-level').value   = '';
+  currentPage = 1;
+  loadCustomers();
+});
+
+document.getElementById('btn-export').addEventListener('click', () => {
+  const headers = ['Nombre','Apellido','Email','Teléfono','Visitas','Ticket Medio','VIP','Última Visita'];
+  const rows = allCustomers.map(c => [c.name, c.surname||'', c.email||'', c.phone||'', c.total_visits, c.average_ticket, c.vip_status?'Sí':'No', c.last_visit ? formatDate(c.last_visit) : '']);
+  exportCSV(headers, rows, 'clientes.csv');
+  showToast('Exportado', `${allCustomers.length} clientes exportados.`, 'success');
+});
+
+// Verificar si viene de URL con ?new=1
+if (new URLSearchParams(location.search).get('new') === '1') {
+  document.getElementById('btn-new-customer').click();
+}
+
+loadCustomers();
+</script>
+</body>
+</html>

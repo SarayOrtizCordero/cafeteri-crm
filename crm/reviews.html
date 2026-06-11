@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reseñas – CRM Restaurante</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/crm.css">
+  <style>
+    .review-card { border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--bg-card); padding: 20px; transition: box-shadow .2s ease; }
+    .review-card:hover { box-shadow: var(--shadow-md); }
+    .rating-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+    .rating-bar-fill { height: 100%; background: #EAB308; border-radius: 4px; }
+  </style>
+</head>
+<body>
+<div id="toast-container"></div>
+<div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+<div class="crm-wrapper">
+<aside class="crm-sidebar" id="crm-sidebar">
+  <a href="dashboard.html" class="sidebar-brand">
+    <div class="sidebar-brand-icon"><i class="fas fa-utensils"></i></div>
+    <div class="sidebar-brand-text">Café de la Esquina<small>CRM Restaurante</small></div>
+  </a>
+  <nav class="sidebar-nav">
+    <span class="sidebar-section-label">Principal</span>
+    <a href="dashboard.html"    class="sidebar-link"><i class="fas fa-tachometer-alt sidebar-link-icon"></i><span class="sidebar-link-text">Dashboard</span></a>
+    <a href="customers.html"    class="sidebar-link"><i class="fas fa-users sidebar-link-icon"></i><span class="sidebar-link-text">Clientes</span></a>
+    <a href="reservations.html" class="sidebar-link"><i class="fas fa-calendar-check sidebar-link-icon"></i><span class="sidebar-link-text">Reservas</span></a>
+    <a href="tables.html"       class="sidebar-link"><i class="fas fa-chair sidebar-link-icon"></i><span class="sidebar-link-text">Mesas</span></a>
+    <a href="waiting-list.html" class="sidebar-link"><i class="fas fa-clock sidebar-link-icon"></i><span class="sidebar-link-text">Lista de Espera</span></a>
+    <span class="sidebar-section-label">Gestión</span>
+    <a href="events.html"       class="sidebar-link"><i class="fas fa-star sidebar-link-icon"></i><span class="sidebar-link-text">Eventos</span></a>
+    <a href="loyalty.html"      class="sidebar-link"><i class="fas fa-medal sidebar-link-icon"></i><span class="sidebar-link-text">Fidelización</span></a>
+    <a href="promotions.html"   class="sidebar-link"><i class="fas fa-tag sidebar-link-icon"></i><span class="sidebar-link-text">Promociones</span></a>
+    <a href="campaigns.html"    class="sidebar-link"><i class="fas fa-envelope sidebar-link-icon"></i><span class="sidebar-link-text">Campañas Email</span></a>
+    <span class="sidebar-section-label">Operación</span>
+    <a href="reviews.html"      class="sidebar-link"><i class="fas fa-star-half-alt sidebar-link-icon"></i><span class="sidebar-link-text">Reseñas</span></a>
+    <a href="incidents.html"    class="sidebar-link"><i class="fas fa-exclamation-triangle sidebar-link-icon"></i><span class="sidebar-link-text">Incidencias</span></a>
+    <a href="analytics.html"    class="sidebar-link"><i class="fas fa-chart-bar sidebar-link-icon"></i><span class="sidebar-link-text">Analíticas</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="sidebar-avatar">AD</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="sidebar-user-name">Usuario</div>
+        <div class="sidebar-user-role" id="sidebar-user-role">Rol</div>
+      </div>
+      <button class="sidebar-collapse-btn" id="sidebar-collapse-btn"><i class="fas fa-chevron-left"></i></button>
+    </div>
+  </div>
+</aside>
+
+<div class="crm-main" id="crm-main">
+  <header class="crm-topbar">
+    <button class="topbar-menu-btn" id="topbar-menu-btn"><i class="fas fa-bars"></i></button>
+    <nav class="topbar-breadcrumb">
+      <span class="topbar-breadcrumb-item">CRM</span>
+      <span class="topbar-breadcrumb-sep">/</span>
+      <span class="topbar-breadcrumb-current">Reseñas y Feedback</span>
+    </nav>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-actions">
+      <div class="topbar-user">
+        <div class="topbar-avatar" id="topbar-avatar">AD</div>
+        <span class="topbar-user-name" id="topbar-user-name">Admin</span>
+      </div>
+      <button class="topbar-btn" id="btn-logout"><i class="fas fa-sign-out-alt"></i></button>
+    </div>
+  </header>
+
+  <main class="crm-content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Reseñas y Feedback</h1>
+        <p class="page-subtitle">Valoraciones de clientes y gestión de respuestas</p>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <!-- Resumen de valoraciones -->
+      <div class="col-lg-4">
+        <div class="crm-card h-100">
+          <div class="crm-card-header">
+            <span class="crm-card-title"><i class="fas fa-star text-warning"></i> Resumen de valoraciones</span>
+          </div>
+          <div class="crm-card-body">
+            <div class="text-center mb-4">
+              <div style="font-family:var(--font-heading);font-size:56px;font-weight:700;line-height:1;color:var(--text-primary)" id="avg-rating-big">—</div>
+              <div id="avg-stars" class="my-2"></div>
+              <div class="text-muted-sm" id="review-count">0 reseñas</div>
+            </div>
+
+            <!-- Barras por estrella -->
+            <div id="rating-bars" class="d-flex flex-column gap-2">
+              <!-- Generadas por JS -->
+            </div>
+
+            <hr class="divider">
+
+            <!-- Desglose por categoría -->
+            <div class="row g-2 text-center" id="category-ratings">
+              <div class="col-4">
+                <div style="font-size:12px;color:var(--text-muted);font-weight:700">COMIDA</div>
+                <div class="fw-700 ff-heading" style="font-size:20px" id="avg-food">—</div>
+              </div>
+              <div class="col-4">
+                <div style="font-size:12px;color:var(--text-muted);font-weight:700">SERVICIO</div>
+                <div class="fw-700 ff-heading" style="font-size:20px" id="avg-service">—</div>
+              </div>
+              <div class="col-4">
+                <div style="font-size:12px;color:var(--text-muted);font-weight:700">AMBIENTE</div>
+                <div class="fw-700 ff-heading" style="font-size:20px" id="avg-ambiance">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lista de reseñas -->
+      <div class="col-lg-8">
+        <div class="crm-card-header mb-3 p-0">
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <button class="btn-crm btn-crm-secondary btn-crm-sm filter-btn active" data-filter="all">Todas</button>
+            <button class="btn-crm btn-crm-secondary btn-crm-sm filter-btn" data-filter="pending">Sin responder</button>
+            <button class="btn-crm btn-crm-secondary btn-crm-sm filter-btn" data-filter="5">⭐⭐⭐⭐⭐</button>
+            <button class="btn-crm btn-crm-secondary btn-crm-sm filter-btn" data-filter="4">⭐⭐⭐⭐</button>
+            <button class="btn-crm btn-crm-secondary btn-crm-sm filter-btn" data-filter="low">1-3 ⭐</button>
+          </div>
+        </div>
+        <div id="reviews-list" class="d-flex flex-column gap-3">
+          <div class="text-center py-5">
+            <div class="spinner mx-auto" style="width:28px;height:28px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</div>
+
+<!-- Modal responder reseña -->
+<div class="modal fade" id="modal-respond" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Responder Reseña</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div id="review-context" class="crm-card p-3 mb-3" style="font-size:13px"></div>
+        <div class="form-group">
+          <label class="form-label">Tu respuesta</label>
+          <textarea id="inp-response" class="form-control-crm" rows="4" placeholder="Escribí una respuesta personalizada y profesional..."></textarea>
+        </div>
+        <input type="hidden" id="responding-id">
+      </div>
+      <div class="modal-footer">
+        <button class="btn-crm btn-crm-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn-crm btn-crm-primary" id="btn-send-response">
+          <i class="fas fa-reply"></i> Enviar respuesta
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/auth.js"></script>
+<script>
+let allReviews = [];
+let currentFilter = 'all';
+
+async function loadReviews() {
+  const { data } = await DB.getReviews();
+  allReviews = data || [];
+  renderSummary();
+  renderReviews();
+}
+
+function renderSummary() {
+  const r = allReviews;
+  const avg = r.length ? (r.reduce((s,x)=>s+x.rating,0)/r.length) : 0;
+  const avgFood    = r.filter(x=>x.food_rating).reduce((s,x)=>s+(x.food_rating||0),0) / (r.filter(x=>x.food_rating).length||1);
+  const avgService = r.filter(x=>x.service_rating).reduce((s,x)=>s+(x.service_rating||0),0) / (r.filter(x=>x.service_rating).length||1);
+  const avgAmbiance= r.filter(x=>x.ambiance_rating).reduce((s,x)=>s+(x.ambiance_rating||0),0) / (r.filter(x=>x.ambiance_rating).length||1);
+
+  document.getElementById('avg-rating-big').textContent = avg.toFixed(1);
+  document.getElementById('avg-stars').innerHTML = starRating(Math.round(avg));
+  document.getElementById('review-count').textContent = `${r.length} reseña${r.length!==1?'s':''}`;
+  document.getElementById('avg-food').textContent     = avgFood.toFixed(1)    + ' ★';
+  document.getElementById('avg-service').textContent  = avgService.toFixed(1) + ' ★';
+  document.getElementById('avg-ambiance').textContent = avgAmbiance.toFixed(1)+ ' ★';
+
+  // Barras por estrella
+  const barsEl = document.getElementById('rating-bars');
+  barsEl.innerHTML = [5,4,3,2,1].map(star => {
+    const count = r.filter(x=>x.rating===star).length;
+    const pct   = r.length ? Math.round((count/r.length)*100) : 0;
+    return `
+      <div class="d-flex align-items-center gap-2" style="font-size:12px">
+        <span style="min-width:20px">${star}★</span>
+        <div class="rating-bar flex-1">
+          <div class="rating-bar-fill" style="width:${pct}%"></div>
+        </div>
+        <span style="min-width:24px;color:var(--text-muted)">${count}</span>
+      </div>`;
+  }).join('');
+}
+
+function renderReviews() {
+  const list = document.getElementById('reviews-list');
+  let filtered = allReviews;
+  if (currentFilter === 'pending') filtered = allReviews.filter(r => !r.response);
+  else if (currentFilter === '5') filtered = allReviews.filter(r => r.rating === 5);
+  else if (currentFilter === '4') filtered = allReviews.filter(r => r.rating === 4);
+  else if (currentFilter === 'low') filtered = allReviews.filter(r => r.rating <= 3);
+
+  if (!filtered.length) {
+    list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">⭐</div><div class="empty-state-title">Sin reseñas con este filtro</div></div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(r => {
+    const c = r.customer || DEMO_CUSTOMERS.find(x=>x.id===r.customer_id);
+    const name = c ? `${c.name} ${c.surname||''}`.trim() : 'Cliente';
+    const borderColor = r.rating >= 4 ? 'var(--clr-success)' : r.rating === 3 ? 'var(--clr-warning)' : 'var(--clr-danger)';
+    return `
+      <div class="review-card" style="border-left: 4px solid ${borderColor}">
+        <div class="d-flex align-items-start gap-3 mb-3">
+          ${customerAvatar(name, 40)}
+          <div class="flex-1">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <strong>${name}</strong>
+              ${starRating(r.rating)}
+              <span class="text-muted-sm">${formatDate(r.created_at, {relative:true})}</span>
+            </div>
+            ${r.food_rating||r.service_rating||r.ambiance_rating ? `
+            <div class="d-flex gap-3 mt-1" style="font-size:11px;color:var(--text-muted)">
+              ${r.food_rating?`<span>🍽 Comida: ${r.food_rating}★</span>`:''}
+              ${r.service_rating?`<span>👤 Servicio: ${r.service_rating}★</span>`:''}
+              ${r.ambiance_rating?`<span>🏮 Ambiente: ${r.ambiance_rating}★</span>`:''}
+            </div>` : ''}
+          </div>
+        </div>
+        ${r.comment ? `<p style="font-size:14px;margin:0 0 12px;color:var(--text-primary)">"${r.comment}"</p>` : ''}
+        ${r.response ? `
+          <div class="p-3 rounded-3" style="background:rgba(160,106,63,.06);border-left:3px solid var(--brand-primary)">
+            <div style="font-size:11px;font-weight:700;color:var(--brand-primary);margin-bottom:6px">
+              <i class="fas fa-reply me-1"></i> RESPUESTA DEL RESTAURANTE
+            </div>
+            <p style="font-size:13px;margin:0;color:var(--text-primary)">${r.response}</p>
+          </div>` : `
+          <button class="btn-crm btn-crm-secondary btn-crm-sm" onclick="openRespond('${r.id}')">
+            <i class="fas fa-reply"></i> Responder
+          </button>`}
+      </div>`;
+  }).join('');
+}
+
+function openRespond(id) {
+  const r = allReviews.find(x=>x.id===id);
+  if (!r) return;
+  document.getElementById('responding-id').value = id;
+  const c = r.customer || DEMO_CUSTOMERS.find(x=>x.id===r.customer_id);
+  const name = c ? `${c.name} ${c.surname||''}` : 'Cliente';
+  document.getElementById('review-context').innerHTML = `
+    <div class="d-flex align-items-center gap-2 mb-2">
+      <strong>${name}</strong> ${starRating(r.rating)}
+    </div>
+    <em>"${r.comment||'Sin comentario.'}"</em>`;
+  document.getElementById('inp-response').value = '';
+  openModal('modal-respond');
+}
+
+document.getElementById('btn-send-response').addEventListener('click', async () => {
+  const id  = document.getElementById('responding-id').value;
+  const res = document.getElementById('inp-response').value.trim();
+  if (!res) { showToast('Requerido', 'Escribí una respuesta.', 'warning'); return; }
+  await DB.updateReview(id, { response: res, responded_at: new Date().toISOString() });
+  showToast('Enviado', 'Respuesta guardada correctamente.', 'success');
+  closeModal('modal-respond');
+  loadReviews();
+});
+
+// Filtros
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active','btn-crm-primary'));
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.add('btn-crm-secondary'));
+    btn.classList.add('active','btn-crm-primary');
+    btn.classList.remove('btn-crm-secondary');
+    currentFilter = btn.dataset.filter;
+    renderReviews();
+  });
+});
+
+loadReviews();
+</script>
+</body>
+</html>

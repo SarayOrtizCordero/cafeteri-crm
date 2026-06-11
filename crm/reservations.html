@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reservas – CRM Restaurante</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/crm.css">
+</head>
+<body>
+<div id="toast-container"></div>
+<div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+<div class="crm-wrapper">
+<aside class="crm-sidebar" id="crm-sidebar">
+  <a href="dashboard.html" class="sidebar-brand">
+    <div class="sidebar-brand-icon"><i class="fas fa-utensils"></i></div>
+    <div class="sidebar-brand-text">Café de la Esquina<small>CRM Restaurante</small></div>
+  </a>
+  <nav class="sidebar-nav">
+    <span class="sidebar-section-label">Principal</span>
+    <a href="dashboard.html"    class="sidebar-link"><i class="fas fa-tachometer-alt sidebar-link-icon"></i><span class="sidebar-link-text">Dashboard</span></a>
+    <a href="customers.html"    class="sidebar-link"><i class="fas fa-users sidebar-link-icon"></i><span class="sidebar-link-text">Clientes</span></a>
+    <a href="reservations.html" class="sidebar-link"><i class="fas fa-calendar-check sidebar-link-icon"></i><span class="sidebar-link-text">Reservas</span></a>
+    <a href="tables.html"       class="sidebar-link"><i class="fas fa-chair sidebar-link-icon"></i><span class="sidebar-link-text">Mesas</span></a>
+    <a href="waiting-list.html" class="sidebar-link"><i class="fas fa-clock sidebar-link-icon"></i><span class="sidebar-link-text">Lista de Espera</span></a>
+    <span class="sidebar-section-label">Gestión</span>
+    <a href="events.html"       class="sidebar-link"><i class="fas fa-star sidebar-link-icon"></i><span class="sidebar-link-text">Eventos</span></a>
+    <a href="loyalty.html"      class="sidebar-link"><i class="fas fa-medal sidebar-link-icon"></i><span class="sidebar-link-text">Fidelización</span></a>
+    <a href="promotions.html"   class="sidebar-link"><i class="fas fa-tag sidebar-link-icon"></i><span class="sidebar-link-text">Promociones</span></a>
+    <a href="campaigns.html"    class="sidebar-link"><i class="fas fa-envelope sidebar-link-icon"></i><span class="sidebar-link-text">Campañas Email</span></a>
+    <span class="sidebar-section-label">Operación</span>
+    <a href="reviews.html"      class="sidebar-link"><i class="fas fa-star-half-alt sidebar-link-icon"></i><span class="sidebar-link-text">Reseñas</span></a>
+    <a href="incidents.html"    class="sidebar-link"><i class="fas fa-exclamation-triangle sidebar-link-icon"></i><span class="sidebar-link-text">Incidencias</span></a>
+    <a href="analytics.html"    class="sidebar-link"><i class="fas fa-chart-bar sidebar-link-icon"></i><span class="sidebar-link-text">Analíticas</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="sidebar-avatar">AD</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="sidebar-user-name">Usuario</div>
+        <div class="sidebar-user-role" id="sidebar-user-role">Rol</div>
+      </div>
+      <button class="sidebar-collapse-btn" id="sidebar-collapse-btn"><i class="fas fa-chevron-left"></i></button>
+    </div>
+  </div>
+</aside>
+
+<div class="crm-main" id="crm-main">
+  <header class="crm-topbar">
+    <button class="topbar-menu-btn" id="topbar-menu-btn"><i class="fas fa-bars"></i></button>
+    <nav class="topbar-breadcrumb">
+      <span class="topbar-breadcrumb-item">CRM</span>
+      <span class="topbar-breadcrumb-sep">/</span>
+      <span class="topbar-breadcrumb-current">Reservas</span>
+    </nav>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-actions">
+      <div class="topbar-user">
+        <div class="topbar-avatar" id="topbar-avatar">AD</div>
+        <span class="topbar-user-name" id="topbar-user-name">Admin</span>
+      </div>
+      <button class="topbar-btn" id="btn-logout"><i class="fas fa-sign-out-alt"></i></button>
+    </div>
+  </header>
+
+  <main class="crm-content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Reservas</h1>
+        <p class="page-subtitle">Gestión completa de reservas y calendario</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-crm btn-crm-secondary btn-crm-sm" id="btn-export-res">
+          <i class="fas fa-download"></i> Exportar
+        </button>
+        <button class="btn-crm btn-crm-primary" id="btn-new-res">
+          <i class="fas fa-plus"></i> Nueva Reserva
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats rápidas por estado -->
+    <div id="status-stats" class="d-flex gap-2 flex-wrap mb-4">
+      <!-- Generadas por JS -->
+    </div>
+
+    <!-- Filtros + navegación fecha -->
+    <div class="crm-card mb-3">
+      <div class="crm-card-body">
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+          <div class="d-flex align-items-center gap-2">
+            <button class="btn-crm-icon" id="btn-prev-day"><i class="fas fa-chevron-left"></i></button>
+            <input type="date" id="date-picker" class="form-control-crm" style="width:180px">
+            <button class="btn-crm-icon" id="btn-next-day"><i class="fas fa-chevron-right"></i></button>
+            <button class="btn-crm btn-crm-secondary btn-crm-sm" id="btn-today">Hoy</button>
+          </div>
+          <div class="flex-1"></div>
+          <select id="filter-status" class="form-control-crm" style="width:auto">
+            <option value="">Todos los estados</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="confirmada">Confirmada</option>
+            <option value="sentado">Sentado</option>
+            <option value="finalizada">Finalizada</option>
+            <option value="cancelada">Cancelada</option>
+            <option value="no_presentado">No se presentó</option>
+          </select>
+          <div class="search-input-wrapper" style="min-width:180px">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="search-res" class="form-control-crm" placeholder="Buscar cliente...">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla de reservas -->
+    <div class="crm-card">
+      <div class="crm-card-header">
+        <span class="crm-card-title"><i class="fas fa-calendar-check text-brand"></i>
+          Reservas del <span id="date-label">—</span>
+        </span>
+        <span class="text-muted-sm" id="res-count">—</span>
+      </div>
+      <div class="table-wrapper">
+        <table class="crm-table">
+          <thead>
+            <tr>
+              <th>Hora</th>
+              <th>Cliente</th>
+              <th>Mesa</th>
+              <th>Pax</th>
+              <th>Estado</th>
+              <th>Notas</th>
+              <th>Fuente</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="res-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+</div>
+
+<!-- ═══ MODAL: Crear/Editar Reserva ════════════════════════ -->
+<div class="modal fade" id="modal-res" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal-res-title">Nueva Reserva</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="form-res" novalidate>
+          <input type="hidden" id="res-id">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Cliente *</label>
+                <select name="customer_id" id="sel-customer" class="form-control-crm" required>
+                  <option value="">— Seleccionar cliente —</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Mesa *</label>
+                <select name="table_id" id="sel-table" class="form-control-crm" required>
+                  <option value="">— Seleccionar mesa —</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Fecha y hora *</label>
+                <input type="datetime-local" name="reservation_date" id="inp-datetime" class="form-control-crm" required>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label class="form-label">Comensales *</label>
+                <input type="number" name="guests" class="form-control-crm" min="1" max="30" value="2" required>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label class="form-label">Duración (min)</label>
+                <input type="number" name="duration_minutes" class="form-control-crm" value="90" min="30" step="15">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Estado</label>
+                <select name="status" class="form-control-crm">
+                  <option value="pendiente">Pendiente</option>
+                  <option value="confirmada">Confirmada</option>
+                  <option value="sentado">Sentado</option>
+                  <option value="finalizada">Finalizada</option>
+                  <option value="cancelada">Cancelada</option>
+                  <option value="no_presentado">No se presentó</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Fuente</label>
+                <select name="source" class="form-control-crm">
+                  <option value="manual">Manual</option>
+                  <option value="web">Web</option>
+                  <option value="teléfono">Teléfono</option>
+                  <option value="whatsapp">WhatsApp</option>
+                  <option value="email">Email</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label class="form-label">Notas internas</label>
+                <textarea name="notes" class="form-control-crm" rows="3" placeholder="Celebración, pedidos especiales, alergias a considerar..."></textarea>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-crm btn-crm-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn-crm btn-crm-primary" id="btn-save-res">
+          <i class="fas fa-save"></i> Guardar Reserva
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/auth.js"></script>
+<script>
+let currentDate = todayISO();
+let allRes = [];
+
+async function loadReservations() {
+  const status = document.getElementById('filter-status').value;
+  const search = document.getElementById('search-res').value.trim();
+
+  tableLoading('res-tbody', 8);
+  const { data, error } = await DB.getReservations({ date: currentDate, status, search });
+  if (error) { showToast('Error', 'No se pudieron cargar las reservas.', 'error'); return; }
+
+  allRes = data || [];
+  renderReservations();
+  renderStatusStats(allRes);
+}
+
+function renderReservations() {
+  const tbody = document.getElementById('res-tbody');
+  document.getElementById('res-count').textContent = `${allRes.length} reserva${allRes.length!==1?'s':''}`;
+  document.getElementById('date-label').textContent = new Date(currentDate + 'T12:00:00').toLocaleDateString('es-AR', { weekday:'long', day:'numeric', month:'long' });
+
+  if (!allRes.length) {
+    tableEmpty('res-tbody', 8, 'No hay reservas para esta fecha con los filtros aplicados.');
+    return;
+  }
+
+  tbody.innerHTML = allRes.map(r => {
+    const customer = r.customer || DEMO_CUSTOMERS.find(c=>c.id===r.customer_id);
+    const table    = r.table    || DEMO_TABLES.find(t=>t.id===r.table_id);
+    return `
+      <tr>
+        <td><strong>${formatTime(r.reservation_date)}</strong></td>
+        <td>${customerCell(customer)}</td>
+        <td>${table ? `<strong>${table.table_number}</strong> <span class="text-muted-sm">(${table.capacity} pax · ${table.location})</span>` : '—'}</td>
+        <td><strong>${r.guests}</strong></td>
+        <td>
+          <div class="d-flex flex-column gap-1">
+            ${reservationBadge(r.status)}
+            <select class="form-control-crm" style="padding:2px 6px;font-size:11px;width:auto" onchange="changeStatus('${r.id}', this.value)">
+              <option value="">Cambiar estado...</option>
+              <option value="pendiente">→ Pendiente</option>
+              <option value="confirmada">→ Confirmada</option>
+              <option value="sentado">→ Sentar</option>
+              <option value="finalizada">→ Finalizar</option>
+              <option value="cancelada">→ Cancelar</option>
+              <option value="no_presentado">→ No se presentó</option>
+            </select>
+          </div>
+        </td>
+        <td style="max-width:200px">
+          <span style="font-size:12px;color:var(--text-muted)">${r.notes || '—'}</span>
+        </td>
+        <td><span class="text-muted-sm text-capitalize">${r.source||'manual'}</span></td>
+        <td>
+          <div class="d-flex gap-1">
+            <button class="btn-crm-icon" onclick="editRes('${r.id}')" title="Editar"><i class="fas fa-edit"></i></button>
+            <button class="btn-crm-icon" onclick="deleteRes('${r.id}')" title="Eliminar" style="color:var(--clr-danger)"><i class="fas fa-trash"></i></button>
+          </div>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+function renderStatusStats(reservations) {
+  const counts = {};
+  reservations.forEach(r => { counts[r.status] = (counts[r.status]||0)+1; });
+  const statuses = ['pendiente','confirmada','sentado','finalizada','cancelada','no_presentado'];
+  const labels   = ['Pendiente','Confirmada','Sentado','Finalizada','Cancelada','No se presentó'];
+
+  document.getElementById('status-stats').innerHTML = statuses.map((s,i) =>
+    `<div class="crm-card d-flex align-items-center gap-2 py-2 px-3" style="min-width:130px">
+      ${reservationBadge(s)}
+      <span class="fw-700 ff-heading" style="font-size:20px">${counts[s]||0}</span>
+    </div>`
+  ).join('');
+}
+
+async function changeStatus(id, status) {
+  if (!status) return;
+  const { error } = await DB.updateReservation(id, { status });
+  if (error) { showToast('Error', 'No se pudo actualizar el estado.', 'error'); return; }
+  showToast('Actualizado', `Estado cambiado a: ${status}`, 'success');
+  loadReservations();
+}
+
+function editRes(id) {
+  const r = allRes.find(x=>x.id===id) || DEMO_RESERVATIONS.find(x=>x.id===id);
+  if (!r) return;
+  document.getElementById('modal-res-title').textContent = 'Editar Reserva';
+  document.getElementById('res-id').value = r.id;
+  const form = document.getElementById('form-res');
+  populateForm(form, {
+    customer_id:       r.customer_id||'',
+    table_id:          r.table_id||'',
+    reservation_date:  dateTimeForInput(r.reservation_date),
+    guests:            r.guests,
+    duration_minutes:  r.duration_minutes||90,
+    status:            r.status,
+    source:            r.source||'manual',
+    notes:             r.notes||'',
+  });
+  openModal('modal-res');
+}
+
+async function deleteRes(id) {
+  confirmAction('¿Eliminar esta reserva? No se puede deshacer.', async () => {
+    await DB.deleteReservation(id);
+    showToast('Eliminada', 'Reserva eliminada.', 'success');
+    loadReservations();
+  });
+}
+
+// Poblar selects del modal
+async function populateSelects() {
+  const custSel  = document.getElementById('sel-customer');
+  const tableSel = document.getElementById('sel-table');
+
+  const { data: custs }  = await DB.getCustomers();
+  const { data: tables } = await DB.getTables();
+
+  custSel.innerHTML  = '<option value="">— Seleccionar cliente —</option>' +
+    (custs||[]).map(c=>`<option value="${c.id}">${c.name} ${c.surname||''} ${c.vip_status?'(VIP)':''}</option>`).join('');
+
+  tableSel.innerHTML = '<option value="">— Seleccionar mesa —</option>' +
+    (tables||[]).map(t=>`<option value="${t.id}">Mesa ${t.table_number} – ${t.capacity} pax – ${t.location} (${t.status})</option>`).join('');
+}
+
+document.getElementById('btn-new-res').addEventListener('click', () => {
+  document.getElementById('modal-res-title').textContent = 'Nueva Reserva';
+  document.getElementById('res-id').value = '';
+  document.getElementById('form-res').reset();
+  document.getElementById('inp-datetime').value = `${currentDate}T20:00`;
+  openModal('modal-res');
+});
+
+document.getElementById('btn-save-res').addEventListener('click', async () => {
+  const form = document.getElementById('form-res');
+  const id   = document.getElementById('res-id').value;
+  const data = formToObject(form);
+
+  if (!data.customer_id) { showToast('Requerido', 'Seleccioná un cliente.', 'warning'); return; }
+  if (!data.reservation_date) { showToast('Requerido', 'Indicá fecha y hora.', 'warning'); return; }
+
+  const payload = {
+    customer_id:      data.customer_id,
+    table_id:         data.table_id || null,
+    reservation_date: new Date(data.reservation_date).toISOString(),
+    guests:           parseInt(data.guests)||2,
+    duration_minutes: parseInt(data.duration_minutes)||90,
+    status:           data.status||'pendiente',
+    source:           data.source||'manual',
+    notes:            data.notes?.trim()||null,
+  };
+
+  const result = id ? await DB.updateReservation(id, payload) : await DB.createReservation(payload);
+  if (result.error) { showToast('Error', 'No se pudo guardar la reserva.', 'error'); return; }
+
+  showToast('Guardado', id ? 'Reserva actualizada.' : 'Reserva creada correctamente.', 'success');
+  closeModal('modal-res');
+  loadReservations();
+});
+
+// Navegación de fechas
+document.getElementById('date-picker').addEventListener('change', e => { currentDate = e.target.value; loadReservations(); });
+document.getElementById('btn-prev-day').addEventListener('click', () => {
+  const d = new Date(currentDate + 'T12:00:00');
+  d.setDate(d.getDate()-1);
+  currentDate = d.toISOString().split('T')[0];
+  document.getElementById('date-picker').value = currentDate;
+  loadReservations();
+});
+document.getElementById('btn-next-day').addEventListener('click', () => {
+  const d = new Date(currentDate + 'T12:00:00');
+  d.setDate(d.getDate()+1);
+  currentDate = d.toISOString().split('T')[0];
+  document.getElementById('date-picker').value = currentDate;
+  loadReservations();
+});
+document.getElementById('btn-today').addEventListener('click', () => {
+  currentDate = todayISO();
+  document.getElementById('date-picker').value = currentDate;
+  loadReservations();
+});
+document.getElementById('filter-status').addEventListener('change', loadReservations);
+document.getElementById('search-res').addEventListener('input', debounce(loadReservations, 300));
+
+document.getElementById('btn-export-res').addEventListener('click', () => {
+  const headers = ['Fecha','Hora','Cliente','Mesa','Pax','Estado','Fuente','Notas'];
+  const rows = allRes.map(r => {
+    const c = r.customer || DEMO_CUSTOMERS.find(x=>x.id===r.customer_id);
+    const t = r.table    || DEMO_TABLES.find(x=>x.id===r.table_id);
+    return [formatDate(r.reservation_date), formatTime(r.reservation_date), c?`${c.name} ${c.surname||''}`:'', t?t.table_number:'', r.guests, r.status, r.source||'', r.notes||''];
+  });
+  exportCSV(headers, rows, `reservas-${currentDate}.csv`);
+});
+
+// Init
+document.getElementById('date-picker').value = currentDate;
+populateSelects();
+loadReservations();
+
+if (new URLSearchParams(location.search).get('new') === '1') {
+  setTimeout(() => document.getElementById('btn-new-res').click(), 500);
+}
+</script>
+</body>
+</html>

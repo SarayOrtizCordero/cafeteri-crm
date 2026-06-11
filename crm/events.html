@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eventos – CRM Restaurante</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/crm.css">
+  <style>
+    .event-card { border-radius: var(--radius-lg); border: 1px solid var(--border); background: var(--bg-card); overflow: hidden; box-shadow: var(--shadow-sm); transition: box-shadow .2s ease, transform .2s ease; }
+    .event-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .event-card-header { padding: 18px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .event-card-body { padding: 16px 20px; }
+    .capacity-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin: 8px 0; }
+    .capacity-fill { height: 100%; border-radius: 3px; transition: width .4s ease; }
+  </style>
+</head>
+<body>
+<div id="toast-container"></div>
+<div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+<div class="crm-wrapper">
+<aside class="crm-sidebar" id="crm-sidebar">
+  <a href="dashboard.html" class="sidebar-brand">
+    <div class="sidebar-brand-icon"><i class="fas fa-utensils"></i></div>
+    <div class="sidebar-brand-text">Café de la Esquina<small>CRM Restaurante</small></div>
+  </a>
+  <nav class="sidebar-nav">
+    <span class="sidebar-section-label">Principal</span>
+    <a href="dashboard.html"    class="sidebar-link"><i class="fas fa-tachometer-alt sidebar-link-icon"></i><span class="sidebar-link-text">Dashboard</span></a>
+    <a href="customers.html"    class="sidebar-link"><i class="fas fa-users sidebar-link-icon"></i><span class="sidebar-link-text">Clientes</span></a>
+    <a href="reservations.html" class="sidebar-link"><i class="fas fa-calendar-check sidebar-link-icon"></i><span class="sidebar-link-text">Reservas</span></a>
+    <a href="tables.html"       class="sidebar-link"><i class="fas fa-chair sidebar-link-icon"></i><span class="sidebar-link-text">Mesas</span></a>
+    <a href="waiting-list.html" class="sidebar-link"><i class="fas fa-clock sidebar-link-icon"></i><span class="sidebar-link-text">Lista de Espera</span></a>
+    <span class="sidebar-section-label">Gestión</span>
+    <a href="events.html"       class="sidebar-link"><i class="fas fa-star sidebar-link-icon"></i><span class="sidebar-link-text">Eventos</span></a>
+    <a href="loyalty.html"      class="sidebar-link"><i class="fas fa-medal sidebar-link-icon"></i><span class="sidebar-link-text">Fidelización</span></a>
+    <a href="promotions.html"   class="sidebar-link"><i class="fas fa-tag sidebar-link-icon"></i><span class="sidebar-link-text">Promociones</span></a>
+    <a href="campaigns.html"    class="sidebar-link"><i class="fas fa-envelope sidebar-link-icon"></i><span class="sidebar-link-text">Campañas Email</span></a>
+    <span class="sidebar-section-label">Operación</span>
+    <a href="reviews.html"      class="sidebar-link"><i class="fas fa-star-half-alt sidebar-link-icon"></i><span class="sidebar-link-text">Reseñas</span></a>
+    <a href="incidents.html"    class="sidebar-link"><i class="fas fa-exclamation-triangle sidebar-link-icon"></i><span class="sidebar-link-text">Incidencias</span></a>
+    <a href="analytics.html"    class="sidebar-link"><i class="fas fa-chart-bar sidebar-link-icon"></i><span class="sidebar-link-text">Analíticas</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="sidebar-avatar">AD</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="sidebar-user-name">Usuario</div>
+        <div class="sidebar-user-role" id="sidebar-user-role">Rol</div>
+      </div>
+      <button class="sidebar-collapse-btn" id="sidebar-collapse-btn"><i class="fas fa-chevron-left"></i></button>
+    </div>
+  </div>
+</aside>
+
+<div class="crm-main" id="crm-main">
+  <header class="crm-topbar">
+    <button class="topbar-menu-btn" id="topbar-menu-btn"><i class="fas fa-bars"></i></button>
+    <nav class="topbar-breadcrumb">
+      <span class="topbar-breadcrumb-item">CRM</span>
+      <span class="topbar-breadcrumb-sep">/</span>
+      <span class="topbar-breadcrumb-current">Eventos Especiales</span>
+    </nav>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-actions">
+      <div class="topbar-user">
+        <div class="topbar-avatar" id="topbar-avatar">AD</div>
+        <span class="topbar-user-name" id="topbar-user-name">Admin</span>
+      </div>
+      <button class="topbar-btn" id="btn-logout"><i class="fas fa-sign-out-alt"></i></button>
+    </div>
+  </header>
+
+  <main class="crm-content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Eventos Especiales</h1>
+        <p class="page-subtitle">Gestión de catas, cenas temáticas, celebraciones y más</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-crm btn-crm-primary" id="btn-new-event">
+          <i class="fas fa-plus"></i> Nuevo Evento
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-grid mb-4" style="grid-template-columns:repeat(3,1fr)">
+      <div class="stat-card">
+        <div class="stat-icon primary"><i class="fas fa-calendar-star"></i></div>
+        <div class="stat-body"><div class="stat-value" id="stat-activos">—</div><div class="stat-label">Eventos activos</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon warning"><i class="fas fa-users"></i></div>
+        <div class="stat-body"><div class="stat-value" id="stat-inscriptos">—</div><div class="stat-label">Inscriptos totales</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon success"><i class="fas fa-ticket-alt"></i></div>
+        <div class="stat-body"><div class="stat-value" id="stat-disponibles">—</div><div class="stat-label">Plazas disponibles</div></div>
+      </div>
+    </div>
+
+    <!-- Cards de eventos -->
+    <div class="row g-3" id="events-grid">
+      <div class="col-12 text-center py-5">
+        <div class="spinner mx-auto" style="width:28px;height:28px"></div>
+      </div>
+    </div>
+  </main>
+</div>
+</div>
+
+<!-- Modal evento -->
+<div class="modal fade" id="modal-event" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal-event-title">Nuevo Evento</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="form-event" novalidate>
+          <input type="hidden" id="event-id">
+          <div class="row g-3">
+            <div class="col-12">
+              <div class="form-group">
+                <label class="form-label">Nombre del evento *</label>
+                <input type="text" name="title" class="form-control-crm" required placeholder="Ej: Cata de Vinos Mendocinos">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Fecha y hora *</label>
+                <input type="datetime-local" name="event_date" class="form-control-crm" required>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label class="form-label">Capacidad máx.</label>
+                <input type="number" name="capacity" class="form-control-crm" min="1" placeholder="Ilimitada">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label class="form-label">Precio por persona</label>
+                <input type="number" name="price" class="form-control-crm" min="0" step="100" placeholder="0 = gratis">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Estado</label>
+                <select name="status" class="form-control-crm">
+                  <option value="activo">Activo</option>
+                  <option value="completo">Completo</option>
+                  <option value="cancelado">Cancelado</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label class="form-label">Descripción</label>
+                <textarea name="description" class="form-control-crm" rows="4" placeholder="Describí el evento, qué incluye, cómo se desarrolla..."></textarea>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-crm btn-crm-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn-crm btn-crm-primary" id="btn-save-event">
+          <i class="fas fa-save"></i> Guardar Evento
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/auth.js"></script>
+<script>
+let allEvents = [];
+
+const EVENT_ICONS = { 'Cata':  '🍷', 'Noche': '🌙', 'Cena':  '🍽️', 'Brunch':'☕', 'Default': '✨' };
+function eventIcon(title) {
+  for (const [key, ico] of Object.entries(EVENT_ICONS)) if (title.includes(key)) return ico;
+  return EVENT_ICONS.Default;
+}
+
+async function loadEvents() {
+  const { data } = await DB.getEvents();
+  allEvents = data || [];
+  renderEvents();
+  updateStats();
+}
+
+function updateStats() {
+  const activos     = allEvents.filter(e=>e.status==='activo').length;
+  const inscriptos  = allEvents.reduce((s,e)=>s+e.current_attendees,0);
+  const disponibles = allEvents.reduce((s,e)=>s+(e.capacity?e.capacity-e.current_attendees:0),0);
+  document.getElementById('stat-activos').textContent    = activos;
+  document.getElementById('stat-inscriptos').textContent = inscriptos;
+  document.getElementById('stat-disponibles').textContent= disponibles;
+}
+
+function renderEvents() {
+  const grid = document.getElementById('events-grid');
+  if (!allEvents.length) {
+    grid.innerHTML = `<div class="col-12"><div class="empty-state"><div class="empty-state-icon">📅</div><div class="empty-state-title">Sin eventos programados</div><p>Creá un nuevo evento para empezar.</p><button class="btn-crm btn-crm-primary" onclick="document.getElementById('btn-new-event').click()"><i class="fas fa-plus"></i> Nuevo Evento</button></div></div>`;
+    return;
+  }
+
+  const statusMap = {
+    activo:   { cls: 'badge-sentado',    label: 'Activo' },
+    completo: { cls: 'badge-pendiente',  label: 'Completo' },
+    cancelado:{ cls: 'badge-cancelada',  label: 'Cancelado' },
+  };
+
+  grid.innerHTML = allEvents.map(e => {
+    const pct    = e.capacity ? Math.round((e.current_attendees / e.capacity) * 100) : 0;
+    const color  = pct >= 100 ? '#EF4444' : pct >= 80 ? '#F59E0B' : '#10B981';
+    const avail  = e.capacity ? e.capacity - e.current_attendees : null;
+    const badge  = statusMap[e.status] || { cls:'', label: e.status };
+    const isPast = new Date(e.event_date) < new Date();
+    return `
+      <div class="col-md-6 col-xl-4">
+        <div class="event-card ${isPast ? 'opacity-75' : ''}">
+          <div class="event-card-header">
+            <div>
+              <h3 style="font-family:var(--font-heading);font-size:17px;margin:0 0 6px">
+                ${eventIcon(e.title)} ${e.title}
+              </h3>
+              <div class="text-muted-sm">
+                <i class="fas fa-calendar me-1"></i>
+                ${formatDate(e.event_date, {time:true})}
+              </div>
+            </div>
+            <span class="badge-status ${badge.cls}">${badge.label}</span>
+          </div>
+          <div class="event-card-body">
+            ${e.description ? `<p style="font-size:13px;color:var(--text-muted);margin-bottom:12px">${e.description}</p>` : ''}
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <div style="font-size:11px;color:var(--text-muted);font-weight:700">INSCRIPTOS</div>
+                <div class="fw-700">${e.current_attendees}${e.capacity?'/'+e.capacity:''}</div>
+              </div>
+              <div class="col-6">
+                <div style="font-size:11px;color:var(--text-muted);font-weight:700">PRECIO</div>
+                <div class="fw-700">${e.price ? formatCurrency(e.price) : 'Gratuito'}</div>
+              </div>
+            </div>
+            ${e.capacity ? `
+            <div>
+              <div class="d-flex justify-content-between" style="font-size:11px;color:var(--text-muted)">
+                <span>Ocupación</span><span>${pct}%</span>
+              </div>
+              <div class="capacity-bar">
+                <div class="capacity-fill" style="width:${Math.min(pct,100)}%;background:${color}"></div>
+              </div>
+              <div style="font-size:11px;color:${avail>0?'var(--clr-success)':'var(--clr-danger)'};font-weight:700">
+                ${avail>0?avail+' plazas disponibles':'Sin plazas disponibles'}
+              </div>
+            </div>` : '<div class="text-muted-sm">Sin límite de capacidad</div>'}
+            <div class="d-flex gap-2 mt-3">
+              <button class="btn-crm btn-crm-secondary btn-crm-sm flex-1 justify-content-center" onclick="editEvent('${e.id}')">
+                <i class="fas fa-edit"></i> Editar
+              </button>
+              <button class="btn-crm btn-crm-primary btn-crm-sm" onclick="addAttendee('${e.id}')">
+                <i class="fas fa-user-plus"></i> +1
+              </button>
+              <button class="btn-crm-icon btn-crm-sm" onclick="deleteEvent('${e.id}')" style="color:var(--clr-danger)">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function editEvent(id) {
+  const e = allEvents.find(x=>x.id===id);
+  if (!e) return;
+  document.getElementById('modal-event-title').textContent = 'Editar Evento';
+  document.getElementById('event-id').value = e.id;
+  populateForm(document.getElementById('form-event'), {
+    title: e.title, description: e.description||'',
+    event_date: dateTimeForInput(e.event_date),
+    capacity: e.capacity||'', price: e.price||'', status: e.status
+  });
+  openModal('modal-event');
+}
+
+async function addAttendee(id) {
+  const e = allEvents.find(x=>x.id===id);
+  if (!e) return;
+  if (e.capacity && e.current_attendees >= e.capacity) {
+    showToast('Completo', 'Este evento ya no tiene plazas disponibles.', 'warning'); return;
+  }
+  await DB.updateEvent(id, { current_attendees: e.current_attendees + 1 });
+  showToast('Inscripto', 'Se añadió 1 inscripto al evento.', 'success');
+  loadEvents();
+}
+
+async function deleteEvent(id) {
+  confirmAction('¿Eliminar este evento? No se puede deshacer.', async () => {
+    await DB.deleteEvent(id);
+    showToast('Eliminado', 'Evento eliminado.', 'success');
+    loadEvents();
+  });
+}
+
+document.getElementById('btn-new-event').addEventListener('click', () => {
+  document.getElementById('modal-event-title').textContent = 'Nuevo Evento';
+  document.getElementById('event-id').value = '';
+  document.getElementById('form-event').reset();
+  openModal('modal-event');
+});
+
+document.getElementById('btn-save-event').addEventListener('click', async () => {
+  const form = document.getElementById('form-event');
+  const id   = document.getElementById('event-id').value;
+  const data = formToObject(form);
+
+  if (!data.title?.trim()) { showToast('Requerido', 'El nombre del evento es obligatorio.', 'warning'); return; }
+  if (!data.event_date) { showToast('Requerido', 'La fecha es obligatoria.', 'warning'); return; }
+
+  const payload = {
+    title:       data.title.trim(),
+    description: data.description?.trim() || null,
+    event_date:  new Date(data.event_date).toISOString(),
+    capacity:    data.capacity ? parseInt(data.capacity) : null,
+    price:       data.price ? parseFloat(data.price) : null,
+    status:      data.status || 'activo',
+  };
+
+  const result = id ? await DB.updateEvent(id, payload) : await DB.createEvent(payload);
+  if (result.error) { showToast('Error', 'No se pudo guardar el evento.', 'error'); return; }
+
+  showToast('Guardado', id ? 'Evento actualizado.' : 'Evento creado correctamente.', 'success');
+  closeModal('modal-event');
+  loadEvents();
+});
+
+loadEvents();
+</script>
+</body>
+</html>

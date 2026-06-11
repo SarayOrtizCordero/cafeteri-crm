@@ -1,0 +1,19 @@
+# Dependencias
+node_modules/
+
+# Archivos internos de Claude Code
+.agents/
+.claude/
+
+# Configuración local
+settings.local.json
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores
+.vscode/
+*.swp
+*.swo

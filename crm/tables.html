@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mesas – CRM Restaurante</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/crm.css">
+  <style>
+    .zone-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .08em; color: var(--text-muted);
+      border-bottom: 2px solid var(--border); padding-bottom: 8px; margin-bottom: 12px;
+    }
+    .tables-zone { margin-bottom: 28px; }
+    .tables-grid {
+      display: flex; flex-wrap: wrap; gap: 12px;
+    }
+    .table-card {
+      width: 88px; height: 88px;
+      border-radius: var(--radius);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 4px; cursor: pointer;
+      border: 2px solid transparent;
+      transition: all .2s ease;
+      user-select: none;
+      position: relative;
+    }
+    .table-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+    .table-card.status-libre    { background:rgba(16,185,129,.12); border-color:#10B981; }
+    .table-card.status-reservada{ background:rgba(59,130,246,.12); border-color:#3B82F6; }
+    .table-card.status-ocupada  { background:rgba(160,106,63,.15); border-color:#A06A3F; }
+    .table-card.status-fuera_de_servicio { background:rgba(239,68,68,.08); border-color:#EF4444; opacity:.65; cursor:default; }
+    .table-num  { font-size:20px; font-weight:800; font-family:var(--font-heading); }
+    .table-cap  { font-size:11px; opacity:.8; }
+    .table-stat { font-size:10px; font-weight:700; }
+    .table-card.status-libre    .table-num { color:#065F46; }
+    .table-card.status-reservada .table-num { color:#1D4ED8; }
+    .table-card.status-ocupada  .table-num { color:#6F4A2A; }
+    .table-card.status-fuera_de_servicio .table-num { color:#B91C1C; }
+    .status-dot { width:10px; height:10px; border-radius:50%; }
+  </style>
+</head>
+<body>
+<div id="toast-container"></div>
+<div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+<div class="crm-wrapper">
+<aside class="crm-sidebar" id="crm-sidebar">
+  <a href="dashboard.html" class="sidebar-brand">
+    <div class="sidebar-brand-icon"><i class="fas fa-utensils"></i></div>
+    <div class="sidebar-brand-text">Café de la Esquina<small>CRM Restaurante</small></div>
+  </a>
+  <nav class="sidebar-nav">
+    <span class="sidebar-section-label">Principal</span>
+    <a href="dashboard.html"    class="sidebar-link"><i class="fas fa-tachometer-alt sidebar-link-icon"></i><span class="sidebar-link-text">Dashboard</span></a>
+    <a href="customers.html"    class="sidebar-link"><i class="fas fa-users sidebar-link-icon"></i><span class="sidebar-link-text">Clientes</span></a>
+    <a href="reservations.html" class="sidebar-link"><i class="fas fa-calendar-check sidebar-link-icon"></i><span class="sidebar-link-text">Reservas</span></a>
+    <a href="tables.html"       class="sidebar-link"><i class="fas fa-chair sidebar-link-icon"></i><span class="sidebar-link-text">Mesas</span></a>
+    <a href="waiting-list.html" class="sidebar-link"><i class="fas fa-clock sidebar-link-icon"></i><span class="sidebar-link-text">Lista de Espera</span></a>
+    <span class="sidebar-section-label">Gestión</span>
+    <a href="events.html"       class="sidebar-link"><i class="fas fa-star sidebar-link-icon"></i><span class="sidebar-link-text">Eventos</span></a>
+    <a href="loyalty.html"      class="sidebar-link"><i class="fas fa-medal sidebar-link-icon"></i><span class="sidebar-link-text">Fidelización</span></a>
+    <a href="promotions.html"   class="sidebar-link"><i class="fas fa-tag sidebar-link-icon"></i><span class="sidebar-link-text">Promociones</span></a>
+    <a href="campaigns.html"    class="sidebar-link"><i class="fas fa-envelope sidebar-link-icon"></i><span class="sidebar-link-text">Campañas Email</span></a>
+    <span class="sidebar-section-label">Operación</span>
+    <a href="reviews.html"      class="sidebar-link"><i class="fas fa-star-half-alt sidebar-link-icon"></i><span class="sidebar-link-text">Reseñas</span></a>
+    <a href="incidents.html"    class="sidebar-link"><i class="fas fa-exclamation-triangle sidebar-link-icon"></i><span class="sidebar-link-text">Incidencias</span></a>
+    <a href="analytics.html"    class="sidebar-link"><i class="fas fa-chart-bar sidebar-link-icon"></i><span class="sidebar-link-text">Analíticas</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="sidebar-avatar">AD</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="sidebar-user-name">Usuario</div>
+        <div class="sidebar-user-role" id="sidebar-user-role">Rol</div>
+      </div>
+      <button class="sidebar-collapse-btn" id="sidebar-collapse-btn"><i class="fas fa-chevron-left"></i></button>
+    </div>
+  </div>
+</aside>
+
+<div class="crm-main" id="crm-main">
+  <header class="crm-topbar">
+    <button class="topbar-menu-btn" id="topbar-menu-btn"><i class="fas fa-bars"></i></button>
+    <nav class="topbar-breadcrumb">
+      <span class="topbar-breadcrumb-item">CRM</span>
+      <span class="topbar-breadcrumb-sep">/</span>
+      <span class="topbar-breadcrumb-current">Mesas</span>
+    </nav>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-actions">
+      <div class="topbar-user">
+        <div class="topbar-avatar" id="topbar-avatar">AD</div>
+        <span class="topbar-user-name" id="topbar-user-name">Admin</span>
+      </div>
+      <button class="topbar-btn" id="btn-logout"><i class="fas fa-sign-out-alt"></i></button>
+    </div>
+  </header>
+
+  <main class="crm-content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Gestión de Mesas</h1>
+        <p class="page-subtitle">Plano visual del restaurante y estado en tiempo real</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-crm btn-crm-secondary btn-crm-sm" id="btn-refresh">
+          <i class="fas fa-sync-alt"></i> Actualizar
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-grid mb-4" style="grid-template-columns:repeat(4,1fr)">
+      <div class="stat-card">
+        <div class="stat-icon success"><i class="fas fa-door-open"></i></div>
+        <div class="stat-body"><div class="stat-value" id="s-libres">—</div><div class="stat-label">Libres</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon primary"><i class="fas fa-user-friends"></i></div>
+        <div class="stat-body"><div class="stat-value" id="s-ocupadas">—</div><div class="stat-label">Ocupadas</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon info"><i class="fas fa-calendar"></i></div>
+        <div class="stat-body"><div class="stat-value" id="s-reservadas">—</div><div class="stat-label">Reservadas</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon danger"><i class="fas fa-tools"></i></div>
+        <div class="stat-body"><div class="stat-value" id="s-fuera">—</div><div class="stat-label">Fuera de servicio</div></div>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <!-- Plano visual -->
+      <div class="col-lg-8">
+        <div class="crm-card">
+          <div class="crm-card-header">
+            <span class="crm-card-title"><i class="fas fa-map-marked-alt text-brand"></i> Plano del Restaurante</span>
+            <div class="d-flex gap-2 align-items-center flex-wrap">
+              <span class="d-flex align-items-center gap-1" style="font-size:12px"><span class="status-dot" style="background:#10B981"></span>Libre</span>
+              <span class="d-flex align-items-center gap-1" style="font-size:12px"><span class="status-dot" style="background:#A06A3F"></span>Ocupada</span>
+              <span class="d-flex align-items-center gap-1" style="font-size:12px"><span class="status-dot" style="background:#3B82F6"></span>Reservada</span>
+              <span class="d-flex align-items-center gap-1" style="font-size:12px"><span class="status-dot" style="background:#EF4444"></span>Fuera servicio</span>
+            </div>
+          </div>
+          <div class="crm-card-body" id="floor-plan-body">
+            <!-- Generado por JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Detalle + acciones rápidas -->
+      <div class="col-lg-4">
+        <!-- Seleccionada -->
+        <div class="crm-card mb-3" id="selected-table-card" style="display:none">
+          <div class="crm-card-header">
+            <span class="crm-card-title"><i class="fas fa-chair text-brand"></i> Mesa seleccionada</span>
+          </div>
+          <div class="crm-card-body" id="selected-table-body"></div>
+          <div class="crm-card-footer d-grid gap-2" id="selected-table-actions"></div>
+        </div>
+
+        <!-- Lista tabla -->
+        <div class="crm-card">
+          <div class="crm-card-header">
+            <span class="crm-card-title">Todas las mesas</span>
+          </div>
+          <div style="max-height:420px;overflow-y:auto">
+            <table class="crm-table">
+              <thead>
+                <tr><th>#</th><th>Ubicación</th><th>Cap.</th><th>Estado</th></tr>
+              </thead>
+              <tbody id="tables-list-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</div>
+
+<!-- Modal cambiar estado -->
+<div class="modal fade" id="modal-table-status" tabindex="-1">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cambiar estado – Mesa <span id="modal-table-num"></span></h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted-sm mb-3">Seleccioná el nuevo estado para esta mesa:</p>
+        <div class="d-grid gap-2">
+          <button class="btn-crm btn-crm-secondary justify-content-center" onclick="setTableStatus('libre')">
+            <span class="status-dot" style="background:#10B981"></span> Libre
+          </button>
+          <button class="btn-crm btn-crm-secondary justify-content-center" onclick="setTableStatus('reservada')">
+            <span class="status-dot" style="background:#3B82F6"></span> Reservada
+          </button>
+          <button class="btn-crm btn-crm-secondary justify-content-center" onclick="setTableStatus('ocupada')">
+            <span class="status-dot" style="background:#A06A3F"></span> Ocupada
+          </button>
+          <button class="btn-crm btn-crm-secondary justify-content-center" onclick="setTableStatus('fuera_de_servicio')">
+            <span class="status-dot" style="background:#EF4444"></span> Fuera de servicio
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/auth.js"></script>
+<script>
+let allTables = [];
+let selectedTableId = null;
+
+async function loadTables() {
+  const { data } = await DB.getTables();
+  allTables = data || [];
+  renderFloorPlan();
+  renderTablesList();
+  updateStats();
+}
+
+function updateStats() {
+  const counts = { libre:0, ocupada:0, reservada:0, fuera_de_servicio:0 };
+  allTables.forEach(t => { counts[t.status] = (counts[t.status]||0)+1; });
+  document.getElementById('s-libres').textContent    = counts.libre;
+  document.getElementById('s-ocupadas').textContent  = counts.ocupada;
+  document.getElementById('s-reservadas').textContent= counts.reservada;
+  document.getElementById('s-fuera').textContent     = counts.fuera_de_servicio;
+}
+
+function renderFloorPlan() {
+  const locations = ['interior','terraza','barra','privado'];
+  const labels = { interior:'Interior', terraza:'Terraza', barra:'Barra', privado:'Salón Privado' };
+
+  const body = document.getElementById('floor-plan-body');
+  body.innerHTML = locations.map(loc => {
+    const zoneTables = allTables.filter(t => t.location === loc);
+    if (!zoneTables.length) return '';
+    return `
+      <div class="tables-zone">
+        <div class="zone-label"><i class="fas ${loc==='terraza'?'fa-sun':loc==='barra'?'fa-glass-martini-alt':loc==='privado'?'fa-door-closed':'fa-couch'} me-1"></i>${labels[loc]}</div>
+        <div class="tables-grid">
+          ${zoneTables.map(t => `
+            <div class="table-card status-${t.status}" onclick="selectTable('${t.id}')" id="tc-${t.id}" title="Mesa ${t.table_number} – ${t.capacity} pax">
+              <div class="table-num">${t.table_number}</div>
+              <div class="table-cap"><i class="fas fa-user"></i> ${t.capacity}</div>
+            </div>`).join('')}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function renderTablesList() {
+  const tbody = document.getElementById('tables-list-tbody');
+  tbody.innerHTML = allTables.map(t => `
+    <tr class="${selectedTableId===t.id?'table-active':''}" onclick="selectTable('${t.id}')" style="cursor:pointer">
+      <td><strong>${t.table_number}</strong></td>
+      <td class="text-capitalize">${t.location}</td>
+      <td>${t.capacity} pax</td>
+      <td>${tableBadge(t.status)}</td>
+    </tr>`).join('');
+}
+
+function selectTable(id) {
+  selectedTableId = id;
+  const t = allTables.find(x=>x.id===id);
+  if (!t) return;
+
+  // Resaltar en plano
+  document.querySelectorAll('.table-card').forEach(el => el.style.outline = 'none');
+  document.getElementById('tc-'+id)?.style.setProperty('outline', '3px solid var(--brand-primary)');
+
+  // Mostrar detalle
+  const card = document.getElementById('selected-table-card');
+  const body = document.getElementById('selected-table-body');
+  const acts = document.getElementById('selected-table-actions');
+  card.style.display = '';
+
+  // Reserva activa en esta mesa
+  const activeRes = DEMO_RESERVATIONS.find(r => r.table_id===id && ['confirmada','sentado'].includes(r.status));
+  const customer  = activeRes ? DEMO_CUSTOMERS.find(c=>c.id===activeRes.customer_id) : null;
+
+  body.innerHTML = `
+    <div class="text-center mb-3">
+      <div style="font-size:40px;font-weight:800;font-family:var(--font-heading);color:var(--brand-primary)">${t.table_number}</div>
+      ${tableBadge(t.status)}
+    </div>
+    <div class="row g-2 text-center mb-3">
+      <div class="col-6">
+        <div class="crm-card p-2">
+          <div class="fw-700 ff-heading" style="font-size:22px">${t.capacity}</div>
+          <div class="text-muted-sm">Cap. máx.</div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="crm-card p-2">
+          <div class="fw-700 text-capitalize">${t.location}</div>
+          <div class="text-muted-sm">Ubicación</div>
+        </div>
+      </div>
+    </div>
+    ${activeRes && customer ? `
+    <div class="crm-card p-3 mb-3" style="border-left:3px solid var(--brand-primary)">
+      <div class="text-muted-sm mb-1 fw-700">RESERVA ACTIVA</div>
+      ${customerCell(customer)}
+      <div class="mt-2 text-muted-sm">
+        ${formatTime(activeRes.reservation_date)} · ${activeRes.guests} pax<br>
+        ${activeRes.notes || ''}
+      </div>
+    </div>` : ''}`;
+
+  acts.innerHTML = `
+    <button class="btn-crm btn-crm-primary justify-content-center" onclick="openStatusModal('${t.id}','${t.table_number}')">
+      <i class="fas fa-edit"></i> Cambiar estado
+    </button>
+    <a href="reservations.html?new=1" class="btn-crm btn-crm-secondary justify-content-center">
+      <i class="fas fa-calendar-plus"></i> Nueva reserva
+    </a>`;
+
+  renderTablesList();
+}
+
+function openStatusModal(id, num) {
+  selectedTableId = id;
+  document.getElementById('modal-table-num').textContent = num;
+  openModal('modal-table-status');
+}
+
+async function setTableStatus(status) {
+  if (!selectedTableId) return;
+  const { error } = await DB.updateTableStatus(selectedTableId, status);
+  if (error) { showToast('Error', 'No se pudo actualizar.', 'error'); return; }
+
+  showToast('Actualizado', `Mesa actualizada a: ${status}`, 'success');
+  closeModal('modal-table-status');
+  await loadTables();
+  selectTable(selectedTableId);
+}
+
+document.getElementById('btn-refresh').addEventListener('click', loadTables);
+
+loadTables();
+</script>
+</body>
+</html>
