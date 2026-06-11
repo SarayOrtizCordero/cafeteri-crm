@@ -135,12 +135,14 @@ function initSidebar() {
   const openMobileSidebar = () => {
     sidebar.classList.add('mobile-open');
     overlay?.classList.add('visible');
+    document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
   };
 
   const closeMobileSidebar = () => {
     sidebar.classList.remove('mobile-open');
     overlay?.classList.remove('visible');
+    document.documentElement.style.overflow = '';
     document.body.style.overflow = '';
   };
 
@@ -153,6 +155,36 @@ function initSidebar() {
       if (window.innerWidth <= 768) closeMobileSidebar();
     });
   });
+
+  // Evitar que el overlay transmita scroll táctil a la página
+  overlay?.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+
+  // Desktop: interceptar wheel sobre el sidebar y redirigirlo al nav interno
+  const nav = sidebar.querySelector('.sidebar-nav');
+  if (nav) {
+    sidebar.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      nav.scrollTop += e.deltaY;
+    }, { passive: false });
+
+    // Móvil: controlar touchmove dentro del sidebar para evitar scroll de página
+    let touchStartY = 0;
+    sidebar.addEventListener('touchstart', (e) => {
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    sidebar.addEventListener('touchmove', (e) => {
+      const delta = touchStartY - e.touches[0].clientY;
+      const atTop    = nav.scrollTop === 0 && delta < 0;
+      const atBottom = nav.scrollTop + nav.clientHeight >= nav.scrollHeight && delta > 0;
+      if (atTop || atBottom) {
+        e.preventDefault();
+      } else {
+        nav.scrollTop += delta * 0.5;
+        touchStartY = e.touches[0].clientY;
+      }
+    }, { passive: false });
+  }
 }
 
 // Marcar link activo en sidebar
