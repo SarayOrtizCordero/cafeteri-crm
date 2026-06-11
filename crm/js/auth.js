@@ -132,14 +132,26 @@ function initSidebar() {
   });
 
   // Mobile
-  menuBtn?.addEventListener('click', () => {
+  const openMobileSidebar = () => {
     sidebar.classList.add('mobile-open');
     overlay?.classList.add('visible');
-  });
+    document.body.style.overflow = 'hidden';
+  };
 
-  overlay?.addEventListener('click', () => {
+  const closeMobileSidebar = () => {
     sidebar.classList.remove('mobile-open');
-    overlay.classList.remove('visible');
+    overlay?.classList.remove('visible');
+    document.body.style.overflow = '';
+  };
+
+  menuBtn?.addEventListener('click', openMobileSidebar);
+  overlay?.addEventListener('click', closeMobileSidebar);
+
+  // Cerrar sidebar al hacer click en un link (móvil)
+  sidebar.querySelectorAll('.sidebar-link').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 768) closeMobileSidebar();
+    });
   });
 }
 
