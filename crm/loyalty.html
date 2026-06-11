@@ -37,7 +37,7 @@
 <div class="crm-wrapper">
 <aside class="crm-sidebar" id="crm-sidebar">
   <a href="dashboard.html" class="sidebar-brand">
-    <div class="sidebar-brand-icon"><i class="fas fa-utensils"></i></div>
+    <div class="sidebar-brand-icon"><i class="fas fa-mug-hot"></i></div>
     <div class="sidebar-brand-text">Café de la Esquina<small>CRM Restaurante</small></div>
   </a>
   <nav class="sidebar-nav">
@@ -105,7 +105,7 @@
     <div class="row g-3 mb-4">
       <div class="col-6 col-md-3">
         <div class="level-card bronce">
-          <div class="level-icon">🥉</div>
+          <div class="level-icon"><i class="fas fa-award" style="color:#CD7F32"></i></div>
           <div class="level-name" style="color:#CD7F32">Bronce</div>
           <div class="level-range">0 – 199 puntos</div>
           <div class="level-count" id="count-bronce">—</div>
@@ -114,7 +114,7 @@
       </div>
       <div class="col-6 col-md-3">
         <div class="level-card plata">
-          <div class="level-icon">🥈</div>
+          <div class="level-icon"><i class="fas fa-medal" style="color:#94A3B8"></i></div>
           <div class="level-name" style="color:#64748B">Plata</div>
           <div class="level-range">200 – 499 puntos</div>
           <div class="level-count" id="count-plata">—</div>
@@ -123,7 +123,7 @@
       </div>
       <div class="col-6 col-md-3">
         <div class="level-card oro">
-          <div class="level-icon">🥇</div>
+          <div class="level-icon"><i class="fas fa-trophy" style="color:#EAB308"></i></div>
           <div class="level-name" style="color:#B45309">Oro</div>
           <div class="level-range">500 – 999 puntos</div>
           <div class="level-count" id="count-oro">—</div>
@@ -132,7 +132,7 @@
       </div>
       <div class="col-6 col-md-3">
         <div class="level-card premium">
-          <div class="level-icon">💜</div>
+          <div class="level-icon"><i class="fas fa-gem" style="color:#9333EA"></i></div>
           <div class="level-name" style="color:#6B21A8">Premium</div>
           <div class="level-range">1000+ puntos</div>
           <div class="level-count" id="count-premium">—</div>
@@ -234,10 +234,10 @@
 let allLoyalty = [];
 
 const LEVELS = [
-  { key:'bronce',  min:0,    max:199,  next:200,  color:'#CD7F32', icon:'🥉' },
-  { key:'plata',   min:200,  max:499,  next:500,  color:'#94A3B8', icon:'🥈' },
-  { key:'oro',     min:500,  max:999,  next:1000, color:'#EAB308', icon:'🥇' },
-  { key:'premium', min:1000, max:Infinity, next:null, color:'#9333EA', icon:'💜' },
+  { key:'bronce',  min:0,    max:199,  next:200,  color:'#CD7F32', icon:'<i class="fas fa-award" style="color:#CD7F32"></i>' },
+  { key:'plata',   min:200,  max:499,  next:500,  color:'#94A3B8', icon:'<i class="fas fa-medal" style="color:#94A3B8"></i>' },
+  { key:'oro',     min:500,  max:999,  next:1000, color:'#EAB308', icon:'<i class="fas fa-trophy" style="color:#EAB308"></i>' },
+  { key:'premium', min:1000, max:Infinity, next:null, color:'#9333EA', icon:'<i class="fas fa-gem" style="color:#9333EA"></i>' },
 ];
 
 function getLevelInfo(points) {
@@ -334,7 +334,7 @@ function updatePreview() {
       <span>${oldLvl.icon} ${formatNumber(currentPts)} pts</span>
       <i class="fas fa-arrow-right text-muted"></i>
       <span class="fw-700" style="color:${newLvl.color}">${newLvl.icon} ${formatNumber(newPts)} pts</span>
-      ${upgraded ? `<span class="badge-status badge-sentado ms-2">⬆️ ¡Sube a ${newLvl.key}!</span>` : ''}
+      ${upgraded ? `<span class="badge-status badge-sentado ms-2"><i class="fas fa-arrow-up me-1"></i>¡Sube a ${newLvl.key}!</span>` : ''}
     </div>`;
 }
 

@@ -34,7 +34,7 @@
 <div class="crm-wrapper">
 <aside class="crm-sidebar" id="crm-sidebar">
   <a href="dashboard.html" class="sidebar-brand">
-    <div class="sidebar-brand-icon"><i class="fas fa-utensils"></i></div>
+    <div class="sidebar-brand-icon"><i class="fas fa-mug-hot"></i></div>
     <div class="sidebar-brand-text">Café de la Esquina<small>CRM Restaurante</small></div>
   </a>
   <nav class="sidebar-nav">
@@ -168,12 +168,12 @@
               <div class="form-group">
                 <label class="form-label">Template</label>
                 <div class="row g-2" id="template-selector">
-                  <div class="col-4"><div class="template-card selected" data-template="general"><div class="template-icon">✉️</div><div style="font-size:12px;font-weight:700">General</div></div></div>
-                  <div class="col-4"><div class="template-card" data-template="bienvenida"><div class="template-icon">👋</div><div style="font-size:12px;font-weight:700">Bienvenida</div></div></div>
-                  <div class="col-4"><div class="template-card" data-template="cumpleanos"><div class="template-icon">🎂</div><div style="font-size:12px;font-weight:700">Cumpleaños</div></div></div>
-                  <div class="col-4"><div class="template-card" data-template="evento"><div class="template-icon">🌟</div><div style="font-size:12px;font-weight:700">Evento</div></div></div>
-                  <div class="col-4"><div class="template-card" data-template="reactivacion"><div class="template-icon">🔄</div><div style="font-size:12px;font-weight:700">Reactivación</div></div></div>
-                  <div class="col-4"><div class="template-card" data-template="promocion"><div class="template-icon">🏷️</div><div style="font-size:12px;font-weight:700">Promoción</div></div></div>
+                  <div class="col-4"><div class="template-card selected" data-template="general"><div class="template-icon"><i class="fas fa-envelope"></i></div><div style="font-size:12px;font-weight:700">General</div></div></div>
+                  <div class="col-4"><div class="template-card" data-template="bienvenida"><div class="template-icon"><i class="fas fa-handshake"></i></div><div style="font-size:12px;font-weight:700">Bienvenida</div></div></div>
+                  <div class="col-4"><div class="template-card" data-template="cumpleanos"><div class="template-icon"><i class="fas fa-birthday-cake"></i></div><div style="font-size:12px;font-weight:700">Cumpleaños</div></div></div>
+                  <div class="col-4"><div class="template-card" data-template="evento"><div class="template-icon"><i class="fas fa-star"></i></div><div style="font-size:12px;font-weight:700">Evento</div></div></div>
+                  <div class="col-4"><div class="template-card" data-template="reactivacion"><div class="template-icon"><i class="fas fa-sync-alt"></i></div><div style="font-size:12px;font-weight:700">Reactivación</div></div></div>
+                  <div class="col-4"><div class="template-card" data-template="promocion"><div class="template-icon"><i class="fas fa-tag"></i></div><div style="font-size:12px;font-weight:700">Promoción</div></div></div>
                 </div>
                 <input type="hidden" id="inp-template" value="general">
               </div>
@@ -203,9 +203,9 @@
               <div class="form-group">
                 <label class="form-label">Contenido del email *</label>
                 <div style="background:var(--bg-body);border:1px solid var(--border);border-radius:var(--radius) var(--radius) 0 0;padding:8px 12px;display:flex;gap:6px">
-                  <button type="button" class="btn-crm-icon btn-crm-sm" onclick="insertVar('{{nombre}}')" title="Nombre del cliente">👤 {{nombre}}</button>
-                  <button type="button" class="btn-crm-icon btn-crm-sm" onclick="insertVar('{{restaurante}}')" title="Nombre restaurante">🍽️ {{restaurante}}</button>
-                  <button type="button" class="btn-crm-icon btn-crm-sm" onclick="insertVar('{{codigo_descuento}}')" title="Código">🏷️ {{cupón}}</button>
+                  <button type="button" class="btn-crm-icon btn-crm-sm" onclick="insertVar('{{nombre}}')" title="Nombre del cliente"><i class="fas fa-user me-1"></i>{{nombre}}</button>
+                  <button type="button" class="btn-crm-icon btn-crm-sm" onclick="insertVar('{{restaurante}}')" title="Nombre restaurante"><i class="fas fa-mug-hot me-1"></i>{{restaurante}}</button>
+                  <button type="button" class="btn-crm-icon btn-crm-sm" onclick="insertVar('{{codigo_descuento}}')" title="Código"><i class="fas fa-tag me-1"></i>{{cupón}}</button>
                 </div>
                 <textarea name="content" id="inp-content" class="form-control-crm" rows="14"
                   style="border-radius:0 0 var(--radius) var(--radius);font-family:monospace;font-size:13px"
@@ -276,7 +276,7 @@ function renderCampaigns() {
   if (!allCamps.length) { tableEmpty('camps-tbody', 8, 'No hay campañas creadas.'); return; }
 
   tbody.innerHTML = allCamps.map(c => {
-    const templateIcons = { general:'✉️',bienvenida:'👋',cumpleanos:'🎂',evento:'🌟',reactivacion:'🔄',promocion:'🏷️' };
+    const templateIcons = { general:'<i class="fas fa-envelope"></i>',bienvenida:'<i class="fas fa-handshake"></i>',cumpleanos:'<i class="fas fa-birthday-cake"></i>',evento:'<i class="fas fa-star"></i>',reactivacion:'<i class="fas fa-sync-alt"></i>',promocion:'<i class="fas fa-tag"></i>' };
     const sentDate = c.sent_at || c.scheduled_at;
     return `
       <tr>
@@ -284,7 +284,7 @@ function renderCampaigns() {
           <div class="fw-700">${c.title}</div>
           <div class="text-muted-sm">${c.subject}</div>
         </td>
-        <td><span style="font-size:18px" title="${c.template}">${templateIcons[c.template]||'✉️'}</span></td>
+        <td><span style="font-size:18px" title="${c.template}">${templateIcons[c.template]||'<i class="fas fa-envelope"></i>'}</span></td>
         <td>${campaignStatusBadge(c.status)}</td>
         <td><strong>${c.recipient_count}</strong></td>
         <td>

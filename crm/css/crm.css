@@ -14,17 +14,17 @@
   --sidebar-width:       260px;
   --sidebar-collapsed:   72px;
   --topbar-height:       64px;
-  --sidebar-bg:          #1A2332;
-  --sidebar-hover:       #253347;
-  --sidebar-active:      #2D3E52;
-  --sidebar-border:      rgba(255,255,255,0.07);
-  --sidebar-text:        #94A3B8;
-  --sidebar-text-active: #F1F5F9;
+  --sidebar-bg:          #2B2018;
+  --sidebar-hover:       #3A2A1E;
+  --sidebar-active:      rgba(160,106,63,0.22);
+  --sidebar-border:      rgba(255,255,255,0.08);
+  --sidebar-text:        #C4A882;
+  --sidebar-text-active: #FAF4EC;
 
   /* Backgrounds */
-  --bg-body:    #F1F5F9;
+  --bg-body:    #FAF4EC;
   --bg-card:    #FFFFFF;
-  --bg-input:   #F8FAFC;
+  --bg-input:   #F5EFE6;
 
   /* Text */
   --text-primary:   #1E293B;
@@ -32,7 +32,7 @@
   --text-muted:     #94A3B8;
 
   /* Borders */
-  --border:       #E2E8F0;
+  --border:       #E8D9C6;
   --border-focus: var(--brand-primary);
 
   /* Status colors */
@@ -66,11 +66,11 @@
   --clr-info:    #3B82F6;
 
   /* Shadows */
-  --shadow-xs: 0 1px 2px rgba(0,0,0,0.05);
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
-  --shadow:    0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-  --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
-  --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+  --shadow-xs: 0 1px 2px rgba(107,63,23,0.07);
+  --shadow-sm: 0 1px 3px rgba(107,63,23,0.1), 0 1px 2px rgba(107,63,23,0.06);
+  --shadow:    0 4px 6px -1px rgba(107,63,23,0.09), 0 2px 4px -1px rgba(107,63,23,0.05);
+  --shadow-md: 0 10px 15px -3px rgba(107,63,23,0.09), 0 4px 6px -2px rgba(107,63,23,0.04);
+  --shadow-lg: 0 20px 25px -5px rgba(107,63,23,0.08), 0 10px 10px -5px rgba(107,63,23,0.03);
 
   /* Border radius */
   --radius-sm: 6px;
@@ -700,7 +700,7 @@ body {
   align-items: center;
   gap: 8px;
   padding: 9px 18px;
-  border-radius: var(--radius);
+  border-radius: 22px;
   font-size: 14px;
   font-weight: 600;
   font-family: var(--font-body);
@@ -1079,7 +1079,7 @@ textarea.form-control-crm {
 /* ── 21. LOGIN PAGE ───────────────────────────────────────── */
 .login-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #1A2332 0%, #2D3E52 100%);
+  background: linear-gradient(135deg, #2B2018 0%, #4A3020 100%);
   display: flex;
   align-items: center;
   justify-content: center;

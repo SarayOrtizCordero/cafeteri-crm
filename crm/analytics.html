@@ -17,7 +17,7 @@
 <div class="crm-wrapper">
 <aside class="crm-sidebar" id="crm-sidebar">
   <a href="dashboard.html" class="sidebar-brand">
-    <div class="sidebar-brand-icon"><i class="fas fa-utensils"></i></div>
+    <div class="sidebar-brand-icon"><i class="fas fa-mug-hot"></i></div>
     <div class="sidebar-brand-text">Café de la Esquina<small>CRM Restaurante</small></div>
   </a>
   <nav class="sidebar-nav">
@@ -363,7 +363,7 @@ async function loadAnalytics() {
   charts['loyalty'] = new Chart(document.getElementById('chart-loyalty'), {
     type: 'doughnut',
     data: {
-      labels: ['🥉 Bronce','🥈 Plata','🥇 Oro','💜 Premium'],
+      labels: ['Bronce', 'Plata', 'Oro', 'Premium'],
       datasets: [{
         data: [loyalCounts.bronce, loyalCounts.plata, loyalCounts.oro, loyalCounts.premium],
         backgroundColor: ['#CD7F32','#94A3B8','#EAB308','#9333EA'],

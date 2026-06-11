@@ -17,7 +17,7 @@
 <div class="crm-wrapper">
 <aside class="crm-sidebar" id="crm-sidebar">
   <a href="dashboard.html" class="sidebar-brand">
-    <div class="sidebar-brand-icon"><i class="fas fa-utensils"></i></div>
+    <div class="sidebar-brand-icon"><i class="fas fa-mug-hot"></i></div>
     <div class="sidebar-brand-text">Café de la Esquina<small>CRM Restaurante</small></div>
   </a>
   <nav class="sidebar-nav">
@@ -216,7 +216,7 @@ function renderWaiting() {
   if (!waiting.length) {
     queueEl.innerHTML = `
       <div class="empty-state py-5">
-        <div class="empty-state-icon">🟢</div>
+        <div class="empty-state-icon"><i class="fas fa-check-circle" style="color:var(--clr-success)"></i></div>
         <div class="empty-state-title">Sin espera ahora</div>
         <p>Todos los clientes han sido atendidos.</p>
       </div>`;

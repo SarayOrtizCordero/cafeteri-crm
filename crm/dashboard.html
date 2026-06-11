@@ -18,7 +18,7 @@
 <!-- ═══ SIDEBAR ═══════════════════════════════════════════ -->
 <aside class="crm-sidebar" id="crm-sidebar">
   <a href="dashboard.html" class="sidebar-brand">
-    <div class="sidebar-brand-icon"><i class="fas fa-utensils"></i></div>
+    <div class="sidebar-brand-icon"><i class="fas fa-mug-hot"></i></div>
     <div class="sidebar-brand-text">Café de la Esquina<small>CRM Restaurante</small></div>
   </a>
 
@@ -372,7 +372,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const tbody = document.getElementById('today-reservations-body');
   if (!active.length) {
     tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5">
-      <div class="empty-state-icon" style="font-size:2rem">📅</div>
+      <div class="empty-state-icon" style="font-size:2rem"><i class="fas fa-calendar-alt"></i></div>
       <div style="font-size:13px;color:var(--text-muted)">Sin reservas para hoy.</div>
     </td></tr>`;
   } else {
