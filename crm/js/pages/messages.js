@@ -24,16 +24,17 @@ async function loadConversations(filter = '') {
   }
 
   listEl.innerHTML = filtered.map(c => {
-    const fullName = `${c.customer?.name || ''} ${c.customer?.surname || ''}`.trim() || 'Desconocido';
-    const preview  = c.last_message?.message?.substring(0, 40) + (c.last_message?.message?.length > 40 ? '…' : '') || '';
-    const time     = c.last_message ? formatDate(c.last_message.created_at, { relative: true }) : '';
-    const isActive = c.customer?.id === activeCustomerId ? 'active' : '';
+    const fullName   = `${c.customer?.name || ''} ${c.customer?.surname || ''}`.trim() || 'Desconocido';
+    const rawPreview = c.last_message?.message || '';
+    const preview    = rawPreview.substring(0, 40) + (rawPreview.length > 40 ? '…' : '');
+    const time       = c.last_message ? formatDate(c.last_message.created_at, { relative: true }) : '';
+    const isActive   = c.customer?.id === activeCustomerId ? 'active' : '';
     return `
       <div class="conversation-item ${isActive}" onclick="openConversation('${c.customer?.id}')">
-        ${customerAvatar(fullName, 40)}
+        ${customerAvatar(escapeHtml(fullName), 40)}
         <div class="conversation-item-info">
-          <div class="conversation-item-name">${fullName}</div>
-          <div class="conversation-item-preview">${c.last_message?.direction === 'incoming' ? '← ' : '→ '}${preview}</div>
+          <div class="conversation-item-name">${escapeHtml(fullName)}</div>
+          <div class="conversation-item-preview">${c.last_message?.direction === 'incoming' ? '← ' : '→ '}${escapeHtml(preview)}</div>
         </div>
         <div class="conversation-item-meta">
           <span class="conversation-item-time">${time}</span>
@@ -133,14 +134,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     openModal('modal-new-conv');
   });
 
-  document.getElementById('btn-start-conv').addEventListener('click', () => {
+  document.getElementById('btn-start-conv').addEventListener('click', async () => {
     const customerId = document.getElementById('new-conv-customer').value;
     if (!customerId) { showToast('Atención', 'Seleccioná un cliente.', 'warning'); return; }
     closeModal('modal-new-conv');
 
     const exists = conversations.find(c => c.customer?.id === customerId);
     if (!exists) {
-      const customer = DEMO_CUSTOMERS.find(c => c.id === customerId);
+      const { data: customer } = await DB.getCustomer(customerId);
       if (customer) conversations.unshift({ customer, last_message: null, unread: 0, count: 0 });
     }
     loadConversations().then(() => openConversation(customerId));

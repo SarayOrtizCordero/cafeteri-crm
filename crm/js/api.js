@@ -6,8 +6,11 @@
    ============================================================ */
 
 // ── CONFIGURACIÓN ─────────────────────────────────────────────
-const SUPABASE_URL      = 'https://flhmbcikboybrybmpgnn.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_IpYP6_0SM5Hgr8t8tGvwPw_njjpjq_3';
+// Reemplazá estos valores con los de tu proyecto en supabase.com
+// (Settings → API → Project URL y anon/public key).
+// Sin credenciales válidas el CRM opera en modo demo (sin persistencia).
+const SUPABASE_URL      = 'YOUR_SUPABASE_URL';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
 
 let supabase = null;
 const _supabaseConfigured = (SUPABASE_URL !== 'YOUR_SUPABASE_URL');
@@ -33,7 +36,15 @@ const DB = {
   async getSession() {
     if (DEMO_MODE) {
       const s = localStorage.getItem('crm_session');
-      return s ? JSON.parse(s) : null;
+      if (!s) return null;
+      try {
+        const session = JSON.parse(s);
+        if (session?.expires_at && session.expires_at < Date.now()) {
+          localStorage.removeItem('crm_session');
+          return null;
+        }
+        return session;
+      } catch { return null; }
     }
     const { data } = await supabase.auth.getSession();
     return data?.session ?? null;

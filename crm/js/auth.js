@@ -101,9 +101,13 @@ const Auth = {
   },
 
   _applyRoleVisibility(role) {
-    if (role !== 'administrador') {
-      document.querySelectorAll('[data-min-role="administrador"]').forEach(el => el.remove());
-    }
+    const roles = ['empleado', 'recepcionista', 'gerente', 'administrador'];
+    const userLevel = roles.indexOf(role);
+    ['recepcionista', 'gerente', 'administrador'].forEach(minRole => {
+      if (userLevel < roles.indexOf(minRole)) {
+        document.querySelectorAll(`[data-min-role="${minRole}"]`).forEach(el => el.remove());
+      }
+    });
   },
 };
 

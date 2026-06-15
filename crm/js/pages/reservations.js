@@ -32,7 +32,7 @@ function renderTable() {
       <td>${customerCell(r.customer)}</td>
       <td><i class="fas fa-users text-muted me-1"></i>${r.guests}</td>
       <td>${reservationBadge(r.status)}</td>
-      <td class="text-muted-sm">${r.notes ? r.notes.substring(0, 45) + (r.notes.length > 45 ? '…' : '') : '—'}</td>
+      <td class="text-muted-sm">${r.notes ? escapeHtml(r.notes.substring(0, 45)) + (r.notes.length > 45 ? '…' : '') : '—'}</td>
       <td>
         <div class="d-flex gap-1">
           <button type="button" class="btn-crm-icon" onclick="editReservation('${r.id}')" title="Editar" aria-label="Editar"><i class="fas fa-edit"></i></button>

@@ -6,8 +6,10 @@
    ============================================================ */
 
 const DEMO_USERS = [
-  { id: 'u1', full_name: 'Carlos Administrador', email: 'admin@demo.com',    password: 'demo123', role: 'administrador' },
-  { id: 'u2', full_name: 'Ana Flores',            email: 'empleado@demo.com', password: 'demo123', role: 'empleado' },
+  { id: 'u1', full_name: 'Carlos Administrador', email: 'admin@demo.com',       password: 'demo123', role: 'administrador' },
+  { id: 'u2', full_name: 'Gabriela Méndez',      email: 'gerente@demo.com',     password: 'demo123', role: 'gerente' },
+  { id: 'u3', full_name: 'Laura Recepción',      email: 'recepcion@demo.com',   password: 'demo123', role: 'recepcionista' },
+  { id: 'u4', full_name: 'Ana Flores',           email: 'empleado@demo.com',    password: 'demo123', role: 'empleado' },
 ];
 
 const DEMO_CUSTOMERS = [

@@ -7,7 +7,7 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- ── ENUMS ──────────────────────────────────────────────────
-CREATE TYPE user_role          AS ENUM ('empleado', 'administrador');
+CREATE TYPE user_role          AS ENUM ('empleado', 'recepcionista', 'gerente', 'administrador');
 CREATE TYPE reservation_status AS ENUM ('pendiente', 'confirmada', 'finalizada', 'cancelada');
 CREATE TYPE order_status       AS ENUM ('pendiente', 'en_preparacion', 'listo', 'entregado', 'cancelado');
 CREATE TYPE incident_priority  AS ENUM ('baja', 'media', 'alta');
@@ -185,4 +185,4 @@ SELECT
 --    INSERT INTO users (id, full_name, role)
 --    VALUES ('<uuid-del-auth-user>', 'Nombre Completo', 'administrador');
 --
--- 5. Actualizar SUPABASE_URL y SUPABASE_ANON_KEY en crm/js/supabase-config.js
+-- 5. Actualizar SUPABASE_URL y SUPABASE_ANON_KEY en crm/js/api.js
