@@ -235,14 +235,27 @@ document.addEventListener('DOMContentLoaded', () => {
       submitBtn.disabled = true;
       submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Enviando...';
 
-      // Simulación de envío — reemplazar con Formspree o backend real
-      setTimeout(() => {
-        form.hidden = true;
-        if (successMsg) {
-          successMsg.removeAttribute('hidden');
-          successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { Accept: 'application/json' },
+      }).then(res => {
+        if (res.ok) {
+          form.hidden = true;
+          if (successMsg) {
+            successMsg.removeAttribute('hidden');
+            successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        } else {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fas fa-paper-plane" aria-hidden="true"></i> Enviar Consulta';
+          showError('message', 'Error al enviar. Verificá tu conexión e intentá de nuevo.');
         }
-      }, 1200);
+      }).catch(() => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane" aria-hidden="true"></i> Enviar Consulta';
+        showError('message', 'Error de conexión. Intentá de nuevo.');
+      });
     });
 
     // Botón "Hacer otra reserva"

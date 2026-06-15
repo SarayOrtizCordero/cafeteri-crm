@@ -626,9 +626,11 @@
                 <div class="contact__grid">
 
                     <!-- FORMULARIO -->
-                    <!-- Para enviar emails reales: cambiar action="#" por action="https://formspree.io/f/TU_ID" -->
+                    <!-- IMPORTANTE: Registrá tu endpoint en formspree.io y reemplazá PLACEHOLDER con tu ID real -->
                     <div class="contact__form-wrapper reveal">
-                        <form class="contact__form" id="reservation-form" action="#" method="POST" novalidate>
+                        <form class="contact__form" id="reservation-form" action="https://formspree.io/f/meewneng" method="POST" novalidate>
+                            <input type="hidden" name="_subject" value="Nueva consulta desde Café de la Esquina">
+                            <input type="text" name="_gotcha" class="form__honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
                             <div class="form__row">
                                 <div class="form__group">
                                     <label for="name" class="form__label">Nombre completo *</label>

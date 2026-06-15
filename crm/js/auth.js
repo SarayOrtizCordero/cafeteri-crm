@@ -76,7 +76,13 @@ const Auth = {
   _getSession() {
     try {
       const s = localStorage.getItem('crm_session');
-      return s ? JSON.parse(s) : null;
+      if (!s) return null;
+      const session = JSON.parse(s);
+      if (session?.expires_at && session.expires_at < Date.now()) {
+        localStorage.removeItem('crm_session');
+        return null;
+      }
+      return session;
     } catch { return null; }
   },
 
@@ -95,14 +101,7 @@ const Auth = {
   },
 
   _applyRoleVisibility(role) {
-    const roles = ['empleado','recepcionista','gerente','administrador'];
-    const level = roles.indexOf(role);
-
-    // Secciones restringidas (solo admin/gerente)
-    if (level < roles.indexOf('gerente')) {
-      document.querySelectorAll('[data-min-role="gerente"]').forEach(el => el.remove());
-    }
-    if (level < roles.indexOf('administrador')) {
+    if (role !== 'administrador') {
       document.querySelectorAll('[data-min-role="administrador"]').forEach(el => el.remove());
     }
   },

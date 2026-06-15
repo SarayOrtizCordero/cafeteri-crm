@@ -2,6 +2,15 @@
    UTILS.JS — Utilidades compartidas del CRM
    ============================================================ */
 
+// ── HTML ESCAPE ───────────────────────────────────────────
+function escapeHtml(str) {
+  return String(str ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
 // ── TOAST NOTIFICATIONS ───────────────────────────────────
 function showToast(title, message = '', type = 'info') {
   let container = document.getElementById('toast-container');
@@ -17,8 +26,8 @@ function showToast(title, message = '', type = 'info') {
   toast.innerHTML = `
     <i class="fas ${icons[type] || icons.info} toast-icon"></i>
     <div class="toast-body">
-      <div class="toast-title">${title}</div>
-      ${message ? `<div class="toast-msg">${message}</div>` : ''}
+      <div class="toast-title">${escapeHtml(title)}</div>
+      ${message ? `<div class="toast-msg">${escapeHtml(message)}</div>` : ''}
     </div>
     <button class="toast-close" onclick="this.closest('.crm-toast').remove()">
       <i class="fas fa-times"></i>
@@ -67,31 +76,24 @@ function formatNumber(n) {
 // ── STATUS BADGES ─────────────────────────────────────────
 function reservationBadge(status) {
   const labels = {
-    pendiente:     'Pendiente',
-    confirmada:    'Confirmada',
-    sentado:       'Sentado',
-    finalizada:    'Finalizada',
-    cancelada:     'Cancelada',
-    no_presentado: 'No se presentó',
+    pendiente:  'Pendiente',
+    confirmada: 'Confirmada',
+    finalizada: 'Finalizada',
+    cancelada:  'Cancelada',
   };
   return `<span class="badge-status badge-${status}">${labels[status] || status}</span>`;
 }
 
-function tableBadge(status) {
-  const labels = { libre:'Libre', reservada:'Reservada', ocupada:'Ocupada', fuera_de_servicio:'Fuera de servicio' };
-  return `<span class="badge-status badge-${status}">${labels[status] || status}</span>`;
-}
-
-function loyaltyBadge(level) {
-  const icons = { bronce:'🥉', plata:'🥈', oro:'🥇', premium:'💜' };
-  const labels = { bronce:'Bronce', plata:'Plata', oro:'Oro', premium:'Premium' };
-  return `<span class="badge-status badge-${level}">${icons[level] || ''} ${labels[level] || level}</span>`;
-}
-
-function waitingBadge(status) {
-  const labels = { esperando:'Esperando', asignado:'Asignado', cancelado:'Cancelado' };
-  const classes = { esperando:'badge-esperando', asignado:'badge-asignado', cancelado:'badge-cancelada' };
-  return `<span class="badge-status ${classes[status] || ''}">${labels[status] || status}</span>`;
+function orderStatusBadge(status) {
+  const map = {
+    pendiente:      { cls:'badge-pendiente',      label:'Pendiente' },
+    en_preparacion: { cls:'badge-confirmada',     label:'En preparación' },
+    listo:          { cls:'badge-listo',          label:'Listo' },
+    entregado:      { cls:'badge-finalizada',     label:'Entregado' },
+    cancelado:      { cls:'badge-cancelada',      label:'Cancelado' },
+  };
+  const m = map[status] || { cls:'', label: status };
+  return `<span class="badge-status ${m.cls}">${m.label}</span>`;
 }
 
 function severityBadge(severity) {
@@ -103,19 +105,8 @@ function incidentStatusBadge(status) {
   const map = {
     abierta:    { cls:'badge-cancelada',  label:'Abierta' },
     en_proceso: { cls:'badge-pendiente',  label:'En proceso' },
-    resuelta:   { cls:'badge-sentado',    label:'Resuelta' },
+    resuelta:   { cls:'badge-confirmada', label:'Resuelta' },
     cerrada:    { cls:'badge-finalizada', label:'Cerrada' },
-  };
-  const m = map[status] || { cls:'', label: status };
-  return `<span class="badge-status ${m.cls}">${m.label}</span>`;
-}
-
-function campaignStatusBadge(status) {
-  const map = {
-    borrador:   { cls:'badge-finalizada', label:'Borrador' },
-    programada: { cls:'badge-confirmada', label:'Programada' },
-    enviada:    { cls:'badge-sentado',    label:'Enviada' },
-    cancelada:  { cls:'badge-cancelada',  label:'Cancelada' },
   };
   const m = map[status] || { cls:'', label: status };
   return `<span class="badge-status ${m.cls}">${m.label}</span>`;
@@ -143,7 +134,7 @@ function avatarColor(name = '') {
 function customerAvatar(name = '', size = 36) {
   const initials = name.split(' ').slice(0,2).map(w=>w[0]?.toUpperCase()).join('');
   const color = avatarColor(name);
-  return `<div class="customer-avatar" style="width:${size}px;height:${size}px;background:${color};font-size:${Math.round(size*0.36)}px">${initials}</div>`;
+  return `<div class="customer-avatar" style="width:${size}px;height:${size}px;background:${color};font-size:${Math.round(size*0.36)}px">${escapeHtml(initials)}</div>`;
 }
 
 // ── CUSTOMER CELL ─────────────────────────────────────────
@@ -154,20 +145,10 @@ function customerCell(customer) {
     <div class="td-customer">
       ${customerAvatar(fullName)}
       <div>
-        <div class="customer-name">${fullName}${customer.vip_status ? ' <span class="badge-vip">VIP</span>' : ''}</div>
-        <div class="customer-email">${customer.email || customer.phone || ''}</div>
+        <div class="customer-name">${escapeHtml(fullName)}</div>
+        <div class="customer-email">${escapeHtml(customer.email || customer.phone || '')}</div>
       </div>
     </div>`;
-}
-
-// ── WAITING TIME ──────────────────────────────────────────
-function waitingTime(arrivalIso) {
-  const diff = Date.now() - new Date(arrivalIso).getTime();
-  const mins = Math.floor(diff / 60000);
-  if (mins < 1)  return '<span class="text-success fw-700">Recién llegó</span>';
-  if (mins < 15) return `<span class="fw-700">${mins} min</span>`;
-  if (mins < 30) return `<span class="text-warning fw-700">${mins} min</span>`;
-  return `<span class="text-danger fw-700">${mins} min</span>`;
 }
 
 // ── MODAL HELPERS ─────────────────────────────────────────
@@ -275,28 +256,3 @@ function exportCSV(headers, rows, filename = 'export.csv') {
   URL.revokeObjectURL(url);
 }
 
-// ── GENERATE PROMO CODE ───────────────────────────────────
-function generatePromoCode(prefix = 'PROMO') {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let code = prefix;
-  for (let i = 0; i < 5; i++) code += chars[Math.floor(Math.random() * chars.length)];
-  return code;
-}
-
-// ── OCUPANCY RING (SVG inline) ────────────────────────────
-function occupancyRing(pct, label = '') {
-  const r = 36, cx = 44, cy = 44;
-  const circ = 2 * Math.PI * r;
-  const dash = (pct / 100) * circ;
-  const color = pct >= 90 ? '#EF4444' : pct >= 70 ? '#F59E0B' : '#10B981';
-  return `
-    <svg width="88" height="88" viewBox="0 0 88 88">
-      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#E2E8F0" stroke-width="8"/>
-      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${color}" stroke-width="8"
-        stroke-dasharray="${dash} ${circ}" stroke-dashoffset="${circ/4}"
-        stroke-linecap="round" style="transition:stroke-dasharray .5s ease"/>
-      <text x="${cx}" y="${cy+1}" text-anchor="middle" dominant-baseline="middle"
-        font-family="Lato" font-size="14" font-weight="700" fill="#1E293B">${pct}%</text>
-      ${label ? `<text x="${cx}" y="${cy+18}" text-anchor="middle" font-family="Lato" font-size="9" fill="#94A3B8">${label}</text>` : ''}
-    </svg>`;
-}

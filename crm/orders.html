@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reservas — CRM Café de la Esquina</title>
+  <title>Pedidos — CRM Café de la Esquina</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -52,12 +52,12 @@
       <div class="topbar-breadcrumb">
         <span class="topbar-breadcrumb-item">CRM</span>
         <span class="topbar-breadcrumb-sep">/</span>
-        <span class="topbar-breadcrumb-current">Reservas</span>
+        <span class="topbar-breadcrumb-current">Pedidos</span>
       </div>
       <div class="topbar-spacer"></div>
       <div class="topbar-actions">
         <button type="button" class="btn-crm btn-crm-primary btn-crm-sm" id="btn-new">
-          <i class="fas fa-plus"></i> Nueva reserva
+          <i class="fas fa-plus"></i> Nuevo pedido
         </button>
         <div class="topbar-user">
           <div class="topbar-avatar" id="topbar-avatar">CA</div>
@@ -73,47 +73,47 @@
 
       <div class="page-header">
         <div>
-          <h1 class="page-title">Reservas</h1>
-          <p class="page-subtitle">Gestión de reservas del café</p>
+          <h1 class="page-title">Pedidos</h1>
+          <p class="page-subtitle">Gestión de pedidos para llevar o encargos especiales</p>
         </div>
       </div>
 
       <!-- STATS -->
       <div class="stat-grid columns-4">
         <div class="stat-card">
-          <div class="stat-icon primary"><i class="fas fa-calendar-day"></i></div>
-          <div class="stat-body"><div class="stat-value" id="stat-hoy">—</div><div class="stat-label">Hoy</div></div>
+          <div class="stat-icon primary"><i class="fas fa-box-open"></i></div>
+          <div class="stat-body"><div class="stat-value" id="stat-total">—</div><div class="stat-label">Total pedidos</div></div>
         </div>
         <div class="stat-card">
           <div class="stat-icon warning"><i class="fas fa-clock"></i></div>
           <div class="stat-body"><div class="stat-value" id="stat-pendiente">—</div><div class="stat-label">Pendientes</div></div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon success"><i class="fas fa-check-circle"></i></div>
-          <div class="stat-body"><div class="stat-value" id="stat-confirmada">—</div><div class="stat-label">Confirmadas</div></div>
+          <div class="stat-icon info"><i class="fas fa-fire"></i></div>
+          <div class="stat-body"><div class="stat-value" id="stat-preparacion">—</div><div class="stat-label">En preparación</div></div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon danger"><i class="fas fa-times-circle"></i></div>
-          <div class="stat-body"><div class="stat-value" id="stat-cancelada">—</div><div class="stat-label">Canceladas</div></div>
+          <div class="stat-icon success"><i class="fas fa-check"></i></div>
+          <div class="stat-body"><div class="stat-value" id="stat-entregados">—</div><div class="stat-label">Entregados hoy</div></div>
         </div>
       </div>
 
       <!-- TABLA -->
       <div class="crm-card">
         <div class="crm-card-header">
-          <span class="crm-card-title"><i class="fas fa-calendar-check text-brand me-2"></i>Listado</span>
+          <span class="crm-card-title"><i class="fas fa-box-open text-brand me-2"></i>Listado</span>
           <div class="filter-bar mb-0">
             <div class="search-input-wrapper">
               <i class="fas fa-search search-icon"></i>
-              <input type="search" id="input-search" class="form-control-crm" placeholder="Buscar cliente…">
+              <input type="search" id="input-search" class="form-control-crm" placeholder="Buscar pedido o cliente…">
             </div>
-            <input type="date" id="filter-date" class="form-control-crm filter-date" title="Filtrar por fecha" aria-label="Filtrar por fecha">
             <select id="filter-status" class="form-control-crm filter-select" title="Filtrar por estado" aria-label="Filtrar por estado">
               <option value="">Todos los estados</option>
               <option value="pendiente">Pendiente</option>
-              <option value="confirmada">Confirmada</option>
-              <option value="finalizada">Finalizada</option>
-              <option value="cancelada">Cancelada</option>
+              <option value="en_preparacion">En preparación</option>
+              <option value="listo">Listo</option>
+              <option value="entregado">Entregado</option>
+              <option value="cancelado">Cancelado</option>
             </select>
             <button type="button" class="btn-crm btn-crm-secondary btn-crm-sm" id="btn-clear" title="Limpiar filtros" aria-label="Limpiar filtros">
               <i class="fas fa-times"></i>
@@ -124,15 +124,16 @@
           <table class="crm-table">
             <thead>
               <tr>
-                <th>Fecha y hora</th>
+                <th>Fecha</th>
                 <th>Cliente</th>
-                <th>Personas</th>
+                <th>Pedido</th>
+                <th>Precio</th>
+                <th>Recogida</th>
                 <th>Estado</th>
-                <th>Notas</th>
                 <th>Acciones</th>
               </tr>
             </thead>
-            <tbody id="tbody-reservations"></tbody>
+            <tbody id="tbody-orders"></tbody>
           </table>
         </div>
       </div>
@@ -142,43 +143,48 @@
 </div>
 
 <!-- MODAL: CREAR / EDITAR -->
-<div class="modal fade" id="modal-res" tabindex="-1" aria-labelledby="modal-res-label" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
+<div class="modal fade" id="modal-order" tabindex="-1" aria-labelledby="modal-order-label" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modal-res-label">Nueva reserva</h5>
+        <h5 class="modal-title" id="modal-order-label">Nuevo pedido</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
-      <form id="form-res" novalidate>
+      <form id="form-order" novalidate>
         <div class="modal-body">
           <input type="hidden" id="f-id">
           <div class="row g-3">
             <div class="col-12">
-              <label class="form-label" for="f-customer">Cliente <span class="text-danger">*</span></label>
-              <select id="f-customer" name="customer_id" class="form-control-crm" required>
-                <option value="">— Seleccionar cliente —</option>
+              <label class="form-label" for="f-customer">Cliente</label>
+              <select id="f-customer" name="customer_id" class="form-control-crm">
+                <option value="">— Sin cliente asociado —</option>
               </select>
             </div>
             <div class="col-12">
-              <label class="form-label" for="f-date">Fecha y hora <span class="text-danger">*</span></label>
-              <input type="datetime-local" id="f-date" name="reservation_date" class="form-control-crm" required>
+              <label class="form-label" for="f-title">Nombre del pedido <span class="text-danger">*</span></label>
+              <input type="text" id="f-title" name="title" class="form-control-crm" placeholder="Ej: Torta de cumpleaños, Box desayuno…" required>
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="f-desc">Descripción</label>
+              <textarea id="f-desc" name="description" class="form-control-crm" rows="2" placeholder="Detalles del pedido, cantidades, personalizaciones…"></textarea>
             </div>
             <div class="col-6">
-              <label class="form-label" for="f-guests">Personas <span class="text-danger">*</span></label>
-              <input type="number" id="f-guests" name="guests" class="form-control-crm" min="1" max="50" value="2" required>
+              <label class="form-label" for="f-price">Precio</label>
+              <input type="number" id="f-price" name="price" class="form-control-crm" min="0" step="0.01" placeholder="0">
             </div>
             <div class="col-6">
               <label class="form-label" for="f-status">Estado</label>
               <select id="f-status" name="status" class="form-control-crm">
                 <option value="pendiente">Pendiente</option>
-                <option value="confirmada">Confirmada</option>
-                <option value="finalizada">Finalizada</option>
-                <option value="cancelada">Cancelada</option>
+                <option value="en_preparacion">En preparación</option>
+                <option value="listo">Listo</option>
+                <option value="entregado">Entregado</option>
+                <option value="cancelado">Cancelado</option>
               </select>
             </div>
             <div class="col-12">
-              <label class="form-label" for="f-notes">Notas</label>
-              <textarea id="f-notes" name="notes" class="form-control-crm" rows="2" placeholder="Peticiones especiales, indicaciones…"></textarea>
+              <label class="form-label" for="f-pickup">Fecha y hora de recogida</label>
+              <input type="datetime-local" id="f-pickup" name="pickup_date" class="form-control-crm">
             </div>
           </div>
         </div>
@@ -200,7 +206,7 @@
 <script>
 Auth.requireAuth();
 
-let allReservations = [];
+let allOrders = [];
 
 async function populateCustomerSelect(selectId, selectedId = '') {
   const sel = document.getElementById(selectId);
@@ -208,118 +214,129 @@ async function populateCustomerSelect(selectId, selectedId = '') {
   const opts = (data || []).map(c =>
     `<option value="${c.id}" ${c.id === selectedId ? 'selected' : ''}>${c.name} ${c.surname || ''}</option>`
   ).join('');
-  sel.innerHTML = '<option value="">— Seleccionar cliente —</option>' + opts;
+  sel.innerHTML = '<option value="">— Sin cliente asociado —</option>' + opts;
 }
 
-async function loadReservations() {
+async function loadOrders() {
   const search = document.getElementById('input-search').value.trim();
-  const date   = document.getElementById('filter-date').value;
   const status = document.getElementById('filter-status').value;
-  const { data, error } = await DB.getReservations({ date: date || null, status: status || null, search });
-  if (error) { showToast('Error', 'No se pudieron cargar las reservas.', 'error'); return; }
-  allReservations = data || [];
+  const { data, error } = await DB.getOrders({ status: status || null, search });
+  if (error) { showToast('Error', 'No se pudieron cargar los pedidos.', 'error'); return; }
+  allOrders = data || [];
   renderStats();
   renderTable();
 }
 
 function renderStats() {
   const todayStr = new Date().toDateString();
-  document.getElementById('stat-hoy').textContent       = allReservations.filter(r => new Date(r.reservation_date).toDateString() === todayStr && r.status !== 'cancelada').length;
-  document.getElementById('stat-pendiente').textContent  = allReservations.filter(r => r.status === 'pendiente').length;
-  document.getElementById('stat-confirmada').textContent = allReservations.filter(r => r.status === 'confirmada').length;
-  document.getElementById('stat-cancelada').textContent  = allReservations.filter(r => r.status === 'cancelada').length;
+  document.getElementById('stat-total').textContent      = allOrders.length;
+  document.getElementById('stat-pendiente').textContent  = allOrders.filter(o => o.status === 'pendiente').length;
+  document.getElementById('stat-preparacion').textContent= allOrders.filter(o => o.status === 'en_preparacion').length;
+  document.getElementById('stat-entregados').textContent = allOrders.filter(o => o.status === 'entregado' && new Date(o.pickup_date).toDateString() === todayStr).length;
 }
 
 function renderTable() {
-  const tbody = document.getElementById('tbody-reservations');
-  if (!allReservations.length) { tableEmpty('tbody-reservations', 6, 'No hay reservas.'); return; }
-  tbody.innerHTML = allReservations.map(r => `
+  const tbody = document.getElementById('tbody-orders');
+  if (!allOrders.length) { tableEmpty('tbody-orders', 7, 'No hay pedidos.'); return; }
+  tbody.innerHTML = allOrders.map(o => `
     <tr>
+      <td class="text-muted-sm">${formatDate(o.created_at)}</td>
+      <td>${o.customer ? customerCell(o.customer) : '<span class="text-muted-sm">—</span>'}</td>
       <td>
-        <strong>${formatDate(r.reservation_date, { time: true })}</strong>
+        <div class="td-title-main">${escapeHtml(o.title)}</div>
+        ${o.description ? `<div class="td-title-sub">${escapeHtml(o.description.substring(0,50))}${o.description.length>50?'…':''}</div>` : ''}
       </td>
-      <td>${customerCell(r.customer)}</td>
-      <td><i class="fas fa-users text-muted me-1"></i>${r.guests}</td>
-      <td>${reservationBadge(r.status)}</td>
-      <td class="text-muted-sm">${r.notes ? r.notes.substring(0,45) + (r.notes.length > 45 ? '…' : '') : '—'}</td>
+      <td>${o.price ? formatCurrency(o.price) : '<span class="text-muted-sm">—</span>'}</td>
+      <td class="text-muted-sm">${o.pickup_date ? formatDate(o.pickup_date, { time: true }) : '—'}</td>
+      <td>
+        <select class="form-control-crm inline-select" onchange="changeStatus('${o.id}', this.value)" title="Cambiar estado" aria-label="Cambiar estado">
+          ${['pendiente','en_preparacion','listo','entregado','cancelado'].map(s =>
+            `<option value="${s}" ${s===o.status?'selected':''}>${{pendiente:'Pendiente',en_preparacion:'En preparación',listo:'Listo',entregado:'Entregado',cancelado:'Cancelado'}[s]}</option>`
+          ).join('')}
+        </select>
+      </td>
       <td>
         <div class="d-flex gap-1">
-          <button type="button" class="btn-crm-icon" onclick="editReservation('${r.id}')" title="Editar" aria-label="Editar"><i class="fas fa-edit"></i></button>
-          <button type="button" class="btn-crm-icon" onclick="deleteReservation('${r.id}')" title="Eliminar" aria-label="Eliminar" style="color:var(--clr-danger)"><i class="fas fa-trash"></i></button>
+          <button type="button" class="btn-crm-icon" onclick="editOrder('${o.id}')" title="Editar" aria-label="Editar"><i class="fas fa-edit"></i></button>
+          <button type="button" class="btn-crm-icon" onclick="deleteOrder('${o.id}')" title="Eliminar" aria-label="Eliminar" style="color:var(--clr-danger)"><i class="fas fa-trash"></i></button>
         </div>
       </td>
     </tr>`).join('');
 }
 
-function editReservation(id) {
-  const r = allReservations.find(x => x.id === id);
-  if (!r) return;
-  document.getElementById('modal-res-label').textContent = 'Editar reserva';
-  document.getElementById('f-id').value     = r.id;
-  document.getElementById('f-date').value   = dateTimeForInput(r.reservation_date);
-  document.getElementById('f-guests').value = r.guests;
-  document.getElementById('f-status').value = r.status;
-  document.getElementById('f-notes').value  = r.notes || '';
-  populateCustomerSelect('f-customer', r.customer_id);
-  openModal('modal-res');
+async function changeStatus(id, status) {
+  const { error } = await DB.updateOrder(id, { status });
+  if (error) { showToast('Error', 'No se pudo actualizar.', 'error'); return; }
+  showToast('Actualizado', 'Estado cambiado.', 'success');
+  const idx = allOrders.findIndex(o => o.id === id);
+  if (idx !== -1) { allOrders[idx].status = status; renderStats(); }
 }
 
-async function deleteReservation(id) {
-  const r = allReservations.find(x => x.id === id);
-  confirmAction(`¿Eliminar la reserva de ${r?.customer?.name || ''}? Esta acción no se puede deshacer.`, async () => {
-    const { error } = await DB.deleteReservation(id);
+function editOrder(id) {
+  const o = allOrders.find(x => x.id === id);
+  if (!o) return;
+  document.getElementById('modal-order-label').textContent = 'Editar pedido';
+  document.getElementById('f-id').value     = o.id;
+  document.getElementById('f-title').value  = o.title || '';
+  document.getElementById('f-desc').value   = o.description || '';
+  document.getElementById('f-price').value  = o.price || '';
+  document.getElementById('f-status').value = o.status;
+  document.getElementById('f-pickup').value = o.pickup_date ? dateTimeForInput(o.pickup_date) : '';
+  populateCustomerSelect('f-customer', o.customer_id || '');
+  openModal('modal-order');
+}
+
+async function deleteOrder(id) {
+  confirmAction('¿Eliminar este pedido? Esta acción no se puede deshacer.', async () => {
+    const { error } = await DB.deleteOrder(id);
     if (error) { showToast('Error', 'No se pudo eliminar.', 'error'); return; }
-    showToast('Eliminada', 'Reserva eliminada.', 'success');
-    loadReservations();
+    showToast('Eliminado', 'Pedido eliminado.', 'success');
+    loadOrders();
   });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  loadReservations();
+  loadOrders();
 
   document.getElementById('btn-new').addEventListener('click', () => {
-    document.getElementById('modal-res-label').textContent = 'Nueva reserva';
-    document.getElementById('form-res').reset();
+    document.getElementById('modal-order-label').textContent = 'Nuevo pedido';
+    document.getElementById('form-order').reset();
     document.getElementById('f-id').value = '';
-    // Poner fecha por defecto: hoy a las 20:00
-    const d = new Date(); d.setHours(20, 0, 0, 0);
-    document.getElementById('f-date').value = dateTimeForInput(d.toISOString());
     populateCustomerSelect('f-customer');
-    openModal('modal-res');
+    openModal('modal-order');
   });
 
-  document.getElementById('input-search').addEventListener('input', debounce(loadReservations, 350));
-  document.getElementById('filter-date').addEventListener('change', loadReservations);
-  document.getElementById('filter-status').addEventListener('change', loadReservations);
+  document.getElementById('input-search').addEventListener('input', debounce(loadOrders, 350));
+  document.getElementById('filter-status').addEventListener('change', loadOrders);
   document.getElementById('btn-clear').addEventListener('click', () => {
-    document.getElementById('input-search').value = '';
-    document.getElementById('filter-date').value  = '';
+    document.getElementById('input-search').value  = '';
     document.getElementById('filter-status').value = '';
-    loadReservations();
+    loadOrders();
   });
 
-  document.getElementById('form-res').addEventListener('submit', async (e) => {
+  document.getElementById('form-order').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const id  = document.getElementById('f-id').value;
+    const id   = document.getElementById('f-id').value;
+    const pickup = document.getElementById('f-pickup').value;
     const data = {
-      customer_id:      document.getElementById('f-customer').value,
-      reservation_date: new Date(document.getElementById('f-date').value).toISOString(),
-      guests:           parseInt(document.getElementById('f-guests').value),
-      status:           document.getElementById('f-status').value,
-      notes:            document.getElementById('f-notes').value.trim(),
+      customer_id:  document.getElementById('f-customer').value || null,
+      title:        document.getElementById('f-title').value.trim(),
+      description:  document.getElementById('f-desc').value.trim(),
+      price:        parseFloat(document.getElementById('f-price').value) || null,
+      status:       document.getElementById('f-status').value,
+      pickup_date:  pickup ? new Date(pickup).toISOString() : null,
     };
-    if (!data.customer_id) { showToast('Campo requerido', 'Seleccioná un cliente.', 'warning'); return; }
-    if (!data.reservation_date || isNaN(new Date(data.reservation_date))) { showToast('Campo requerido', 'La fecha es obligatoria.', 'warning'); return; }
+    if (!data.title) { showToast('Campo requerido', 'El nombre del pedido es obligatorio.', 'warning'); return; }
 
     const btn = document.getElementById('btn-save');
     btn.disabled = true;
-    const result = id ? await DB.updateReservation(id, data) : await DB.createReservation(data);
+    const result = id ? await DB.updateOrder(id, data) : await DB.createOrder(data);
     btn.disabled = false;
 
     if (result.error) { showToast('Error', 'No se pudo guardar.', 'error'); return; }
-    showToast('Guardado', id ? 'Reserva actualizada.' : 'Reserva creada.', 'success');
-    closeModal('modal-res');
-    loadReservations();
+    showToast('Guardado', id ? 'Pedido actualizado.' : 'Pedido creado.', 'success');
+    closeModal('modal-order');
+    loadOrders();
   });
 
   if (new URLSearchParams(location.search).get('new') === '1') {
