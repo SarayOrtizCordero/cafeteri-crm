@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Vapor (3 volutas) -->
+  <path d="M33 31 Q29 23 33 15 Q37 7 33 2" fill="none" stroke="#A06A3F" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M50 31 Q46 23 50 15 Q54 7 50 2" fill="none" stroke="#A06A3F" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M67 31 Q63 23 67 15 Q71 7 67 2" fill="none" stroke="#A06A3F" stroke-width="3.5" stroke-linecap="round"/>
+
+  <!-- Cuerpo de la taza (trapezoide) -->
+  <path d="M14 34 L86 34 L76 74 L24 74 Z" fill="#6F4A2A"/>
+
+  <!-- Superficie del café (oscura) -->
+  <ellipse cx="50" cy="34" rx="36" ry="7" fill="#2B2018"/>
+
+  <!-- Brillo sutil en el café -->
+  <ellipse cx="39" cy="32.5" rx="9" ry="2.5" fill="#A06A3F" opacity="0.3"/>
+
+  <!-- Asa -->
+  <path d="M76 47 Q97 47 97 60 Q97 73 76 73" fill="none" stroke="#A06A3F" stroke-width="7.5" stroke-linecap="round"/>
+
+  <!-- Platillo -->
+  <rect x="8" y="76" width="84" height="13" rx="6.5" fill="#A06A3F"/>
+
+  <!-- Brillo en el platillo -->
+  <ellipse cx="37" cy="78" rx="13" ry="2.5" fill="white" opacity="0.15"/>
+</svg>

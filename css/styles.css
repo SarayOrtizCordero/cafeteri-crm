@@ -1,6 +1,25 @@
 /* ============================================================
    STYLES.CSS — Café de la Esquina
    Mobile-first | CSS Custom Properties | Flexbox + Grid
+   ============================================================
+   ÍNDICE
+    1.  Variables (custom properties, tokens)
+    2.  Reset & Base
+    3.  Utilidades
+    4.  Botones
+    5.  Animaciones
+    6.  WhatsApp floating button
+    7.  Header & Nav
+    8.  Hero
+    9.  Café Callout
+   10.  Divisor (hilera de tazas)
+   11.  Sobre nosotros
+   12.  Menú (tabs + tarjetas)
+   13.  Galería + Lightbox
+   14.  Ubicación & Horarios
+   15.  Formulario / Reservas
+   16.  Footer
+   17.  Responsive extra
    ============================================================ */
 
 /* ===== 1. VARIABLES ===== */
@@ -682,7 +701,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   color: var(--clr-gold);
 }
 
-/* ===== 11. DIVISOR CAFÉ (hilera de tazas) ===== */
+/* ===== 10. DIVISOR CAFÉ (hilera de tazas) ===== */
 /* Tacita line-art en SVG (caramelo) repetida a lo largo de todo el ancho */
 .tablero-divider {
   width: 100%;

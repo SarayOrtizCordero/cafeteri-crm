@@ -236,6 +236,17 @@ function dateTimeForInput(isoStr) {
   return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
+// ── CUSTOMER SELECT ───────────────────────────────────────
+async function populateCustomerSelect(selectId, selectedId = '', placeholder = '— Seleccionar cliente —') {
+  const sel = document.getElementById(selectId);
+  if (!sel) return;
+  const { data } = await DB.getCustomers();
+  const opts = (data || []).map(c =>
+    `<option value="${c.id}" ${c.id === selectedId ? 'selected' : ''}>${c.name} ${c.surname || ''}</option>`
+  ).join('');
+  sel.innerHTML = `<option value="">${placeholder}</option>` + opts;
+}
+
 // ── SEARCH DEBOUNCE ───────────────────────────────────────
 function debounce(fn, delay = 300) {
   let timer;
