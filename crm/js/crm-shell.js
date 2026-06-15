@@ -50,6 +50,8 @@ class CrmShell extends HTMLElement {
             <a href="orders.html"      class="sidebar-link"><i class="sidebar-link-icon fas fa-box-open"></i><span class="sidebar-link-text">Pedidos</span></a>
             <a href="incidents.html"   class="sidebar-link"><i class="sidebar-link-icon fas fa-exclamation-triangle"></i><span class="sidebar-link-text">Incidencias</span></a>
             <a href="messages.html"    class="sidebar-link"><i class="sidebar-link-icon fas fa-comments"></i><span class="sidebar-link-text">Mensajes</span></a>
+            <div class="sidebar-divider"></div>
+            <a href="../index.html"    class="sidebar-link sidebar-link--muted"><i class="sidebar-link-icon fas fa-globe"></i><span class="sidebar-link-text">Ver sitio web</span></a>
           </nav>
           <div class="sidebar-footer">
             <div class="d-flex align-items-center gap-2">

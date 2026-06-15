@@ -253,6 +253,17 @@ body {
 
 .crm-sidebar.collapsed .sidebar-link-text { opacity: 0; }
 
+.sidebar-divider {
+  height: 1px;
+  background: var(--sidebar-border);
+  margin: 8px 20px;
+}
+
+.sidebar-link--muted {
+  opacity: 0.6;
+  font-size: 13px;
+}
+
 .sidebar-badge {
   margin-left: auto;
   background: var(--brand-primary);
@@ -1334,17 +1345,69 @@ textarea.form-control-crm {
 
   .crm-content { padding: 16px 14px; }
 
-  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  /* Las clases .columns-N tienen la misma especificidad que .stat-grid
+     y al estar antes en el CSS ganan; hay que repetirlas aquí. */
+  .stat-grid,
+  .stat-grid.columns-4,
+  .stat-grid.columns-5 {
+    grid-template-columns: repeat(2, 1fr);
+  }
 
   .page-header { flex-direction: column; align-items: stretch; }
 
   .topbar-user-name { display: none; }
+
+  /* Ocultar prefijo "CRM /" en la topbar para ganar espacio */
+  .topbar-breadcrumb-item,
+  .topbar-breadcrumb-sep {
+    display: none;
+  }
+
+  /* Card headers con filter bar dentro: apilar en columna */
+  .crm-card-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .crm-card-header .filter-bar {
+    margin-bottom: 0;
+    width: 100%;
+  }
+
+  .search-input-wrapper {
+    max-width: 100%;
+    flex: 1;
+  }
+
+  /* Tabla: asegurar scroll horizontal */
+  .table-wrapper {
+    overflow-x: auto;
+  }
+
+  /* Mensajes: ocultar panel de conversación hasta que se seleccione */
+  .messages-layout {
+    height: calc(100vh - var(--topbar-height) - 80px);
+  }
 }
 
 @media (max-width: 480px) {
-  .stat-grid { grid-template-columns: 1fr; }
+  .stat-grid,
+  .stat-grid.columns-4,
+  .stat-grid.columns-5 {
+    grid-template-columns: 1fr;
+  }
   .filter-bar { flex-direction: column; }
   .search-input-wrapper { max-width: 100%; }
+
+  /* Topbar: más compacta y ocultar título del breadcrumb para dar espacio
+     a los botones de acción (el h1 de cada página ya muestra el título) */
+  .crm-topbar { padding: 0 12px; gap: 8px; }
+  .topbar-breadcrumb-current { display: none; }
+
+  /* Stat cards: padding reducido */
+  .stat-card { padding: 14px 16px; }
+  .stat-value { font-size: 22px; }
 }
 
 /* ── 24. MOBILE OVERLAY ───────────────────────────────────── */

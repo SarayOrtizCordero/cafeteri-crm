@@ -1560,6 +1560,14 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 .footer__bottom i { color: var(--clr-primary); margin: 0 0.15rem; }
 
+.footer__admin-link {
+  opacity: 0.55;
+}
+.footer__admin-link i {
+  font-size: 0.72em;
+  margin-right: 0.28rem;
+}
+
 /* ===== 20. RESPONSIVE EXTRA ===== */
 @media (max-width: 767px) {
 }

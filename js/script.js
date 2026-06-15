@@ -354,7 +354,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const heroContent = document.querySelector('.hero__content');
   const heroSection = document.getElementById('inicio');
 
-  if (heroContent && heroSection) {
+  // Solo en dispositivos con ratón real: el parallax JS pelea con el
+  // momentum scroll táctil de iOS/Android y genera tirones al hacer scroll.
+  if (heroContent && heroSection &&
+      window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
     let heroHeight = heroSection.offsetHeight;
 
     function updateParallax() {
